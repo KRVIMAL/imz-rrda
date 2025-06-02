@@ -255,46 +255,4 @@ export const deviceServices = {
       throw new Error(error.message || "Search failed");
     }
   },
-
-  exportData: async (
-    modulePath: string,
-    format: "csv" | "xlsx" | "pdf",
-    filename?: string
-  ) => {
-    try {
-      const response = await fetch(`${modulePath}/export?format=${format}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // Add authentication headers if needed
-          // 'Authorization': `Bearer ${getAuthToken()}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Export failed: ${response.statusText}`);
-      }
-
-      const blob = await response.blob();
-
-      // Create download
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-
-      const timestamp = new Date().toISOString().split("T")[0];
-      const defaultFilename = filename || "export";
-      a.download = `${defaultFilename}-${timestamp}.${format}`;
-
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      return { success: true };
-    } catch (error: any) {
-      console.error("Export error:", error);
-      throw new Error(error.message || "Export failed");
-    }
-  },
 };

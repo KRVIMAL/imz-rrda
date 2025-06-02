@@ -36,6 +36,12 @@ export class StringConstants {
   UPDATE_DEVICE = "Update Device";
   EDIT_DEVICE = "Edit Device";
 
+
+  // Client specific
+  ADD_CLIENT = "Add Client";
+  UPDATE_CLIENT = "Update Client";
+  EDIT_CLIENT = "Edit Client";
+
   // Message types
   SUCCESS = "success";
   ERROR = "error";
@@ -47,11 +53,28 @@ export class StringConstants {
   IP_ADDRESS = "IP Address";
   PORT = "Port";
   STATUS = "Status";
+
+  // Client form labels
+  CLIENT_NAME = "Client Name";
+  CONTACT_NAME = "Contact Name";
+  EMAIL_ID = "Email ID";
+  CONTACT_NO = "Contact No";
+  PAN_NUMBER = "Pan Number";
+  AADHAR_NUMBER = "Aadhar Number";
+  GST_NUMBER = "GST Number";
+  STATE_NAME = "State Name";
+  CITY_NAME = "City Name";
+  REMARK = "Remark";
   
   // Validation messages
   REQUIRED_FIELD = "This field is required";
   INVALID_IP_FORMAT = "Invalid IP Address format";
   INVALID_PORT_RANGE = "Port must be between 1 and 65535";
+  INVALID_EMAIL_FORMAT = "Invalid email format";
+  INVALID_CONTACT_FORMAT = "Invalid contact number format";
+  INVALID_PAN_FORMAT = "Invalid PAN format";
+  INVALID_AADHAR_FORMAT = "Invalid Aadhar format";
+  INVALID_GST_FORMAT = "Invalid GST format";
 }
 
 let strings = new StringConstants();
