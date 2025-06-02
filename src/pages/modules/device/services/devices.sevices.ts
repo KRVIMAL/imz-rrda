@@ -1,7 +1,12 @@
 // Updated device services with proper pagination response
-import { Row } from '../../../../components/ui/DataTable/types';
-import { getRequest, postRequest, patchRequest, putRequest } from '../../../../core-services/rest-api/apiHelpers';
-import urls from '../../../../global/constants/url-constants';
+import { Row } from "../../../../components/ui/DataTable/types";
+import {
+  getRequest,
+  postRequest,
+  patchRequest,
+  putRequest,
+} from "../../../../core-services/rest-api/apiHelpers";
+import urls from "../../../../global/constants/url-constants";
 
 // Define interfaces for API responses
 interface ApiResponse<T> {
@@ -57,20 +62,26 @@ const transformDeviceToRow = (device: DeviceData): Row => ({
   ipAddress: device.ipAddress,
   port: device.port,
   status: device.status,
-  createdTime: new Date(device.createdAt).toISOString().split('T')[0],
-  updatedTime: new Date(device.updatedAt).toISOString().split('T')[0],
-  inactiveTime: new Date(device.updatedAt).toISOString().split('T')[0],
-  username: 'admin' // Default username as it's not in API response
+  createdTime: new Date(device.createdAt).toISOString().split("T")[0],
+  updatedTime: new Date(device.updatedAt).toISOString().split("T")[0],
+  inactiveTime: new Date(device.updatedAt).toISOString().split("T")[0],
+  username: "admin", // Default username as it's not in API response
 });
 
 export const deviceServices = {
-  getAll: async (page: number = 1, limit: number = 10): Promise<PaginatedResponse<Row>> => {
+  getAll: async (
+    page: number = 1,
+    limit: number = 10
+  ): Promise<PaginatedResponse<Row>> => {
     try {
-      const response: ApiResponse<DevicesListResponse> = await getRequest(urls.devicesViewPath, {
-        page,
-        limit
-      });
-      
+      const response: ApiResponse<DevicesListResponse> = await getRequest(
+        urls.devicesViewPath,
+        {
+          page,
+          limit,
+        }
+      );
+
       if (response.success) {
         return {
           data: response.data.data.map(transformDeviceToRow),
@@ -79,37 +90,44 @@ export const deviceServices = {
           limit: parseInt(response.data.pagination.limit),
           totalPages: response.data.pagination.totalPages,
           hasNext: response.data.pagination.hasNext,
-          hasPrev: response.data.pagination.hasPrev
+          hasPrev: response.data.pagination.hasPrev,
         };
       } else {
-        throw new Error(response.message || 'Failed to fetch devices');
+        throw new Error(response.message || "Failed to fetch devices");
       }
     } catch (error: any) {
-      console.error('Error fetching devices:', error.message);
-      throw new Error(error.message || 'Failed to fetch devices');
+      console.error("Error fetching devices:", error.message);
+      throw new Error(error.message || "Failed to fetch devices");
     }
   },
 
   getById: async (id: string | number): Promise<Row | null> => {
     try {
-      const response: ApiResponse<DeviceData> = await getRequest(`${urls.devicesViewPath}/${id}`);
-      
+      const response: ApiResponse<DeviceData> = await getRequest(
+        `${urls.devicesViewPath}/${id}`
+      );
+
       if (response.success) {
         return transformDeviceToRow(response.data);
       } else {
-        throw new Error(response.message || 'Device not found');
+        throw new Error(response.message || "Device not found");
       }
     } catch (error: any) {
-      console.error('Error fetching device:', error.message);
+      console.error("Error fetching device:", error.message);
       // Return null if device not found instead of throwing
-      if (error.message.includes('not found') || error.message.includes('404')) {
+      if (
+        error.message.includes("not found") ||
+        error.message.includes("404")
+      ) {
         return null;
       }
-      throw new Error(error.message || 'Failed to fetch device');
+      throw new Error(error.message || "Failed to fetch device");
     }
   },
 
-  create: async (deviceData: Partial<Row>): Promise<{ device: Row; message: string }> => {
+  create: async (
+    deviceData: Partial<Row>
+  ): Promise<{ device: Row; message: string }> => {
     try {
       const payload = {
         modelName: deviceData.modelName,
@@ -117,85 +135,108 @@ export const deviceServices = {
         deviceType: deviceData.deviceType,
         ipAddress: deviceData.ipAddress,
         port: Number(deviceData.port),
-        status: deviceData.status
+        status: deviceData.status,
       };
 
-      const response: ApiResponse<DeviceData> = await postRequest(urls.devicesViewPath, payload);
-      
+      const response: ApiResponse<DeviceData> = await postRequest(
+        urls.devicesViewPath,
+        payload
+      );
+
       if (response.success) {
         return {
           device: transformDeviceToRow(response.data),
-          message: response.message || 'Device created successfully'
+          message: response.message || "Device created successfully",
         };
       } else {
-        throw new Error(response.message || 'Failed to create device');
+        throw new Error(response.message || "Failed to create device");
       }
     } catch (error: any) {
-      console.error('Error creating device:', error.message);
-      throw new Error(error.message || 'Failed to create device');
+      console.error("Error creating device:", error.message);
+      throw new Error(error.message || "Failed to create device");
     }
   },
 
-  update: async (id: string | number, deviceData: Partial<Row>): Promise<{ device: Row; message: string }> => {
+  update: async (
+    id: string | number,
+    deviceData: Partial<Row>
+  ): Promise<{ device: Row; message: string }> => {
     try {
       const payload: any = {};
-      
+
       // Only include fields that are provided
-      if (deviceData.modelName !== undefined) payload.modelName = deviceData.modelName;
-      if (deviceData.manufacturerName !== undefined) payload.manufacturerName = deviceData.manufacturerName;
-      if (deviceData.deviceType !== undefined) payload.deviceType = deviceData.deviceType;
-      if (deviceData.ipAddress !== undefined) payload.ipAddress = deviceData.ipAddress;
+      if (deviceData.modelName !== undefined)
+        payload.modelName = deviceData.modelName;
+      if (deviceData.manufacturerName !== undefined)
+        payload.manufacturerName = deviceData.manufacturerName;
+      if (deviceData.deviceType !== undefined)
+        payload.deviceType = deviceData.deviceType;
+      if (deviceData.ipAddress !== undefined)
+        payload.ipAddress = deviceData.ipAddress;
       if (deviceData.port !== undefined) payload.port = Number(deviceData.port);
       if (deviceData.status !== undefined) payload.status = deviceData.status;
 
-      const response: ApiResponse<DeviceData> = await putRequest(`${urls.devicesViewPath}/${id}`, payload);
-      
+      const response: ApiResponse<DeviceData> = await putRequest(
+        `${urls.devicesViewPath}/${id}`,
+        payload
+      );
+
       if (response.success) {
         return {
           device: transformDeviceToRow(response.data),
-          message: response.message || 'Device updated successfully'
+          message: response.message || "Device updated successfully",
         };
       } else {
-        throw new Error(response.message || 'Failed to update device');
+        throw new Error(response.message || "Failed to update device");
       }
     } catch (error: any) {
-      console.error('Error updating device:', error.message);
-      throw new Error(error.message || 'Failed to update device');
+      console.error("Error updating device:", error.message);
+      throw new Error(error.message || "Failed to update device");
     }
   },
 
   inactivate: async (id: string | number): Promise<{ message: string }> => {
     try {
-      const response: ApiResponse<DeviceData> = await patchRequest(`${urls.devicesViewPath}/${id}`, {
-        status: 'inactive'
-      });
-      
+      const response: ApiResponse<DeviceData> = await patchRequest(
+        `${urls.devicesViewPath}/${id}`,
+        {
+          status: "inactive",
+        }
+      );
+
       if (response.success) {
         return {
-          message: response.message || 'Device inactivated successfully'
+          message: response.message || "Device inactivated successfully",
         };
       } else {
-        throw new Error(response.message || 'Failed to inactivate device');
+        throw new Error(response.message || "Failed to inactivate device");
       }
     } catch (error: any) {
-      console.error('Error inactivating device:', error.message);
-      throw new Error(error.message || 'Failed to inactivate device');
+      console.error("Error inactivating device:", error.message);
+      throw new Error(error.message || "Failed to inactivate device");
     }
   },
 
-  search: async (searchText: string, page: number = 1, limit: number = 10): Promise<PaginatedResponse<Row>> => {
+  search: async (
+    searchText: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<PaginatedResponse<Row>> => {
     try {
       // If search is empty, return all devices
       if (!searchText.trim()) {
         return deviceServices.getAll(page, limit);
       }
 
-      const response: ApiResponse<DevicesListResponse> = await getRequest(`${urls.devicesViewPath}/search`, {
-        searchText: searchText.trim(),
-        page,
-        limit
-      });
-      
+      const response: ApiResponse<DevicesListResponse> = await getRequest(
+        `${urls.devicesViewPath}/search`,
+        {
+          searchText: searchText.trim(),
+          page,
+          limit,
+        }
+      );
+
       if (response.success) {
         return {
           data: response.data.data.map(transformDeviceToRow),
@@ -204,14 +245,56 @@ export const deviceServices = {
           limit: parseInt(response.data.pagination.limit),
           totalPages: response.data.pagination.totalPages,
           hasNext: response.data.pagination.hasNext,
-          hasPrev: response.data.pagination.hasPrev
+          hasPrev: response.data.pagination.hasPrev,
         };
       } else {
-        throw new Error(response.message || 'Search failed');
+        throw new Error(response.message || "Search failed");
       }
     } catch (error: any) {
-      console.error('Error searching devices:', error.message);
-      throw new Error(error.message || 'Search failed');
+      console.error("Error searching devices:", error.message);
+      throw new Error(error.message || "Search failed");
     }
-  }
+  },
+
+  exportData: async (
+    modulePath: string,
+    format: "csv" | "xlsx" | "pdf",
+    filename?: string
+  ) => {
+    try {
+      const response = await fetch(`${modulePath}/export?format=${format}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Add authentication headers if needed
+          // 'Authorization': `Bearer ${getAuthToken()}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Export failed: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+
+      // Create download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+
+      const timestamp = new Date().toISOString().split("T")[0];
+      const defaultFilename = filename || "export";
+      a.download = `${defaultFilename}-${timestamp}.${format}`;
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      return { success: true };
+    } catch (error: any) {
+      console.error("Export error:", error);
+      throw new Error(error.message || "Export failed");
+    }
+  },
 };

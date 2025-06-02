@@ -84,6 +84,10 @@ export interface DataTableProps {
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
   disableClientSidePagination?: boolean;
+  exportConfig?: {
+    modulePath: string;
+    filename: string;
+  };
 }
 
 export interface TableToolbarProps {

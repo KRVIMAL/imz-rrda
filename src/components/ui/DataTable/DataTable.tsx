@@ -44,6 +44,7 @@ const DataTable: React.FC<DataTableProps> = ({
   onPageChange: externalPageChange,
   onPageSizeChange: externalPageSizeChange,
   disableClientSidePagination = false,
+  exportConfig,
 }) => {
   const navigate = useNavigate();
   const [internalRows, setInternalRows] = useState<Row[]>(externalRows);
@@ -361,6 +362,7 @@ const DataTable: React.FC<DataTableProps> = ({
         setShowColumnMenu={setShowColumnMenu}
         showFilterComponent={showFilterComponent}
         setShowFilterComponent={setShowFilterComponent}
+        exportConfig={exportConfig}
       />
 
       {/* Table */}

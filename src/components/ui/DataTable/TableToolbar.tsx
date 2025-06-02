@@ -13,6 +13,7 @@ import CustomInput from "../CustomInput";
 import FilterComponent from "./FilterComponent";
 import { Column, Row, FilterCondition } from "./types";
 import * as XLSX from "xlsx";
+import { exportService } from "../../../core-services/rest-api/apiHelpers";
 
 interface TableToolbarProps {
   columns: Column[];
@@ -31,6 +32,10 @@ interface TableToolbarProps {
   setShowColumnMenu: (show: boolean) => void;
   showFilterComponent: boolean;
   setShowFilterComponent: (show: boolean) => void;
+  exportConfig?: {
+    modulePath: string;
+    filename: string;
+  };
 }
 
 const TableToolbar: React.FC<TableToolbarProps> = ({
@@ -50,6 +55,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   setShowColumnMenu,
   showFilterComponent,
   setShowFilterComponent,
+  exportConfig,
 }) => {
   const [showExportMenu, setShowExportMenu] = useState(false);
   const columnMenuRef = useRef<HTMLDivElement>(null);
@@ -112,47 +118,47 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
     }));
   };
 
-  const exportToCSV = () => {
-    const visibleCols = columns.filter(
-      (col) => visibleColumns[col.field] && col.field !== "actions"
-    );
-    const headers = visibleCols.map((col) => col.headerName);
-    const csvData = rows.map((row) =>
-      visibleCols.map((col) => row[col.field] || "")
-    );
+  // const exportToCSV = () => {
+  //   const visibleCols = columns.filter(
+  //     (col) => visibleColumns[col.field] && col.field !== "actions"
+  //   );
+  //   const headers = visibleCols.map((col) => col.headerName);
+  //   const csvData = rows.map((row) =>
+  //     visibleCols.map((col) => row[col.field] || "")
+  //   );
 
-    const csvContent = [headers, ...csvData]
-      .map((row) => row.map((cell) => `"${cell}"`).join(","))
-      .join("\n");
+  //   const csvContent = [headers, ...csvData]
+  //     .map((row) => row.map((cell) => `"${cell}"`).join(","))
+  //     .join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "table-data.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-    setShowExportMenu(false);
-  };
+  //   const blob = new Blob([csvContent], { type: "text/csv" });
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement("a");
+  //   a.href = url;
+  //   a.download = "table-data.csv";
+  //   a.click();
+  //   URL.revokeObjectURL(url);
+  //   setShowExportMenu(false);
+  // };
 
-  const exportToExcel = () => {
-    const visibleCols = columns.filter(
-      (col) => visibleColumns[col.field] && col.field !== "actions"
-    );
-    const worksheetData = rows.map((row) => {
-      const rowData: any = {};
-      visibleCols.forEach((col) => {
-        rowData[col.headerName] = row[col.field] || "";
-      });
-      return rowData;
-    });
+  // const exportToExcel = () => {
+  //   const visibleCols = columns.filter(
+  //     (col) => visibleColumns[col.field] && col.field !== "actions"
+  //   );
+  //   const worksheetData = rows.map((row) => {
+  //     const rowData: any = {};
+  //     visibleCols.forEach((col) => {
+  //       rowData[col.headerName] = row[col.field] || "";
+  //     });
+  //     return rowData;
+  //   });
 
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, "table-data.xlsx");
-    setShowExportMenu(false);
-  };
+  //   const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  //   XLSX.writeFile(workbook, "table-data.xlsx");
+  //   setShowExportMenu(false);
+  // };
 
   const handleShowHideAll = () => {
     const nonActionColumns = columns.filter((col) => col.field !== "actions");
@@ -189,6 +195,26 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
     columns.forEach((col) => {
       onColumnVisibilityChange(col.field, !col.hide);
     });
+  };
+
+  const exportData = async (format: "csv" | "xlsx" | "pdf") => {
+    if (!exportConfig) {
+      console.error("Export configuration not provided");
+      return;
+    }
+
+    try {
+      await exportService.exportData(
+        exportConfig.modulePath,
+        format,
+        exportConfig.filename
+      );
+      setShowExportMenu(false);
+    } catch (error: any) {
+      console.error("Export failed:", error.message);
+      // You can add toast notification here
+      // toast.error('Export failed. Please try again.');
+    }
   };
 
   return (
@@ -321,25 +347,32 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
             variant="secondary"
             onClick={() => setShowExportMenu(!showExportMenu)}
             className="flex items-center space-x-2"
+            disabled={!exportConfig} // Disable if no export config
           >
             <FiDownload className="w-4 h-4" />
             <span>Export</span>
           </Button>
 
-          {showExportMenu && (
+          {showExportMenu && exportConfig && (
             <div className="absolute top-full left-0 mt-2 w-32 bg-theme-primary border border-border-light rounded-lg shadow-lg z-dropdown">
               <div className="p-1">
                 <button
-                  onClick={exportToCSV}
+                  onClick={() => exportData("csv")}
                   className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-theme-tertiary rounded"
                 >
                   CSV
                 </button>
                 <button
-                  onClick={exportToExcel}
+                  onClick={() => exportData("xlsx")}
                   className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-theme-tertiary rounded"
                 >
                   Excel
+                </button>
+                <button
+                  onClick={() => exportData("pdf")}
+                  className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-theme-tertiary rounded"
+                >
+                  PDF
                 </button>
               </div>
             </div>
