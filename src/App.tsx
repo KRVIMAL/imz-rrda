@@ -16,6 +16,8 @@ import AddDeviceForm from "./pages/modules/device/add-device/add-device-form";
 import Clients from "./pages/modules/client/clients";
 import AddClientForm from "./pages/modules/client/add-client/add-client-form";
 import { Toaster } from "react-hot-toast";
+import Vehicles from "./pages/modules/vehicle/vehicles";
+import AddEditVehicleForm from "./pages/modules/vehicle/add-vehicle/add-vehicle-form";
 function App() {
   return (
     <ThemeProvider>
@@ -50,6 +52,16 @@ function App() {
                       <Route
                         path="/clients/edit/:id"
                         element={<AddClientForm />}
+                      />
+                      {/* Vehicle Module Routes */}
+                      <Route path="/vehicles" element={<Vehicles />} />
+                      <Route
+                        path="/vehicles/add"
+                        element={<AddEditVehicleForm />}
+                      />
+                      <Route
+                        path="/vehicles/edit/:id"
+                        element={<AddEditVehicleForm />}
                       />
                       <Route
                         path="/reports"

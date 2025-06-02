@@ -42,6 +42,12 @@ export class StringConstants {
   UPDATE_CLIENT = "Update Client";
   EDIT_CLIENT = "Edit Client";
 
+
+   // Vehicle specific
+  ADD_VEHICLE = "Add Vehicle";
+  UPDATE_VEHICLE = "Update Vehicle";
+  EDIT_VEHICLE = "Edit Vehicle";
+
   // Message types
   SUCCESS = "success";
   ERROR = "error";
@@ -65,6 +71,12 @@ export class StringConstants {
   STATE_NAME = "State Name";
   CITY_NAME = "City Name";
   REMARK = "Remark";
+
+
+  // Vehicle form labels
+  BRAND_NAME = "Brand Name";
+  VEHICLE_TYPE = "Vehicle Type";
+  ICON = "Icon";
   
   // Validation messages
   REQUIRED_FIELD = "This field is required";
