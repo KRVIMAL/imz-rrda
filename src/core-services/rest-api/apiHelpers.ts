@@ -1,4 +1,4 @@
-import apiClient from './api-client';
+import apiClient from "./api-client";
 
 // Helper for GET requests
 export const getRequest = async (url: string, params = {}) => {
@@ -6,7 +6,7 @@ export const getRequest = async (url: string, params = {}) => {
     const response = await apiClient.get(url, { params });
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'API GET request failed');
+    throw new Error(error.response?.data?.message || "API GET request failed");
   }
 };
 
@@ -16,7 +16,7 @@ export const postRequest = async (url: string, data = {}) => {
     const response = await apiClient.post(url, data);
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'API POST request failed');
+    throw new Error(error.response?.data?.message || "API POST request failed");
   }
 };
 
@@ -27,7 +27,7 @@ export const patchRequest = async (url: string, data = {}) => {
     return response.data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || 'API PATCH request failed'
+      error.response?.data?.message || "API PATCH request failed"
     );
   }
 };
@@ -39,7 +39,17 @@ export const deleteRequest = async (url: string) => {
     return response.data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || 'API DELETE request failed'
+      error.response?.data?.message || "API DELETE request failed"
     );
+  }
+};
+
+// Helper for PUT requests
+export const putRequest = async (url: string, data = {}) => {
+  try {
+    const response = await apiClient.put(url, data);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "API PUT request failed");
   }
 };

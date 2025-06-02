@@ -2,7 +2,7 @@ import axios from 'axios';
 import { store } from '../../store';
 
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:3000/', // Replace with your base API URL
+  baseURL: 'http://192.168.1.58:9876/', // Replace with your base API URL
   timeout: 5000, // Set a timeout for requests
   headers: {
     'Content-Type': 'application/json',

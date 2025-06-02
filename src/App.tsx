@@ -11,11 +11,15 @@ import Layout from "./components/layout.components";
 import SelectDemo from "./pages/SelectDemo";
 import InputDemo from "./pages/InputDemo";
 import DataTableDemo from "./pages/data-table-demo.pages";
-import DeviceList from "./pages/modules/devices/DeviceList";
-import DeviceForm from "./pages/modules/devices/device-form.modules";
+import Devices from "./pages/modules/device/devices";
+import AddDeviceForm from "./pages/modules/device/add-device/add-device-form";
+import Clients from "./pages/modules/client/clients";
+import AddClientForm from "./pages/modules/client/add-client/add-client-form";
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <ThemeProvider>
+      <Toaster position="top-center" />
       <AuthProvider>
         <Router>
           <Routes>
@@ -33,8 +37,20 @@ function App() {
                       <Route path="/selectDemo" element={<SelectDemo />} />
                       <Route path="/inputDemo" element={<InputDemo />} />
                       <Route path="/table-demo" element={<DataTableDemo />} />
-                      <Route path="/devices" element={<DeviceList />} />
-                      <Route path="/device/add" element={<DeviceForm />} />
+                      {/* Device Module Routes */}
+                      <Route path="/devices" element={<Devices />} />
+                      <Route path="/devices/add" element={<AddDeviceForm />} />
+                      <Route
+                        path="/devices/edit/:id"
+                        element={<AddDeviceForm />}
+                      />
+                      {/* Client Module Routes */}
+                      <Route path="/clients" element={<Clients />} />
+                      <Route path="/clients/add" element={<AddClientForm />} />
+                      <Route
+                        path="/clients/edit/:id"
+                        element={<AddClientForm />}
+                      />
                       <Route
                         path="/reports"
                         element={
