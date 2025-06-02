@@ -1,4 +1,4 @@
-// src/components/ui/DataTable/DataTable.tsx - Complete DataTable component
+// src/components/ui/DataTable/DataTable.tsx - Updated with server-side pagination
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -36,13 +36,24 @@ const DataTable: React.FC<DataTableProps> = ({
   initialColumnStates,
   editPath,
   onEditClick,
+  onSearch,
+  // Server-side pagination props
+  currentPage: externalCurrentPage,
+  totalPages: externalTotalPages,
+  totalRows: externalTotalRows,
+  onPageChange: externalPageChange,
+  onPageSizeChange: externalPageSizeChange,
+  disableClientSidePagination = false,
 }) => {
   const navigate = useNavigate();
   const [internalRows, setInternalRows] = useState<Row[]>(externalRows);
   const [rowModesModel, setRowModesModel] = useState<RowModesModel>({});
   const [searchValue, setSearchValue] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+
+  // Client-side pagination state (used when server-side is disabled)
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
+
   const [sortField, setSortField] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [showColumnMenu, setShowColumnMenu] = useState(false);
@@ -53,7 +64,6 @@ const DataTable: React.FC<DataTableProps> = ({
   const [columnStates, setColumnStates] = useState<ColumnState[]>(() => {
     if (initialColumnStates) {
       const states = [...initialColumnStates];
-      // Add actions column state if not disabled and not already present
       if (!noActionColumn && !states.find((s) => s.field === "actions")) {
         states.push({
           field: "actions",
@@ -74,7 +84,6 @@ const DataTable: React.FC<DataTableProps> = ({
       width: col.width,
     }));
 
-    // Add actions column state if not disabled
     if (!noActionColumn) {
       states.push({
         field: "actions",
@@ -97,7 +106,6 @@ const DataTable: React.FC<DataTableProps> = ({
       initialColumnStates.forEach((state) => {
         visibility[state.field] = state.visible;
       });
-      // Ensure actions column is visible if not disabled
       if (!noActionColumn) {
         visibility["actions"] = true;
       }
@@ -105,7 +113,6 @@ const DataTable: React.FC<DataTableProps> = ({
       initialColumns.forEach((col) => {
         visibility[col.field] = !col.hide;
       });
-      // Ensure actions column is visible if not disabled
       if (!noActionColumn) {
         visibility["actions"] = true;
       }
@@ -126,7 +133,6 @@ const DataTable: React.FC<DataTableProps> = ({
       filterable: false,
     };
 
-    // Always add actions column unless explicitly disabled
     return noActionColumn ? initialColumns : [...initialColumns, actionsColumn];
   }, [initialColumns, noActionColumn]);
 
@@ -142,64 +148,11 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   }, [columnStates, onColumnStateChange]);
 
-  // Apply filters to data
-  const applyFilters = (data: Row[], filterConditions: FilterCondition[]) => {
-    return data.filter((row) => {
-      return filterConditions.every((filter) => {
-        const cellValue = String(row[filter.column] || "").toLowerCase();
-        const filterValue = filter.value.toLowerCase();
-
-        switch (filter.operator) {
-          case "contains":
-            return cellValue.includes(filterValue);
-          case "notContains":
-            return !cellValue.includes(filterValue);
-          case "equals":
-            return cellValue === filterValue;
-          case "notEquals":
-            return cellValue !== filterValue;
-          case "startsWith":
-            return cellValue.startsWith(filterValue);
-          case "endsWith":
-            return cellValue.endsWith(filterValue);
-          case "greaterThan":
-            return parseFloat(cellValue) > parseFloat(filterValue);
-          case "lessThan":
-            return parseFloat(cellValue) < parseFloat(filterValue);
-          case "greaterThanOrEqual":
-            return parseFloat(cellValue) >= parseFloat(filterValue);
-          case "lessThanOrEqual":
-            return parseFloat(cellValue) <= parseFloat(filterValue);
-          case "isEmpty":
-            return !cellValue || cellValue.trim() === "";
-          case "isNotEmpty":
-            return cellValue && cellValue.trim() !== "";
-          default:
-            return true;
-        }
-      });
-    });
-  };
-
-  // Filter and sort data
+  // Process rows (sorting only, no pagination if server-side)
   const processedRows = useMemo(() => {
     let filtered = internalRows;
 
-    // Apply search filter
-    if (searchValue) {
-      filtered = filtered.filter((row) =>
-        Object.values(row).some((value) =>
-          String(value).toLowerCase().includes(searchValue.toLowerCase())
-        )
-      );
-    }
-
-    // Apply advanced filters
-    if (filters.length > 0) {
-      filtered = applyFilters(filtered, filters);
-    }
-
-    // Apply sorting
+    // Apply sorting only (search and pagination handled by server)
     if (sortField) {
       filtered = [...filtered].sort((a, b) => {
         const aVal = a[sortField];
@@ -213,14 +166,67 @@ const DataTable: React.FC<DataTableProps> = ({
     }
 
     return filtered;
-  }, [internalRows, searchValue, sortField, sortDirection, filters]);
+  }, [internalRows, sortField, sortDirection]);
 
-  // Pagination
-  const totalPages = Math.ceil(processedRows.length / pageSize);
-  const paginatedRows = processedRows.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
+  // Pagination logic
+  const currentPage = disableClientSidePagination
+    ? externalCurrentPage || 1
+    : internalCurrentPage;
+  const totalRows = disableClientSidePagination
+    ? externalTotalRows || 0
+    : processedRows.length;
+  const totalPages = disableClientSidePagination
+    ? externalTotalPages || 0
+    : Math.ceil(processedRows.length / pageSize);
+
+  // Get rows to display
+  const displayRows = disableClientSidePagination
+    ? processedRows
+    : processedRows.slice(
+        (internalCurrentPage - 1) * pageSize,
+        internalCurrentPage * pageSize
+      );
+
+  // Handle pagination
+  const handlePageChange = (page: number) => {
+    if (disableClientSidePagination && externalPageChange) {
+      externalPageChange(page);
+    } else {
+      setInternalCurrentPage(page);
+    }
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    if (disableClientSidePagination && externalPageSizeChange) {
+      externalPageSizeChange(size);
+    } else {
+      setInternalCurrentPage(1);
+    }
+  };
+
+  // Handle search with debounce
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
   );
+
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+
+    if (onSearch) {
+      // Clear existing timeout
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+
+      // Set new timeout for API call
+      const timeout = setTimeout(() => {
+        onSearch(value);
+      }, 500); // 500ms debounce
+
+      setSearchTimeout(timeout);
+    }
+  };
 
   // Handle edit click - navigate to edit page
   const handleEditClick = (id: string | number) => {
@@ -256,7 +262,6 @@ const DataTable: React.FC<DataTableProps> = ({
         setSortDirection(direction);
       }
     } else {
-      // Toggle sort
       if (sortField === field) {
         setSortDirection(sortDirection === "asc" ? "desc" : "asc");
       } else {
@@ -265,7 +270,6 @@ const DataTable: React.FC<DataTableProps> = ({
       }
     }
 
-    // Update column state
     setColumnStates((prev) =>
       prev.map((cs) =>
         cs.field === field
@@ -297,7 +301,6 @@ const DataTable: React.FC<DataTableProps> = ({
 
   const handleOpenColumnFilter = (field: string) => {
     setShowFilterComponent(true);
-    // Add a filter for this specific column if none exists
     if (!filters.some((f) => f.column === field)) {
       const newFilter: FilterCondition = {
         id: Date.now().toString(),
@@ -348,7 +351,7 @@ const DataTable: React.FC<DataTableProps> = ({
         setRowModesModel={setRowModesModel}
         createRowData={createRowData}
         searchValue={searchValue}
-        onSearchChange={setSearchValue}
+        onSearchChange={handleSearchChange}
         visibleColumns={visibleColumns}
         onColumnVisibilityChange={handleColumnVisibilityChange}
         showAddButton={false}
@@ -438,7 +441,6 @@ const DataTable: React.FC<DataTableProps> = ({
                           </div>
 
                           <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {/* Sort Arrow - visible on hover */}
                             {column.sortable !== false && (
                               <button
                                 onClick={() => handleSort(column.field)}
@@ -455,7 +457,6 @@ const DataTable: React.FC<DataTableProps> = ({
                               </button>
                             )}
 
-                            {/* Three dots menu */}
                             {!disableColumnMenu && (
                               <ColumnHeaderMenu
                                 column={column}
@@ -495,7 +496,7 @@ const DataTable: React.FC<DataTableProps> = ({
                     </div>
                   </td>
                 </tr>
-              ) : paginatedRows.length === 0 ? (
+              ) : displayRows.length === 0 ? (
                 <tr>
                   <td
                     colSpan={
@@ -508,7 +509,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   </td>
                 </tr>
               ) : (
-                paginatedRows.map((row, rowIndex) => {
+                displayRows.map((row, rowIndex) => {
                   return (
                     <tr
                       key={row.id}
@@ -549,7 +550,6 @@ const DataTable: React.FC<DataTableProps> = ({
                                 }`}
                               >
                                 <div className="flex items-center justify-center space-x-2">
-                                  {/* Edit Button - Always show if edit functionality is available */}
                                   {(editPath || onEditClick) && (
                                     <button
                                       onClick={() => handleEditClick(row.id)}
@@ -560,7 +560,6 @@ const DataTable: React.FC<DataTableProps> = ({
                                     </button>
                                   )}
 
-                                  {/* Delete Button - Only show if delete handler is provided */}
                                   {onDeleteRow && (
                                     <button
                                       onClick={() => handleDeleteClick(row.id)}
@@ -609,18 +608,15 @@ const DataTable: React.FC<DataTableProps> = ({
       </div>
 
       {/* Pagination */}
-      {!allColumnsHidden && processedRows.length > 0 && (
+      {!allColumnsHidden && totalRows > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           pageSize={pageSize}
           pageSizeOptions={pageSizeOptions}
-          totalRows={processedRows.length}
-          onPageChange={setCurrentPage}
-          onPageSizeChange={(size) => {
-            setPageSize(size);
-            setCurrentPage(1);
-          }}
+          totalRows={totalRows}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
         />
       )}
     </div>

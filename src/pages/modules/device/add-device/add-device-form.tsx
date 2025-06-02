@@ -49,7 +49,7 @@ const initialFormState = (preState?: any): DeviceFormState => ({
     error: "",
   },
   deviceType: {
-    value: preState?.deviceType || "iot",
+    value: preState?.deviceType || "",
     error: "",
   },
   ipAddress: {
@@ -61,7 +61,7 @@ const initialFormState = (preState?: any): DeviceFormState => ({
     error: "",
   },
   status: {
-    value: preState?.status || "inactive",
+    value: preState?.status || "",
     error: "",
   },
 });
@@ -74,7 +74,6 @@ const AddEditDeviceForm: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-
   const [formData, setFormData] = useState<DeviceFormState>(initialFormState());
 
   const deviceTypeOptions = [
@@ -110,7 +109,7 @@ const AddEditDeviceForm: React.FC = () => {
         loadDevice(); // Only call API if no data passed
       }
     }
-  }, [isEdit, id]);
+  }, [isEdit, id, location]);
 
   const loadDevice = async () => {
     setLoading(true);
@@ -119,8 +118,6 @@ const AddEditDeviceForm: React.FC = () => {
       if (device) {
         setFormData(initialFormState(device));
       } else {
-        // toast.error(error.message)
-        // showMessage("error", "Device not found");
         navigate(urls.devicesViewPath);
       }
     } catch (error: any) {
@@ -155,6 +152,52 @@ const AddEditDeviceForm: React.FC = () => {
       }));
     };
 
+  // Add blur validation handler for individual fields
+  const handleBlur = (field: keyof DeviceFormState) => () => {
+    const value = formData[field].value;
+    let error = "";
+
+    switch (field) {
+      case "modelName":
+        if (!value.trim()) error = "Model Name is required";
+        break;
+      case "manufacturerName":
+        if (!value.trim()) error = "Manufacturer Name is required";
+        break;
+      case "deviceType":
+        if (!value.trim()) error = "Device Type is required";
+        break;
+      case "ipAddress":
+        if (!value.trim()) {
+          error = "IP Address is required";
+        } else {
+          const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+          if (!ipRegex.test(value)) {
+            error = "Invalid IP Address format";
+          }
+        }
+        break;
+      case "port":
+        if (!value.trim()) {
+          error = "Port is required";
+        } else {
+          const portNum = parseInt(value);
+          if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+            error = "Port must be between 1 and 65535";
+          }
+        }
+        break;
+      case "status":
+        if (!value.trim()) error = "Status is required";
+        break;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [field]: { ...prev[field], error },
+    }));
+  };
+
   const validateForm = (): boolean => {
     const errors: Partial<DeviceFormState> = {};
     let isValid = true;
@@ -173,6 +216,15 @@ const AddEditDeviceForm: React.FC = () => {
       errors.manufacturerName = {
         ...formData.manufacturerName,
         error: "Manufacturer Name is required",
+      };
+      isValid = false;
+    }
+
+    // Device Type validation
+    if (!formData.deviceType.value.trim()) {
+      errors.deviceType = {
+        ...formData.deviceType,
+        error: "Device Type is required",
       };
       isValid = false;
     }
@@ -210,11 +262,22 @@ const AddEditDeviceForm: React.FC = () => {
       }
     }
 
-    // Update form data with errors
-    setFormData((prev) => ({
-      ...prev,
-      ...errors,
-    }));
+    // Status validation
+    if (!formData.status.value.trim()) {
+      errors.status = {
+        ...formData.status,
+        error: "Status is required",
+      };
+      isValid = false;
+    }
+
+    // Update form data with errors only if there are any
+    if (!isValid) {
+      setFormData((prev) => ({
+        ...prev,
+        ...errors,
+      }));
+    }
 
     return isValid;
   };
@@ -283,15 +346,13 @@ const AddEditDeviceForm: React.FC = () => {
                   label="Model Name"
                   value={formData.modelName.value}
                   onChange={handleInputChange("modelName")}
+                  onBlur={handleBlur("modelName")}
                   required
                   placeholder="Enter model name"
                   disabled={saving}
+                  autoValidate={false}
+                  error={formData.modelName.error}
                 />
-                {formData.modelName.error && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formData.modelName.error}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -299,15 +360,13 @@ const AddEditDeviceForm: React.FC = () => {
                   label="Manufacturer Name"
                   value={formData.manufacturerName.value}
                   onChange={handleInputChange("manufacturerName")}
+                  onBlur={handleBlur("manufacturerName")}
                   required
                   placeholder="Enter manufacturer name"
                   disabled={saving}
+                  autoValidate={false}
+                  error={formData.manufacturerName.error}
                 />
-                {formData.manufacturerName.error && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formData.manufacturerName.error}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -316,14 +375,11 @@ const AddEditDeviceForm: React.FC = () => {
                   options={deviceTypeOptions}
                   value={formData.deviceType.value}
                   onChange={handleSelectChange("deviceType")}
+                  placeholder="Select Device Type" // Add placeholder
                   required
                   disabled={saving}
+                  error={formData.deviceType.error}
                 />
-                {formData.deviceType.error && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formData.deviceType.error}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -331,15 +387,13 @@ const AddEditDeviceForm: React.FC = () => {
                   label="IP Address"
                   value={formData.ipAddress.value}
                   onChange={handleInputChange("ipAddress")}
+                  onBlur={handleBlur("ipAddress")}
                   required
                   placeholder="192.168.1.100"
                   disabled={saving}
+                  autoValidate={false}
+                  error={formData.ipAddress.error}
                 />
-                {formData.ipAddress.error && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formData.ipAddress.error}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -348,15 +402,13 @@ const AddEditDeviceForm: React.FC = () => {
                   type="number"
                   value={formData.port.value}
                   onChange={handleInputChange("port")}
+                  onBlur={handleBlur("port")}
                   required
                   placeholder="8080"
                   disabled={saving}
+                  autoValidate={false}
+                  error={formData.port.error}
                 />
-                {formData.port.error && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formData.port.error}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -365,14 +417,11 @@ const AddEditDeviceForm: React.FC = () => {
                   options={statusOptions}
                   value={formData.status.value}
                   onChange={handleSelectChange("status")}
+                  placeholder="Select Status" // Add placeholder
                   required
                   disabled={saving}
+                  error={formData.status.error}
                 />
-                {formData.status.error && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formData.status.error}
-                  </p>
-                )}
               </div>
             </div>
           </Card.Body>

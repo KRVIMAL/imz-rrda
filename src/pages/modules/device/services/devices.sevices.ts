@@ -1,3 +1,4 @@
+// Updated device services with proper pagination response
 import { Row } from '../../../../components/ui/DataTable/types';
 import { getRequest, postRequest, patchRequest, putRequest } from '../../../../core-services/rest-api/apiHelpers';
 import urls from '../../../../global/constants/url-constants';
@@ -36,6 +37,17 @@ interface DevicesListResponse {
   };
 }
 
+// Pagination response interface
+interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
 // Transform API device data to Row format
 const transformDeviceToRow = (device: DeviceData): Row => ({
   id: device._id,
@@ -47,12 +59,12 @@ const transformDeviceToRow = (device: DeviceData): Row => ({
   status: device.status,
   createdTime: new Date(device.createdAt).toISOString().split('T')[0],
   updatedTime: new Date(device.updatedAt).toISOString().split('T')[0],
-  inactiveTime:new Date(device.updatedAt).toISOString().split('T')[0],
+  inactiveTime: new Date(device.updatedAt).toISOString().split('T')[0],
   username: 'admin' // Default username as it's not in API response
 });
 
 export const deviceServices = {
-  getAll: async (page: number = 1, limit: number = 50): Promise<Row[]> => {
+  getAll: async (page: number = 1, limit: number = 10): Promise<PaginatedResponse<Row>> => {
     try {
       const response: ApiResponse<DevicesListResponse> = await getRequest(urls.devicesViewPath, {
         page,
@@ -60,7 +72,15 @@ export const deviceServices = {
       });
       
       if (response.success) {
-        return response.data.data.map(transformDeviceToRow);
+        return {
+          data: response.data.data.map(transformDeviceToRow),
+          total: response.data.pagination.total,
+          page: parseInt(response.data.pagination.page),
+          limit: parseInt(response.data.pagination.limit),
+          totalPages: response.data.pagination.totalPages,
+          hasNext: response.data.pagination.hasNext,
+          hasPrev: response.data.pagination.hasPrev
+        };
       } else {
         throw new Error(response.message || 'Failed to fetch devices');
       }
@@ -163,16 +183,29 @@ export const deviceServices = {
     }
   },
 
-  search: async (searchText: string, page: number = 1, limit: number = 10): Promise<Row[]> => {
+  search: async (searchText: string, page: number = 1, limit: number = 10): Promise<PaginatedResponse<Row>> => {
     try {
+      // If search is empty, return all devices
+      if (!searchText.trim()) {
+        return deviceServices.getAll(page, limit);
+      }
+
       const response: ApiResponse<DevicesListResponse> = await getRequest(`${urls.devicesViewPath}/search`, {
-        searchText,
+        searchText: searchText.trim(),
         page,
         limit
       });
       
       if (response.success) {
-        return response.data.data.map(transformDeviceToRow);
+        return {
+          data: response.data.data.map(transformDeviceToRow),
+          total: response.data.pagination.total,
+          page: parseInt(response.data.pagination.page),
+          limit: parseInt(response.data.pagination.limit),
+          totalPages: response.data.pagination.totalPages,
+          hasNext: response.data.pagination.hasNext,
+          hasPrev: response.data.pagination.hasPrev
+        };
       } else {
         throw new Error(response.message || 'Search failed');
       }

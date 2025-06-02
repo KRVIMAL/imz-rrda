@@ -1,14 +1,14 @@
-// src/components/ui/DataTable/types.ts - Complete types file
-import React from "react";
+// src/components/ui/DataTable/types.ts - Updated types with server-side pagination
+import React from 'react';
 
 export interface Column {
   field: string;
   headerName: string;
   width?: number;
-  type?: "string" | "number" | "boolean" | "date" | "actions";
+  type?: 'string' | 'number' | 'boolean' | 'date' | 'actions';
   editable?: boolean;
-  align?: "left" | "center" | "right";
-  headerAlign?: "left" | "center" | "right";
+  align?: 'left' | 'center' | 'right';
+  headerAlign?: 'left' | 'center' | 'right';
   hide?: boolean;
   sortable?: boolean;
   filterable?: boolean;
@@ -35,7 +35,7 @@ export interface EditCellParams extends CellParams {
   onCancel: () => void;
 }
 
-export type RowMode = "view" | "edit";
+export type RowMode = 'view' | 'edit';
 
 export interface RowModesModel {
   [id: string | number]: { mode: RowMode; fieldToFocus?: string };
@@ -44,40 +44,23 @@ export interface RowModesModel {
 export interface FilterCondition {
   id: string;
   column: string;
-  operator:
-    | "contains"
-    | "notContains"
-    | "equals"
-    | "notEquals"
-    | "startsWith"
-    | "endsWith"
-    | "greaterThan"
-    | "lessThan"
-    | "greaterThanOrEqual"
-    | "lessThanOrEqual"
-    | "isEmpty"
-    | "isNotEmpty";
+  operator: 'contains' | 'notContains' | 'equals' | 'notEquals' | 'startsWith' | 'endsWith' | 'greaterThan' | 'lessThan' | 'greaterThanOrEqual' | 'lessThanOrEqual' | 'isEmpty' | 'isNotEmpty';
   value: string;
 }
 
 export interface ColumnState {
   field: string;
   visible: boolean;
-  pinned?: "left" | "right" | null;
+  pinned?: 'left' | 'right' | null;
   width?: number;
-  sortDirection?: "asc" | "desc" | null;
+  sortDirection?: 'asc' | 'desc' | null;
 }
 
 export interface DataTableProps {
   columns: Column[];
   rows: Row[];
   loading?: boolean;
-  onSaveRow?: (
-    id: string | number,
-    updatedRow: Row,
-    oldRow: Row,
-    rows: Row[]
-  ) => void;
+  onSaveRow?: (id: string | number, updatedRow: Row, oldRow: Row, rows: Row[]) => void;
   onDeleteRow?: (id: string | number, deletedRow: Row, rows: Row[]) => void;
   createRowData?: (rows: Row[]) => Partial<Row>;
   noActionColumn?: boolean;
@@ -92,6 +75,15 @@ export interface DataTableProps {
   // Edit functionality props
   editPath?: string;
   onEditClick?: (id: string | number) => void;
+  // Search functionality
+  onSearch?: (searchValue: string) => void;
+  // Server-side pagination props
+  currentPage?: number;
+  totalPages?: number;
+  totalRows?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  disableClientSidePagination?: boolean;
 }
 
 export interface TableToolbarProps {
@@ -153,8 +145,8 @@ export interface PaginationProps {
 export interface ColumnHeaderMenuProps {
   column: Column;
   columnState: ColumnState;
-  onSort: (field: string, direction?: "asc" | "desc" | null) => void;
-  onPin: (field: string, position: "left" | "right" | null) => void;
+  onSort: (field: string, direction?: 'asc' | 'desc' | null) => void;
+  onPin: (field: string, position: 'left' | 'right' | null) => void;
   onHide: (field: string) => void;
   onOpenColumnManager: () => void;
   onOpenFilter: (field: string) => void;

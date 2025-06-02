@@ -29,7 +29,7 @@ interface SelectProps {
   loadingMessage?: string;
   onSearchChange?: (searchTerm: string) => void;
   required?: boolean;
-  size?:any
+  size?: any;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -51,6 +51,7 @@ const Select: React.FC<SelectProps> = ({
   noOptionsMessage = "No options found",
   loadingMessage = "Loading...",
   onSearchChange,
+  required = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -76,11 +77,14 @@ const Select: React.FC<SelectProps> = ({
       );
 
   // Get selected options
+  // Get selected options - add null check
   const selectedOptions: any = multiple
     ? options.filter(
         (option) => Array.isArray(value) && value.includes(option.value)
       )
-    : options.find((option) => option.value === value);
+    : value
+    ? options.find((option) => option.value === value)
+    : null; // Add null fallback
 
   // Handle option selection
   const handleSelect = (selectedOption: SelectOption) => {
@@ -215,6 +219,8 @@ const Select: React.FC<SelectProps> = ({
           className="block text-body-small font-medium text-text-primary mb-1"
         >
           {label}
+          {required && <span className="text-error-500 ml-1">*</span>}{" "}
+          {/* Add this line */}
         </label>
       )}
 
@@ -259,13 +265,12 @@ const Select: React.FC<SelectProps> = ({
                 </span>
               ))
             ) : /* Single selected item */
-            !multiple && selectedOptions ? (
+            !multiple && selectedOptions && value ? (
               <span className="text-text-primary">{selectedOptions.label}</span>
             ) : (
               <span className="text-text-muted">{placeholder}</span>
             )}
           </div>
-
           {/* Right side buttons */}
           <div className="flex items-center gap-1 ml-2">
             {/* Loading spinner */}

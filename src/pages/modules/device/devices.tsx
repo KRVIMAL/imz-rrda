@@ -8,10 +8,30 @@ import { deviceServices } from "./services/devices.sevices";
 import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+
+// Add interface for paginated response
+interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
 const Devices: React.FC = () => {
   const navigate = useNavigate();
   const [devices, setDevices] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRows, setTotalRows] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
   const columns: Column[] = [
     { field: "modelName", headerName: "Model Name", width: 150 },
     { field: "manufacturerName", headerName: "Manufacturer", width: 150 },
@@ -71,11 +91,21 @@ const Devices: React.FC = () => {
     loadDevices();
   }, []);
 
-  const loadDevices = async () => {
+  const loadDevices = async (
+    search: string = "",
+    page: number = currentPage,
+    limit: number = pageSize
+  ) => {
     setLoading(true);
     try {
-      const data = await deviceServices.getAll();
-      setDevices(data);
+      const result: PaginatedResponse<Row> = search
+        ? await deviceServices.search(search, page, limit)
+        : await deviceServices.getAll(page, limit);
+
+      setDevices(result.data);
+      setTotalRows(result.total);
+      setTotalPages(result.totalPages);
+      setCurrentPage(result.page);
     } catch (error: any) {
       console.error("Error loading devices:", error);
       toast.error(error.message || "Failed to fetch device");
@@ -104,13 +134,32 @@ const Devices: React.FC = () => {
     try {
       const result = await deviceServices.inactivate(id);
       toast.success(result.message);
-      await loadDevices(); // Reload to get fresh data
+      await loadDevices(searchValue, currentPage, pageSize); // Reload current page
     } catch (error: any) {
       console.error("Error inactivating device:", error);
       toast.error(error.message);
       // Revert the rows on error
       setDevices(rows);
     }
+  };
+
+  const handleSearch = (searchText: string) => {
+    console.log({ searchText });
+    setSearchValue(searchText);
+    setCurrentPage(1); // Reset to first page on search
+    loadDevices(searchText, 1, pageSize);
+  };
+
+  // Pagination handlers
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    loadDevices(searchValue, page, pageSize);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page
+    loadDevices(searchValue, 1, size);
   };
 
   return (
@@ -128,10 +177,18 @@ const Devices: React.FC = () => {
           columns={columns}
           rows={devices}
           loading={loading}
+          onSearch={handleSearch}
           onDeleteRow={handleDeleteDevice}
-          onEditClick={handleEditDevice} // Keep only this
-          pageSize={10}
+          onEditClick={handleEditDevice}
+          pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
+          // Server-side pagination props
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalRows={totalRows}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          disableClientSidePagination={true}
         />
       </div>
     </div>

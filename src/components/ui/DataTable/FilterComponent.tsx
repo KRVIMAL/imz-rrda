@@ -1,6 +1,7 @@
 // src/components/ui/DataTable/FilterComponent.tsx
+import ReactDOM from "react-dom";
 import React, { useRef, useEffect, useState } from "react";
-import ReactDOM from "react-dom"
+
 import { FiPlus, FiX, FiFilter, FiTrash2 } from "react-icons/fi";
 import Button from "../Button";
 import Select from "../Select";
@@ -13,7 +14,7 @@ interface FilterComponentProps {
   onFiltersChange: (filters: FilterCondition[]) => void;
   isOpen: boolean;
   onClose: () => void;
-  anchorRef?: React.RefObject<HTMLDivElement>;
+  anchorRef?: React.RefObject<HTMLDivElement> | any;
 }
 
 const operatorOptions = [
@@ -107,15 +108,15 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   if (!isOpen) return null;
 
   const filterPortal = (
-    <div 
+    <div
       ref={containerRef}
       className="fixed w-96 bg-theme-primary border border-border-light rounded-lg shadow-xl"
       style={{
         top: position.top,
         left: position.left,
         zIndex: 10000,
-        maxHeight: '80vh',
-        maxWidth: 'calc(100vw - 32px)'
+        maxHeight: "80vh",
+        maxWidth: "calc(100vw - 32px)",
       }}
     >
       {/* Header */}
@@ -143,7 +144,10 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
         ) : (
           <div className="space-y-4">
             {filters.map((filter, index) => (
-              <div key={filter.id} className="p-4 border border-border-light rounded-lg bg-theme-secondary">
+              <div
+                key={filter.id}
+                className="p-4 border border-border-light rounded-lg bg-theme-secondary"
+              >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-text-primary">
                     Filter {index + 1}
@@ -156,7 +160,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
                     <FiTrash2 className="w-4 h-4" />
                   </button>
                 </div>
-                
+
                 <div className="grid grid-cols-1 gap-3">
                   <div>
                     <label className="block text-xs font-medium text-text-secondary mb-1">
@@ -165,13 +169,15 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
                     <Select
                       options={columnOptions}
                       value={filter.column}
-                      onChange={(value) => updateFilter(filter.id, 'column', value as string)}
+                      onChange={(value) =>
+                        updateFilter(filter.id, "column", value as string)
+                      }
                       size="sm"
                       searchable={false}
                       placeholder="Select column"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-xs font-medium text-text-secondary mb-1">
                       Operator
@@ -179,21 +185,25 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
                     <Select
                       options={operatorOptions}
                       value={filter.operator}
-                      onChange={(value) => updateFilter(filter.id, 'operator', value as any)}
+                      onChange={(value) =>
+                        updateFilter(filter.id, "operator", value as any)
+                      }
                       size="sm"
                       searchable={false}
                       placeholder="Select operator"
                     />
                   </div>
-                  
-                  {!['isEmpty', 'isNotEmpty'].includes(filter.operator) && (
+
+                  {!["isEmpty", "isNotEmpty"].includes(filter.operator) && (
                     <div>
                       <label className="block text-xs font-medium text-text-secondary mb-1">
                         Value
                       </label>
                       <CustomInput
                         value={filter.value}
-                        onChange={(e) => updateFilter(filter.id, 'value', e.target.value)}
+                        onChange={(e) =>
+                          updateFilter(filter.id, "value", e.target.value)
+                        }
                         placeholder="Filter value"
                         size="sm"
                       />
