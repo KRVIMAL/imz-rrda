@@ -28,6 +28,7 @@ const sidebarItems = [
   { name: "Drivers", href: "/drivers", icon: FiHardDrive },
   { name: "Clients", href: "/clients", icon: FiUsers },
   { name: "Vehicles Master", href: "/vehicle-masters", icon: FiUsers },
+  { name: "Device Onboarding", href: "/devices-onboarding", icon: FiUsers },
   { name: "Reports", href: "/reports", icon: FiFileText },
   { name: "Alerts", href: "/alerts", icon: FiAlertTriangle },
   { name: "Users", href: "/users", icon: FiUsers },

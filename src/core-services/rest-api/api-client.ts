@@ -3,7 +3,7 @@ import { store } from '../../store';
 import urls from '../../global/constants/url-constants';
 
 export const apiClient = axios.create({
-  baseURL: urls.baseURL, // Replace with your base API URL
+  baseURL: "http://192.168.1.58:9876/", // Replace with your base API URL
   timeout: 5000, // Set a timeout for requests
   headers: {
     'Content-Type': 'application/json',

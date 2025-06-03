@@ -22,6 +22,8 @@ import Drivers from "./pages/masters/driver/Drivers";
 import AddEditDriverForm from "./pages/masters/driver/add-driver/add-driver-form";
 import VehicleMasters from "./pages/masters/vehicle-masters/VehicleMasters";
 import AddEditVehicleMasterForm from "./pages/masters/vehicle-masters/add-vehicle-master/AddEditVehicleMasterForm";
+import DeviceOnboarding from "./pages/modules/device-onboarding/device-onboarding";
+import AddEditDeviceOnboardingForm from "./pages/modules/device-onboarding/add-device-onboarding/add-device-onboarding-form";
 function App() {
   return (
     <ThemeProvider>
@@ -89,6 +91,20 @@ function App() {
                       <Route
                         path="/vehicle-masters/edit/:id"
                         element={<AddEditVehicleMasterForm />}
+                      />
+
+                      {/* Device onboarding module Routes */}
+                      <Route
+                        path="/devices-onboarding"
+                        element={<DeviceOnboarding />}
+                      />
+                      <Route
+                        path="/devices-onboarding/add"
+                        element={<AddEditDeviceOnboardingForm />}
+                      />
+                      <Route
+                        path="/devices-onboarding/edit/:id"
+                        element={<AddEditDeviceOnboardingForm />}
                       />
                       <Route
                         path="/reports"

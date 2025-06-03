@@ -29,6 +29,17 @@ export class UrlConstants {
   vehicleMastersViewPath = "/vehicle-masters";
   addVehicleMasterViewPath = `${this.vehicleMastersViewPath}/add`;
   editVehicleMasterViewPath = `${this.vehicleMastersViewPath}/edit`;
+
+
+   // Device On-boarding URLs 
+  deviceOnboardingViewPath = "/devices-onboarding";
+  addDeviceOnboardingViewPath = `${this.deviceOnboardingViewPath}/add`;
+  editDeviceOnboardingViewPath = `${this.deviceOnboardingViewPath}/edit`;
+
+
+  // Accounts URLs - ADD THIS
+  accountsViewPath = "/accounts";
+
 }
 let urls = new UrlConstants();
 export default urls;
