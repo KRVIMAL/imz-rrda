@@ -24,6 +24,7 @@ const sidebarItems = [
   { name: "Input Demo", href: "/inputdemo", icon: FiFileText },
   { name: "Table Demo", href: "/table-demo", icon: FiGrid },
   { name: "Devices", href: "/devices", icon: FiHardDrive },
+  { name: "Drivers", href: "/drivers", icon: FiHardDrive },
   { name: "Clients", href: "/clients", icon: FiUsers },
   { name: "Vehicles", href: "/vehicles", icon: FiUsers },
   { name: "Reports", href: "/reports", icon: FiFileText },

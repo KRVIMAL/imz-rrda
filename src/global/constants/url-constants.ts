@@ -11,6 +11,12 @@ export class UrlConstants {
   addClientViewPath = `${this.clientsViewPath}/add`;
   editClientViewPath = `${this.clientsViewPath}/edit`;
 
+
+  // Driver URLs
+  driversViewPath = "/drivers";
+  addDriverViewPath = `${this.driversViewPath}/add`;
+  editDriverViewPath = `${this.driversViewPath}/edit`;
+
   // Vehicle URLs
   vehiclesViewPath = "/vehicles";
   addVehicleViewPath = `${this.vehiclesViewPath}/add`;

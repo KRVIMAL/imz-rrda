@@ -36,6 +36,10 @@ export class StringConstants {
   UPDATE_DEVICE = "Update Device";
   EDIT_DEVICE = "Edit Device";
 
+  // Driver specific - ADD THESE
+  ADD_DRIVER = "Add Driver";
+  UPDATE_DRIVER = "Update Driver";
+  EDIT_DRIVER = "Edit Driver";
 
   // Client specific
   ADD_CLIENT = "Add Client";
@@ -59,6 +63,13 @@ export class StringConstants {
   IP_ADDRESS = "IP Address";
   PORT = "Port";
   STATUS = "Status";
+
+  // Driver form labels
+  DRIVER_NAME = "Driver Name";
+  DRIVER_CONTACT_NO = "Contact No";
+  DRIVER_EMAIL = "Email";
+  DRIVER_LICENSE_NO = "License No";
+  DRIVER_ADHAR_NO = "Aadhar No";
 
   // Client form labels
   CLIENT_NAME = "Client Name";
@@ -87,6 +98,7 @@ export class StringConstants {
   INVALID_PAN_FORMAT = "Invalid PAN format";
   INVALID_AADHAR_FORMAT = "Invalid Aadhar format";
   INVALID_GST_FORMAT = "Invalid GST format";
+  INVALID_LICENSE_FORMAT = "Invalid license format";  // ADD THIS
 }
 
 let strings = new StringConstants();

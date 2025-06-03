@@ -1,4 +1,4 @@
-// src/hooks/useLocalStorage.ts - Custom hook for theme persistence
+//Custom hook for theme persistence
 import { useState } from 'react';
 
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
