@@ -1,4 +1,6 @@
 export class UrlConstants {
+
+  baseURL="https://api-dev.k8s.imztech.io/api/v1/backend-admin/";
   landingViewPath = "/";
 
   // Device URLs
@@ -21,6 +23,12 @@ export class UrlConstants {
   vehiclesViewPath = "/vehicles";
   addVehicleViewPath = `${this.vehiclesViewPath}/add`;
   editVehicleViewPath = `${this.vehiclesViewPath}/edit`;
+
+
+  // Vehicle Master URLs 
+  vehicleMastersViewPath = "/vehicle-masters";
+  addVehicleMasterViewPath = `${this.vehicleMastersViewPath}/add`;
+  editVehicleMasterViewPath = `${this.vehicleMastersViewPath}/edit`;
 }
 let urls = new UrlConstants();
 export default urls;

@@ -18,8 +18,10 @@ import AddClientForm from "./pages/modules/client/add-client/add-client-form";
 import { Toaster } from "react-hot-toast";
 import Vehicles from "./pages/modules/vehicle/vehicles";
 import AddEditVehicleForm from "./pages/modules/vehicle/add-vehicle/add-vehicle-form";
-import Drivers from "./pages/masters/driver/drivers";
+import Drivers from "./pages/masters/driver/Drivers";
 import AddEditDriverForm from "./pages/masters/driver/add-driver/add-driver-form";
+import VehicleMasters from "./pages/masters/vehicle-masters/VehicleMasters";
+import AddEditVehicleMasterForm from "./pages/masters/vehicle-masters/add-vehicle-master/AddEditVehicleMasterForm";
 function App() {
   return (
     <ThemeProvider>
@@ -75,7 +77,19 @@ function App() {
                         path="/drivers/edit/:id"
                         element={<AddEditDriverForm />}
                       />
-
+                      {/* Vehicle Master Routes */}
+                      <Route
+                        path="/vehicle-masters"
+                        element={<VehicleMasters />}
+                      />
+                      <Route
+                        path="/vehicle-masters/add"
+                        element={<AddEditVehicleMasterForm />}
+                      />
+                      <Route
+                        path="/vehicle-masters/edit/:id"
+                        element={<AddEditVehicleMasterForm />}
+                      />
                       <Route
                         path="/reports"
                         element={

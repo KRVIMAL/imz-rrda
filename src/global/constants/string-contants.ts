@@ -6,7 +6,7 @@ export class StringConstants {
   CLIENT = "CLIENT";
   TRANSPORTER = "TRANSPORTER";
   CONTRACTOR = "CONTRACTOR";
-
+  VEHICLE_MASTERS = "Vehicle Masters";
   // Navigation
   HOME = "Home";
   DEVICES = "Devices";
@@ -36,10 +36,15 @@ export class StringConstants {
   UPDATE_DEVICE = "Update Device";
   EDIT_DEVICE = "Edit Device";
 
-  // Driver specific - ADD THESE
+  // Driver specific 
   ADD_DRIVER = "Add Driver";
   UPDATE_DRIVER = "Update Driver";
   EDIT_DRIVER = "Edit Driver";
+
+    // Vehicle Master specific 
+  ADD_VEHICLE_MASTER = "Add Vehicle Master";
+  UPDATE_VEHICLE_MASTER = "Update Vehicle Master";
+  EDIT_VEHICLE_MASTER = "Edit Vehicle Master";
 
   // Client specific
   ADD_CLIENT = "Add Client";
@@ -70,6 +75,14 @@ export class StringConstants {
   DRIVER_EMAIL = "Email";
   DRIVER_LICENSE_NO = "License No";
   DRIVER_ADHAR_NO = "Aadhar No";
+
+
+  // Vehicle Master form labels 
+  VEHICLE_NUMBER = "Vehicle Number";
+  CHASSIS_NUMBER = "Chassis Number";
+  ENGINE_NUMBER = "Engine Number";
+  VEHICLE_MODEL_NAME = "Vehicle Model";
+  DRIVER_SELECTION = "Driver Selection";
 
   // Client form labels
   CLIENT_NAME = "Client Name";
