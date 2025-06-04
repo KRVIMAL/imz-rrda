@@ -205,6 +205,16 @@ const AddEditRoleForm: React.FC = () => {
     });
   };
 
+  const getAvailableModulesForIndex = (currentIndex: number) => {
+    const selectedModules = formData.modulePermissions.value
+      .map((mp, index) => (index !== currentIndex ? mp.module : null))
+      .filter((module) => module && module.trim() !== "");
+
+    return moduleOptions.filter(
+      (option) => !selectedModules.includes(option.value)
+    );
+  };
+
   const handleBlur = (field: keyof RoleFormState) => () => {
     const value = formData[field].value;
     let error = "";
@@ -479,7 +489,7 @@ const AddEditRoleForm: React.FC = () => {
                         <div>
                           <Select
                             label="Module"
-                            options={moduleOptions}
+                            options={getAvailableModulesForIndex(index)}
                             value={modulePermission.module}
                             onChange={(value) =>
                               updateModulePermission(
