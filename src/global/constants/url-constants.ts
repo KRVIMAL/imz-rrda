@@ -43,13 +43,20 @@ export class UrlConstants {
   editGroupViewPath = `${this.groupsViewPath}/edit`;
 
 
+  // Users URLs - ADD THESE
+  usersViewPath = "/users";
+  addUserViewPath = `${this.usersViewPath}/add`;
+  editUserViewPath = `${this.usersViewPath}/edit`;
+
     // Roles URLs - ADD THESE
   rolesViewPath = "/roles";
   addRoleViewPath = `${this.rolesViewPath}/add`;
   editRoleViewPath = `${this.rolesViewPath}/edit`;
 
-  // Accounts URLs
+  // Accounts URLs 
   accountsViewPath = "/accounts";
+  addAccountViewPath = `${this.accountsViewPath}/add`;
+  editAccountViewPath = `${this.accountsViewPath}/edit`;
 
 }
 let urls = new UrlConstants();

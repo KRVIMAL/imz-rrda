@@ -1,15 +1,13 @@
-// src/modules/clients/pages/Clients.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiHome, FiUsers } from "react-icons/fi";
+import { FiHome, FiUser } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { clientServices } from "./services/clients.services";
+import { userServices } from "./services/users.services";
 import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
-import { tabTitle } from "../../../utils/tab-title";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -22,10 +20,9 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-const Clients: React.FC = () => {
+const Users: React.FC = () => {
   const navigate = useNavigate();
-  tabTitle(strings.CLIENTS);
-  const [clients, setClients] = useState<Row[]>([]);
+  const [users, setUsers] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -36,17 +33,32 @@ const Clients: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
-    { field: "clientId", headerName: "Client Id", width: 120 },
-    { field: "name", headerName: "Client Name", width: 150 },
-    { field: "contactName", headerName: "Contact Name", width: 150 },
-    { field: "email", headerName: "Email ID", width: 200 },
+    { field: "userId", headerName: "User ID", width: 120 },
+    { field: "accountOrGroup", headerName: "Account/Group", width: 150 },
+    { field: "username", headerName: "Username", width: 130 },
+    { field: "firstName", headerName: "First Name", width: 120 },
+    { field: "middleName", headerName: "Middle Name", width: 120 },
+    { field: "lastName", headerName: "Last Name", width: 120 },
+    { field: "email", headerName: "Email", width: 200 },
     { field: "contactNo", headerName: "Contact No", width: 130 },
-    { field: "panNumber", headerName: "Pan Number", width: 120 },
-    { field: "aadharNumber", headerName: "Aadhar Number", width: 130 },
-    { field: "gstNumber", headerName: "GST Number", width: 130 },
-    { field: "stateName", headerName: "State Name", width: 120 },
-    { field: "cityName", headerName: "City Name", width: 120 },
-    { field: "remark", headerName: "Remark", width: 150 },
+    {
+      field: "userRole",
+      headerName: "User Role",
+      width: 130,
+      renderCell: (params) => (
+        <span
+          className={`px-2 py-1 rounded text-xs font-medium ${
+            params.value === "Superadmin"
+              ? "bg-red-100 text-red-800"
+              : params.value === "Admin"
+              ? "bg-blue-100 text-blue-800"
+              : "bg-green-100 text-green-800"
+          }`}
+        >
+          {params.value || "User"}
+        </span>
+      ),
+    },
     {
       field: "status",
       headerName: "Status",
@@ -75,14 +87,14 @@ const Clients: React.FC = () => {
 
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
-    { label: strings.CLIENTS, isActive: true, icon: FiUsers },
+    { label: strings.USERS, isActive: true, icon: FiUser },
   ];
 
   useEffect(() => {
-    loadClients();
+    loadUsers();
   }, []);
 
-  const loadClients = async (
+  const loadUsers = async (
     search: string = "",
     page: number = currentPage,
     limit: number = pageSize
@@ -90,47 +102,47 @@ const Clients: React.FC = () => {
     setLoading(true);
     try {
       const result: PaginatedResponse<Row> = search
-        ? await clientServices.search(search, page, limit)
-        : await clientServices.getAll(page, limit);
+        ? await userServices.search(search, page, limit)
+        : await userServices.getAll(page, limit);
 
-      setClients(result.data);
+      setUsers(result.data);
       setTotalRows(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(result.page);
     } catch (error: any) {
-      console.error("Error loading clients:", error);
-      toast.error(error.message || "Failed to fetch clients");
+      console.error("Error loading users:", error);
+      toast.error(error.message || "Failed to fetch users");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddClient = () => {
-    navigate(urls.addClientViewPath);
+  const handleAddUser = () => {
+    navigate(urls.addUserViewPath);
   };
 
   // Handle edit click from DataTable
-  const handleEditClient = (id: string | number) => {
-    const selectedClient = clients.find((client) => client.id === id);
-    navigate(`${urls.editClientViewPath}/${id}`, {
-      state: { clientData: selectedClient },
+  const handleEditUser = (id: string | number) => {
+    const selectedUser = users.find((user) => user.id === id);
+    navigate(`${urls.editUserViewPath}/${id}`, {
+      state: { userData: selectedUser },
     });
   };
 
-  const handleDeleteClient = async (
+  const handleDeleteUser = async (
     id: string | number,
     deletedRow: Row,
     rows: Row[]
   ) => {
     try {
-      const result = await clientServices.inactivate(id);
+      const result = await userServices.inactivate(id);
       toast.success(result.message);
-      await loadClients(searchValue, currentPage, pageSize); // Reload current page
+      await loadUsers(searchValue, currentPage, pageSize); // Reload current page
     } catch (error: any) {
-      console.error("Error inactivating client:", error);
+      console.error("Error inactivating user:", error);
       toast.error(error.message);
       // Revert the rows on error
-      setClients(rows);
+      setUsers(rows);
     }
   };
 
@@ -138,39 +150,39 @@ const Clients: React.FC = () => {
     console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
-    loadClients(searchText, 1, pageSize);
+    loadUsers(searchText, 1, pageSize);
   };
 
   // Pagination handlers
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadClients(searchValue, page, pageSize);
+    loadUsers(searchValue, page, pageSize);
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setCurrentPage(1); // Reset to first page
-    loadClients(searchValue, 1, size);
+    loadUsers(searchValue, 1, size);
   };
 
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={strings.CLIENTS}
+        title={strings.USERS}
         breadcrumbs={breadcrumbs}
         showAddButton
-        addButtonText={strings.ADD_CLIENT}
-        onAddClick={handleAddClient}
+        addButtonText={strings.ADD_USER}
+        onAddClick={handleAddUser}
       />
 
       <div className="p-6">
         <DataTable
           columns={columns}
-          rows={clients}
+          rows={users}
           loading={loading}
           onSearch={handleSearch}
-          onDeleteRow={handleDeleteClient}
-          onEditClick={handleEditClient}
+          onDeleteRow={handleDeleteUser}
+          onEditClick={handleEditUser}
           pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
           // Server-side pagination props
@@ -181,8 +193,8 @@ const Clients: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.clientsViewPath,
-            filename: "clients",
+            modulePath: urls.usersViewPath,
+            filename: "users",
           }}
         />
       </div>
@@ -190,4 +202,4 @@ const Clients: React.FC = () => {
   );
 };
 
-export default Clients;
+export default Users;

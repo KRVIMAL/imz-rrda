@@ -11,6 +11,8 @@ export class StringConstants {
   DEVICE_ONBOARDING_MODULE = "DEVICE_ONBOARDING"; // Module identifier
   GROUPS_MODULE = "GROUPS";
   ROLES_MODULE = "ROLES";
+  ACCOUNTS_MODULE = "ACCOUNTS";
+  USERS_MODULE = "USERS";
 
   // Navigation
   HOME = "Home";
@@ -23,6 +25,9 @@ export class StringConstants {
   DEVICE_ONBOARDING = "Device On-boarding";
   GROUPS = "Groups";
   ROLES = "Roles";
+  ACCOUNTS = "Accounts";
+  USERS = "Users";
+
   // Status
   ACTIVE = "Active";
   INACTIVE = "Inactive";
@@ -64,10 +69,20 @@ export class StringConstants {
   EDIT_GROUP = "Edit Group";
 
 
-  // Roles specific 
+  // Users specific 
+  ADD_USER = "Add User";
+  UPDATE_USER = "Update User";
+  EDIT_USER = "Edit User";
+
+  // Roles specific
   ADD_ROLE = "Add Role";
   UPDATE_ROLE = "Update Role";
   EDIT_ROLE = "Edit Role";
+
+  // Accounts specific
+  ADD_ACCOUNT = "Add Account";
+  UPDATE_ACCOUNT = "Update Account";
+  EDIT_ACCOUNT = "Edit Account";
 
   // Client specific
   ADD_CLIENT = "Add Client";
@@ -125,12 +140,26 @@ export class StringConstants {
   // CONTACT_NO = "Contact No";
 
 
-  // Roles form labels - ADD THESE
+  // Users form labels - ADD THESE
+  SELECT_ACCOUNT_OR_GROUP = "Select Account or Group";
+  USERNAME = "Username";
+  FIRST_NAME = "First Name";
+  MIDDLE_NAME = "Middle Name";
+  LAST_NAME = "Last Name";
+  EMAIL = "Email";
+  PASSWORD = "Password";
+  USER_ROLE = "User Role";
+
+  // Roles form labels
   ROLE_NAME = "Role Name";
   DISPLAY_NAME = "Display Name";
   DESCRIPTION = "Description";
   MODULE_PERMISSIONS = "Module Permissions";
   USER_ROLE_TYPE = "User Role Type";
+
+  // Accounts form labels - ADD THESE
+  PARENT_ACCOUNT = "Parent Account";
+  CLIENT_SELECTION = "Client Selection";
 
   // Client form labels
   CLIENT_NAME = "Client Name";
@@ -160,6 +189,7 @@ export class StringConstants {
   INVALID_GST_FORMAT = "Invalid GST format";
   INVALID_LICENSE_FORMAT = "Invalid license format";
   INVALID_IMEI_FORMAT = "IMEI should be 15-17 characters";
+  INVALID_PASSWORD_LENGTH = "Password must be at least 6 characters";
 }
 
 let strings = new StringConstants();

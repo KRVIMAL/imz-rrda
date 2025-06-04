@@ -25,6 +25,8 @@ const sidebarItems = [
   { name: "Vehicles Master", href: "/vehicle-masters", icon: FiTruck },
   { name: "Groups", href: "/groups", icon: FiUsers },
   { name: "Roles", href: "/roles", icon: FiShield },
+  { name: "Accounts", href: "/accounts", icon: FiShield },
+  { name: "Users", href: "/users", icon: FiShield },
   {
     name: "Device Onboarding",
     href: "/devices-onboarding",

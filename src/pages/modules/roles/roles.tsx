@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiHome, FiShield } from "react-icons/fi";
+import { FiEye, FiHome, FiShield } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
@@ -9,6 +9,8 @@ import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
 import { tabTitle } from "../../../utils/tab-title";
+import Button from "../../../components/ui/Button";
+import PermissionsModal from "../../../components/ui/Modal/PermissionsModal";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -27,6 +29,9 @@ const Roles: React.FC = () => {
   const [roles, setRoles] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+
+  const [isPermissionsModalOpen, setIsPermissionsModalOpen] = useState(false);
+  const [selectedRoleForModal, setSelectedRoleForModal] = useState<any>(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,23 +53,43 @@ const Roles: React.FC = () => {
         </div>
       ),
     },
+    // Update the columns in Roles.tsx
     {
       field: "modulesList",
       headerName: "Modules",
-      width: 200,
+      width: 150,
       renderCell: (params) => (
-        <div className="truncate" title={params.value}>
-          {params.value}
+        <div className="flex items-center space-x-2 w-full">
+          <div className="truncate flex-1 min-w-0" title={params.value}>
+            {params.value}
+            
+          </div>
+          <button
+            onClick={() => handleViewPermissions(params.row)}
+            className="p-1 text-primary-600 hover:text-primary-800 hover:bg-primary-50 rounded transition-colors flex-shrink-0"
+            title="View Permissions"
+          >
+            <FiEye className="w-4 h-4" />
+          </button>
         </div>
       ),
     },
     {
       field: "permissionsList",
       headerName: "Permissions",
-      width: 250,
+      width: 150,
       renderCell: (params) => (
-        <div className="truncate text-xs" title={params.value}>
-          {params.value}
+        <div className="flex items-center space-x-2 w-full">
+          <div className="truncate flex-1 min-w-0 text-xs" title={params.value} >
+            {params.value}
+          </div>
+          <button
+            onClick={() => handleViewPermissions(params.row)}
+            className="p-1 text-primary-600 hover:text-primary-800 hover:bg-primary-50 rounded transition-colors flex-shrink-0"
+            title="View Permissions"
+          >
+            <FiEye className="w-4 h-4" />
+          </button>
         </div>
       ),
     },
@@ -109,7 +134,6 @@ const Roles: React.FC = () => {
       type: "date",
     },
   ];
-
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
     { label: strings.ROLES, isActive: true, icon: FiShield },
@@ -140,6 +164,11 @@ const Roles: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewPermissions = (roleData: any) => {
+    setSelectedRoleForModal(roleData);
+    setIsPermissionsModalOpen(true);
   };
 
   const handleAddRole = () => {
@@ -229,6 +258,17 @@ const Roles: React.FC = () => {
           }}
         />
       </div>
+      {/* Permissions Modal */}
+      {selectedRoleForModal && (
+        <PermissionsModal
+          isOpen={isPermissionsModalOpen}
+          onClose={() => {
+            setIsPermissionsModalOpen(false);
+            setSelectedRoleForModal(null);
+          }}
+          roleData={selectedRoleForModal}
+        />
+      )}
     </div>
   );
 };

@@ -16,6 +16,7 @@ interface ApiResponse<T> {
 }
 
 interface ClientData {
+  clientId:string;
   _id: string;
   name: string;
   contactName: string;
@@ -58,6 +59,7 @@ interface PaginatedResponse<T> {
 
 // Transform API client data to Row format
 const transformClientToRow = (client: ClientData): Row => ({
+  clientId:client.clientId,
   id: client._id,
   name: client.name,
   contactName: client.contactName,

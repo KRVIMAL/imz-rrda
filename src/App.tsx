@@ -28,6 +28,10 @@ import Groups from "./pages/modules/groups/groups";
 import AddEditGroupForm from "./pages/modules/groups/add-groups/add-group-form";
 import Roles from "./pages/modules/roles/roles";
 import AddEditRoleForm from "./pages/modules/roles/add-role/add-role-form";
+import Accounts from "./pages/modules/accounts/accounts";
+import AddEditAccountForm from "./pages/modules/accounts/add-account/add-account-form";
+import Users from "./pages/modules/users/users";
+import AddEditUserForm from "./pages/modules/users/add-user/add-user-form";
 function App() {
   return (
     <ThemeProvider>
@@ -128,6 +132,25 @@ function App() {
                         path="/roles/edit/:id"
                         element={<AddEditRoleForm />}
                       />
+                      {/* Roles module Routes */}
+                      <Route path="/accounts" element={<Accounts />} />
+                      <Route
+                        path="/accounts/add"
+                        element={<AddEditAccountForm />}
+                      />
+                      <Route
+                        path="/accounts/edit/:id"
+                        element={<AddEditAccountForm />}
+                      />
+
+                      {/* Users module Routes */}
+                      <Route path="/users" element={<Users />} />
+                      <Route path="/users/add" element={<AddEditUserForm />} />
+                      <Route
+                        path="/users/edit/:id"
+                        element={<AddEditUserForm />}
+                      />
+
                       <Route
                         path="/reports"
                         element={
