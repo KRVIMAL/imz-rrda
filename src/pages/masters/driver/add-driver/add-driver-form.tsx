@@ -9,6 +9,7 @@ import { driverServices } from "../services/drivers.services";
 import strings from "../../../../global/constants/string-contants";
 import urls from "../../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../../utils/tab-title";
 
 // Form state type
 interface DriverFormState {
@@ -71,7 +72,7 @@ const AddEditDriverForm: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const isEdit = Boolean(id);
-
+  tabTitle(isEdit === true ? strings.EDIT_DRIVER : strings.ADD_DRIVER);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<DriverFormState>(initialFormState());

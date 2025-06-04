@@ -9,7 +9,8 @@ export class StringConstants {
   VEHICLE_MASTERS = "Vehicle Masters";
   VEHICLE_MASTER = "VEHICLE_MASTER";
   DEVICE_ONBOARDING_MODULE = "DEVICE_ONBOARDING"; // Module identifier
-  GROUPS_MODULE = "GROUPS"; 
+  GROUPS_MODULE = "GROUPS";
+  ROLES_MODULE = "ROLES";
 
   // Navigation
   HOME = "Home";
@@ -21,8 +22,7 @@ export class StringConstants {
   CONTRACTORS = "Contractors";
   DEVICE_ONBOARDING = "Device On-boarding";
   GROUPS = "Groups";
-
-
+  ROLES = "Roles";
   // Status
   ACTIVE = "Active";
   INACTIVE = "Inactive";
@@ -58,11 +58,16 @@ export class StringConstants {
   UPDATE_DEVICE_ONBOARDING = "Update Device On-boarding";
   EDIT_DEVICE_ONBOARDING = "Edit Device On-boarding";
 
-
-  // Groups specific 
+  // Groups specific
   ADD_GROUP = "Add Group";
   UPDATE_GROUP = "Update Group";
   EDIT_GROUP = "Edit Group";
+
+
+  // Roles specific 
+  ADD_ROLE = "Add Role";
+  UPDATE_ROLE = "Update Role";
+  EDIT_ROLE = "Edit Role";
 
   // Client specific
   ADD_CLIENT = "Add Client";
@@ -100,7 +105,7 @@ export class StringConstants {
   VEHICLE_MODEL_NAME = "Vehicle Model";
   DRIVER_SELECTION = "Driver Selection";
 
-  // Device On-boarding form labels 
+  // Device On-boarding form labels
   ACCOUNT_NAME = "Account Name";
   DEVICE_IMEI = "Device IMEI";
   DEVICE_SERIAL_NO = "Device Serial No";
@@ -110,7 +115,7 @@ export class StringConstants {
   SIM_NO_2_OPERATOR = "SIM No 2 Operator";
   VEHICLE_DESCRIPTION = "Vehicle Description";
 
-  // Groups form labels 
+  // Groups form labels
   GROUP_NAME = "Group Name";
   GROUP_TYPE = "Group Type";
   SELECT_ASSET_IMEI = "Select Asset/IMEI";
@@ -118,6 +123,14 @@ export class StringConstants {
   // CITY_NAME = "City Name";
   // REMARK = "Remark";
   // CONTACT_NO = "Contact No";
+
+
+  // Roles form labels - ADD THESE
+  ROLE_NAME = "Role Name";
+  DISPLAY_NAME = "Display Name";
+  DESCRIPTION = "Description";
+  MODULE_PERMISSIONS = "Module Permissions";
+  USER_ROLE_TYPE = "User Role Type";
 
   // Client form labels
   CLIENT_NAME = "Client Name";

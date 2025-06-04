@@ -42,6 +42,12 @@ export class UrlConstants {
   addGroupViewPath = `${this.groupsViewPath}/add`;
   editGroupViewPath = `${this.groupsViewPath}/edit`;
 
+
+    // Roles URLs - ADD THESE
+  rolesViewPath = "/roles";
+  addRoleViewPath = `${this.rolesViewPath}/add`;
+  editRoleViewPath = `${this.rolesViewPath}/edit`;
+
   // Accounts URLs
   accountsViewPath = "/accounts";
 

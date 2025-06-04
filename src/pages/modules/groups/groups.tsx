@@ -8,6 +8,7 @@ import { groupServices } from "./services/groups.services";
 import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../utils/tab-title";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -25,7 +26,7 @@ const Groups: React.FC = () => {
   const [groups, setGroups] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-
+  tabTitle(strings.GROUPS)
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);

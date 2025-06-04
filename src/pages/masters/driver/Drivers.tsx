@@ -8,6 +8,7 @@ import { driverServices } from "./services/drivers.services";
 import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../utils/tab-title";
 
 interface PaginatedResponse<T> {
   data: T[];
@@ -24,7 +25,7 @@ const Drivers: React.FC = () => {
   const [drivers, setDrivers] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-
+  tabTitle(strings.DRIVERS);
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);

@@ -316,7 +316,7 @@ export const groupServices = {
         urls.deviceOnboardingViewPath,
         {
           page: 1,
-          limit: 10, // Get all records
+          limit: 0, // Get all records
         }
       );
 

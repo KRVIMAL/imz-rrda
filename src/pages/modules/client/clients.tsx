@@ -9,6 +9,7 @@ import { clientServices } from "./services/clients.services";
 import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../utils/tab-title";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -23,6 +24,7 @@ interface PaginatedResponse<T> {
 
 const Clients: React.FC = () => {
   const navigate = useNavigate();
+  tabTitle(strings.CLIENTS);
   const [clients, setClients] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");

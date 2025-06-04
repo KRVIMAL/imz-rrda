@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiHome, FiTruck } from "react-icons/fi";
+import { FiHome, FiShield } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { vehicleMasterServices } from "./services/vehicleMasters.services";
+import { roleServices } from "./services/roles.services";
 import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
@@ -21,12 +21,13 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-const VehicleMasters: React.FC = () => {
+const Roles: React.FC = () => {
   const navigate = useNavigate();
-  const [vehicleMasters, setVehicleMasters] = useState<Row[]>([]);
+  tabTitle(strings.ROLES);
+  const [roles, setRoles] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  tabTitle(strings.VEHICLE_MASTERS);
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -34,12 +35,55 @@ const VehicleMasters: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
-    { field: "vehicleNumber", headerName: "Vehicle Number", width: 140 },
-    { field: "chassisNumber", headerName: "Chassis Number", width: 180 },
-    { field: "engineNumber", headerName: "Engine Number", width: 180 },
-    { field: "vehicleModelName", headerName: "Vehicle Model", width: 150 },
-    { field: "driverName", headerName: "Driver Name", width: 140 },
-    { field: "driverAdharNo", headerName: "Driver Aadhar", width: 150 },
+    { field: "roleId", headerName: "Role Id", width: 120 },
+    { field: "name", headerName: "Role Name", width: 120 },
+    { field: "displayName", headerName: "Display Name", width: 150 },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 200,
+      renderCell: (params) => (
+        <div className="truncate" title={params.value}>
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: "modulesList",
+      headerName: "Modules",
+      width: 200,
+      renderCell: (params) => (
+        <div className="truncate" title={params.value}>
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: "permissionsList",
+      headerName: "Permissions",
+      width: 250,
+      renderCell: (params) => (
+        <div className="truncate text-xs" title={params.value}>
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: "isSystem",
+      headerName: "System Role",
+      width: 100,
+      renderCell: (params) => (
+        <span
+          className={`px-2 py-1 rounded text-xs font-medium ${
+            params.value
+              ? "bg-orange-100 text-orange-800"
+              : "bg-blue-100 text-blue-800"
+          }`}
+        >
+          {params.value ? "System" : "Custom"}
+        </span>
+      ),
+    },
     {
       field: "status",
       headerName: "Status",
@@ -68,14 +112,14 @@ const VehicleMasters: React.FC = () => {
 
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
-    { label: strings.VEHICLE_MASTERS, isActive: true, icon: FiTruck },
+    { label: strings.ROLES, isActive: true, icon: FiShield },
   ];
 
   useEffect(() => {
-    loadVehicleMasters();
+    loadRoles();
   }, []);
 
-  const loadVehicleMasters = async (
+  const loadRoles = async (
     search: string = "",
     page: number = currentPage,
     limit: number = pageSize
@@ -83,49 +127,53 @@ const VehicleMasters: React.FC = () => {
     setLoading(true);
     try {
       const result: PaginatedResponse<Row> = search
-        ? await vehicleMasterServices.search(search, page, limit)
-        : await vehicleMasterServices.getAll(page, limit);
+        ? await roleServices.search(search, page, limit)
+        : await roleServices.getAll(page, limit);
 
-      setVehicleMasters(result.data);
+      setRoles(result.data);
       setTotalRows(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(result.page);
     } catch (error: any) {
-      console.error("Error loading vehicle masters:", error);
-      toast.error(error.message || "Failed to fetch vehicle masters");
+      console.error("Error loading roles:", error);
+      toast.error(error.message || "Failed to fetch roles");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddVehicleMaster = () => {
-    navigate(urls.addVehicleMasterViewPath);
+  const handleAddRole = () => {
+    navigate(urls.addRoleViewPath);
   };
 
   // Handle edit click from DataTable
-  const handleEditVehicleMaster = (id: string | number) => {
-    const selectedVehicleMaster = vehicleMasters.find(
-      (vehicleMaster) => vehicleMaster.id === id
-    );
-    navigate(`${urls.editVehicleMasterViewPath}/${id}`, {
-      state: { vehicleMasterData: selectedVehicleMaster },
+  const handleEditRole = (id: string | number) => {
+    const selectedRole = roles.find((role) => role.id === id);
+    navigate(`${urls.editRoleViewPath}/${id}`, {
+      state: { roleData: selectedRole },
     });
   };
 
-  const handleDeleteVehicleMaster = async (
+  const handleDeleteRole = async (
     id: string | number,
     deletedRow: Row,
     rows: Row[]
   ) => {
     try {
-      const result = await vehicleMasterServices.inactivate(id);
+      // Check if it's a system role
+      if (deletedRow.isSystem) {
+        toast.error("Cannot delete system roles");
+        return;
+      }
+
+      const result = await roleServices.inactivate(id);
       toast.success(result.message);
-      await loadVehicleMasters(searchValue, currentPage, pageSize); // Reload current page
+      await loadRoles(searchValue, currentPage, pageSize); // Reload current page
     } catch (error: any) {
-      console.error("Error inactivating vehicle master:", error);
+      console.error("Error inactivating role:", error);
       toast.error(error.message);
       // Revert the rows on error
-      setVehicleMasters(rows);
+      setRoles(rows);
     }
   };
 
@@ -133,39 +181,39 @@ const VehicleMasters: React.FC = () => {
     console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
-    loadVehicleMasters(searchText, 1, pageSize);
+    loadRoles(searchText, 1, pageSize);
   };
 
   // Pagination handlers
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadVehicleMasters(searchValue, page, pageSize);
+    loadRoles(searchValue, page, pageSize);
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setCurrentPage(1); // Reset to first page
-    loadVehicleMasters(searchValue, 1, size);
+    loadRoles(searchValue, 1, size);
   };
 
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={strings.VEHICLE_MASTERS}
+        title={strings.ROLES}
         breadcrumbs={breadcrumbs}
         showAddButton
-        addButtonText={strings.ADD_VEHICLE_MASTER}
-        onAddClick={handleAddVehicleMaster}
+        addButtonText={strings.ADD_ROLE}
+        onAddClick={handleAddRole}
       />
 
       <div className="p-6">
         <DataTable
           columns={columns}
-          rows={vehicleMasters}
+          rows={roles}
           loading={loading}
           onSearch={handleSearch}
-          onDeleteRow={handleDeleteVehicleMaster}
-          onEditClick={handleEditVehicleMaster}
+          onDeleteRow={handleDeleteRole}
+          onEditClick={handleEditRole}
           pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
           // Server-side pagination props
@@ -176,8 +224,8 @@ const VehicleMasters: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.vehicleMastersViewPath,
-            filename: "vehicle-masters",
+            modulePath: urls.rolesViewPath,
+            filename: "roles",
           }}
         />
       </div>
@@ -185,4 +233,4 @@ const VehicleMasters: React.FC = () => {
   );
 };
 
-export default VehicleMasters;
+export default Roles;

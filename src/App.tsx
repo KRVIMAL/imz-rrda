@@ -26,6 +26,8 @@ import DeviceOnboarding from "./pages/modules/device-onboarding/device-onboardin
 import AddEditDeviceOnboardingForm from "./pages/modules/device-onboarding/add-device-onboarding/add-device-onboarding-form";
 import Groups from "./pages/modules/groups/groups";
 import AddEditGroupForm from "./pages/modules/groups/add-groups/add-group-form";
+import Roles from "./pages/modules/roles/roles";
+import AddEditRoleForm from "./pages/modules/roles/add-role/add-role-form";
 function App() {
   return (
     <ThemeProvider>
@@ -118,6 +120,13 @@ function App() {
                       <Route
                         path="/groups/edit/:id"
                         element={<AddEditGroupForm />}
+                      />
+                      {/* Roles module Routes */}
+                      <Route path="/roles" element={<Roles />} />
+                      <Route path="/roles/add" element={<AddEditRoleForm />} />
+                      <Route
+                        path="/roles/edit/:id"
+                        element={<AddEditRoleForm />}
                       />
                       <Route
                         path="/reports"

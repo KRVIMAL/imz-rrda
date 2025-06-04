@@ -5,10 +5,15 @@ import ModuleHeader from "../../../../components/ui/ModuleHeader";
 import CustomInput from "../../../../components/ui/CustomInput";
 import Select from "../../../../components/ui/Select";
 import Card from "../../../../components/ui/Card";
-import { vehicleMasterServices, VehicleModule, DriverModule } from "../services/vehicleMasters.services";
+import {
+  vehicleMasterServices,
+  VehicleModule,
+  DriverModule,
+} from "../services/vehicleMasters.services";
 import strings from "../../../../global/constants/string-contants";
 import urls from "../../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../../utils/tab-title";
 
 // Form state type
 interface VehicleMasterFormState {
@@ -71,11 +76,15 @@ const AddEditVehicleMasterForm: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const isEdit = Boolean(id);
-
+  tabTitle(
+    isEdit === true ? strings.EDIT_VEHICLE_MASTER : strings.ADD_VEHICLE_MASTER
+  );
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<VehicleMasterFormState>(initialFormState());
-  
+  const [formData, setFormData] = useState<VehicleMasterFormState>(
+    initialFormState()
+  );
+
   // Dropdown data
   const [vehicleModules, setVehicleModules] = useState<VehicleModule[]>([]);
   const [driverModules, setDriverModules] = useState<DriverModule[]>([]);
@@ -88,7 +97,11 @@ const AddEditVehicleMasterForm: React.FC = () => {
 
   const breadcrumbs = [
     { label: strings.HOME, href: urls.landingViewPath, icon: FiHome },
-    { label: strings.VEHICLE_MASTERS, href: urls.vehicleMastersViewPath, icon: FiTruck },
+    {
+      label: strings.VEHICLE_MASTERS,
+      href: urls.vehicleMastersViewPath,
+      icon: FiTruck,
+    },
     {
       label: isEdit ? strings.EDIT_VEHICLE_MASTER : strings.ADD_VEHICLE_MASTER,
       isActive: true,
@@ -98,7 +111,7 @@ const AddEditVehicleMasterForm: React.FC = () => {
 
   useEffect(() => {
     loadDropdownData();
-    
+
     if (isEdit && id) {
       // Get data from navigation state first, fallback to API
       const { state } = location;
@@ -119,7 +132,7 @@ const AddEditVehicleMasterForm: React.FC = () => {
         vehicleMasterServices.getVehicleModules(),
         vehicleMasterServices.getDriverModules(),
       ]);
-      
+
       setVehicleModules(vehicleModulesData);
       setDriverModules(driverModulesData);
     } catch (error: any) {
@@ -161,7 +174,8 @@ const AddEditVehicleMasterForm: React.FC = () => {
     };
 
   const handleSelectChange =
-    (field: keyof VehicleMasterFormState) => (value: string | string[] | null) => {
+    (field: keyof VehicleMasterFormState) =>
+    (value: string | string[] | null) => {
       setFormData((prev) => ({
         ...prev,
         [field]: {
@@ -330,7 +344,9 @@ const AddEditVehicleMasterForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={isEdit ? strings.EDIT_VEHICLE_MASTER : strings.ADD_VEHICLE_MASTER}
+        title={
+          isEdit ? strings.EDIT_VEHICLE_MASTER : strings.ADD_VEHICLE_MASTER
+        }
         breadcrumbs={breadcrumbs}
         showCancelButton
         showSaveButton
@@ -345,10 +361,12 @@ const AddEditVehicleMasterForm: React.FC = () => {
             {loadingDropdowns && (
               <div className="flex items-center justify-center py-4 mb-6">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-                <span className="ml-2 text-gray-600">Loading vehicle and driver data...</span>
+                <span className="ml-2 text-gray-600">
+                  Loading vehicle and driver data...
+                </span>
               </div>
             )}
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <CustomInput

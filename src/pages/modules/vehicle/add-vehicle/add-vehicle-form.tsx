@@ -10,6 +10,7 @@ import { vehicleServices } from "../services/vehicles.services";
 import strings from "../../../../global/constants/string-contants";
 import urls from "../../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../../utils/tab-title";
 
 // Form state type
 interface VehicleFormState {
@@ -64,7 +65,7 @@ const AddEditVehicleForm: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const isEdit = Boolean(id);
-
+  tabTitle(isEdit === true ? strings.EDIT_VEHICLE : strings.ADD_VEHICLE);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<VehicleFormState>(

@@ -15,6 +15,7 @@ import {
 import strings from "../../../../global/constants/string-contants";
 import urls from "../../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../../utils/tab-title";
 
 // Form state type
 interface DeviceOnboardingFormState {
@@ -126,7 +127,11 @@ const AddEditDeviceOnboardingForm: React.FC = () => {
   const location = useLocation();
   console.log({ location });
   const isEdit = Boolean(id);
-
+  tabTitle(
+    isEdit === true
+      ? strings.EDIT_DEVICE_ONBOARDING
+      : strings.ADD_DEVICE_ONBOARDING
+  );
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<DeviceOnboardingFormState>(

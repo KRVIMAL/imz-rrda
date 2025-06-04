@@ -2,19 +2,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
-  FiHome,
-  FiMap,
-  // FiBarChart3,
-  FiAlertTriangle,
-  FiSettings,
   FiUsers,
-  FiFileText,
   FiMenu,
   FiX,
-  FiGrid,
   FiHardDrive,
+  FiSmartphone,
+  FiShield,
+  FiTruck,
 } from "react-icons/fi";
-
 const sidebarItems = [
   // { name: "Dashboard", href: "/", icon: FiHome },
   // { name: "Map View", href: "/map", icon: FiMap },
@@ -24,12 +19,17 @@ const sidebarItems = [
   // { name: "Input Demo", href: "/inputdemo", icon: FiFileText },
   // { name: "Table Demo", href: "/table-demo", icon: FiGrid },
   { name: "Devices", href: "/devices", icon: FiHardDrive },
-  { name: "Vehicles", href: "/vehicles", icon: FiUsers },
+  { name: "Vehicles", href: "/vehicles", icon: FiTruck },
   { name: "Clients", href: "/clients", icon: FiUsers },
-  { name: "Drivers", href: "/drivers", icon: FiHardDrive },
-  { name: "Vehicles Master", href: "/vehicle-masters", icon: FiUsers },
+  { name: "Drivers", href: "/drivers", icon: FiUsers },
+  { name: "Vehicles Master", href: "/vehicle-masters", icon: FiTruck },
   { name: "Groups", href: "/groups", icon: FiUsers },
-  { name: "Device Onboarding", href: "/devices-onboarding", icon: FiUsers },
+  { name: "Roles", href: "/roles", icon: FiShield },
+  {
+    name: "Device Onboarding",
+    href: "/devices-onboarding",
+    icon: FiSmartphone,
+  },
   // { name: "Reports", href: "/reports", icon: FiFileText },
   // { name: "Alerts", href: "/alerts", icon: FiAlertTriangle },
   // { name: "Users", href: "/users", icon: FiUsers },

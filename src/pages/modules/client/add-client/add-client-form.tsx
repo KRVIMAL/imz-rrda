@@ -9,6 +9,7 @@ import { clientServices } from "../services/clients.services";
 import strings from "../../../../global/constants/string-contants";
 import urls from "../../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../../utils/tab-title";
 
 // Form state type
 interface ClientFormState {
@@ -111,7 +112,7 @@ const AddEditClientForm: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const isEdit = Boolean(id);
-
+  tabTitle(isEdit === true ? strings.EDIT_CLIENT : strings.ADD_CLIENT);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<ClientFormState>(initialFormState());

@@ -8,6 +8,7 @@ import { deviceOnboardingServices } from "./services/device-onboarding.services"
 import strings from "../../../global/constants/string-contants";
 import urls from "../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../utils/tab-title";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -22,6 +23,7 @@ interface PaginatedResponse<T> {
 
 const DeviceOnboarding: React.FC = () => {
   const navigate = useNavigate();
+  tabTitle(strings.DEVICE_ONBOARDING)
   const [devices, setDevices] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");

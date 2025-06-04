@@ -9,6 +9,7 @@ import { deviceServices } from "../services/devices.sevices";
 import strings from "../../../../global/constants/string-contants";
 import urls from "../../../../global/constants/url-constants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../../utils/tab-title";
 
 // Form state type
 interface DeviceFormState {
@@ -71,7 +72,7 @@ const AddEditDeviceForm: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const isEdit = Boolean(id);
-
+  tabTitle(isEdit === true ? strings.EDIT_DEVICE : strings.ADD_DEVICE);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<DeviceFormState>(initialFormState());
