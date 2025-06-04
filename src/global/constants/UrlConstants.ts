@@ -1,6 +1,6 @@
 export class UrlConstants {
 
-  baseURL="https://api-dev.k8s.imztech.io/api/v1/backend-admin/";
+  baseURL=import.meta.env.VITE_API_BASE_URL;
   landingViewPath = "/";
 
   // Device URLs
