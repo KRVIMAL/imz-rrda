@@ -6,7 +6,13 @@ export const getRequest = async (url: string, params = {}) => {
     const response = await apiClient.get(url, { params });
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || "API GET request failed");
+    // Extract error message from backend response
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.errors ||
+      error.message ||
+      "API GET request failed";
+    throw new Error(errorMessage);
   }
 };
 
@@ -16,7 +22,13 @@ export const postRequest = async (url: string, data = {}) => {
     const response = await apiClient.post(url, data);
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || "API POST request failed");
+    // Extract error message from backend response
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.errors ||
+      error.message ||
+      "API POST request failed";
+    throw new Error(errorMessage);
   }
 };
 
@@ -26,9 +38,13 @@ export const patchRequest = async (url: string, data = {}) => {
     const response = await apiClient.patch(url, data);
     return response.data;
   } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "API PATCH request failed"
-    );
+    // Extract error message from backend response
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.errors ||
+      error.message ||
+      "API PATCH request failed";
+    throw new Error(errorMessage);
   }
 };
 
@@ -38,9 +54,13 @@ export const deleteRequest = async (url: string) => {
     const response = await apiClient.delete(url);
     return response.data;
   } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "API DELETE request failed"
-    );
+    // Extract error message from backend response
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.errors ||
+      error.message ||
+      "API DELETE request failed";
+    throw new Error(errorMessage);
   }
 };
 
@@ -50,7 +70,13 @@ export const putRequest = async (url: string, data = {}) => {
     const response = await apiClient.put(url, data);
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || "API PUT request failed");
+    // Extract error message from backend response
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.errors ||
+      error.message ||
+      "API PUT request failed";
+    throw new Error(errorMessage);
   }
 };
 

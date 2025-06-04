@@ -32,7 +32,9 @@ import Accounts from "./pages/modules/accounts/accounts";
 import AddEditAccountForm from "./pages/modules/accounts/add-account/add-account-form";
 import Users from "./pages/modules/users/users";
 import AddEditUserForm from "./pages/modules/users/add-user/add-user-form";
+import { useTokenExpiry } from "./hooks/useTokenExpiry";
 function App() {
+  useTokenExpiry();
   return (
     <ThemeProvider>
       <Toaster position="top-center" />

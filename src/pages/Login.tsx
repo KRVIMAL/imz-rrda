@@ -1,21 +1,20 @@
-// src/pages/Login.tsx - Updated with theme support
-import React, { useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import ThemeToggle from '../components/ThemeToggle';
+// src/pages/Login.tsx - Updated with toast error handling
+import React, { useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import ThemeToggle from "../components/ThemeToggle";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const { login, user, isLoading } = useAuth();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || "/";
 
   if (user) {
     return <Navigate to={from} replace />;
@@ -23,12 +22,14 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
 
-    const success = await login(email, password);
-    if (!success) {
-      setError('Invalid email or password');
+    if (!username.trim() || !password.trim()) {
+      // toast.error('Please enter both username and password'); // You can uncomment this if you want client-side validation
+      return;
     }
+
+    // The login function will handle showing toast messages for success/error
+    await login(username, password);
   };
 
   return (
@@ -43,7 +44,7 @@ const Login: React.FC = () => {
             Sign in to HPRRDA DPIU
           </h2>
           <p className="mt-sm text-body text-text-muted">
-            Use: admin@example.com / password
+            Use: sirodtest / Sirod@123456
           </p>
         </div>
 
@@ -53,24 +54,26 @@ const Login: React.FC = () => {
             <form className="space-y-lg" onSubmit={handleSubmit}>
               <div className="space-y-md">
                 <Input
-                  id="email"
-                  label="Email Address"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="username"
+                  label="Username"
+                  type="text"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
+                  autoComplete="username"
                 />
-                
+
                 <div className="relative">
                   <Input
                     id="password"
                     label="Password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"
@@ -86,12 +89,6 @@ const Login: React.FC = () => {
                 </div>
               </div>
 
-              {error && (
-                <div className="p-md bg-error-50 border border-error-200 rounded-md">
-                  <p className="text-body-small text-error-700">{error}</p>
-                </div>
-              )}
-
               <Button
                 type="submit"
                 variant="primary"
@@ -100,7 +97,7 @@ const Login: React.FC = () => {
                 disabled={isLoading}
                 isLoading={isLoading}
               >
-                Sign in
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </form>
           </div>
