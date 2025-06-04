@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiHome, FiUser } from "react-icons/fi";
+import { FiHome, FiTruck } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { userServices } from "./services/usersServices";
+import { vehicleMasterServices } from "./services/vehicleMasters";
 import strings from "../../../global/constants/StringConstants";
 import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../utils/tab-title";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -20,12 +21,12 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-const Users: React.FC = () => {
+const VehicleMasters: React.FC = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState<Row[]>([]);
+  const [vehicleMasters, setVehicleMasters] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-
+  tabTitle(strings.VEHICLE_MASTERS);
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -33,32 +34,12 @@ const Users: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
-    { field: "userId", headerName: "User ID", width: 120 },
-    { field: "accountOrGroup", headerName: "Account/Group", width: 150 },
-    { field: "username", headerName: "Username", width: 130 },
-    { field: "firstName", headerName: "First Name", width: 120 },
-    { field: "middleName", headerName: "Middle Name", width: 120 },
-    { field: "lastName", headerName: "Last Name", width: 120 },
-    { field: "email", headerName: "Email", width: 200 },
-    { field: "contactNo", headerName: "Contact No", width: 130 },
-    {
-      field: "userRole",
-      headerName: "User Role",
-      width: 130,
-      renderCell: (params) => (
-        <span
-          className={`px-2 py-1 rounded text-xs font-medium ${
-            params.value === "Superadmin"
-              ? "bg-red-100 text-red-800"
-              : params.value === "Admin"
-              ? "bg-blue-100 text-blue-800"
-              : "bg-green-100 text-green-800"
-          }`}
-        >
-          {params.value || "User"}
-        </span>
-      ),
-    },
+    { field: "vehicleNumber", headerName: "Vehicle Number", width: 140 },
+    { field: "chassisNumber", headerName: "Chassis Number", width: 180 },
+    { field: "engineNumber", headerName: "Engine Number", width: 180 },
+    { field: "vehicleModelName", headerName: "Vehicle Model", width: 150 },
+    { field: "driverName", headerName: "Driver Name", width: 140 },
+    { field: "driverAdharNo", headerName: "Driver Aadhar", width: 150 },
     {
       field: "status",
       headerName: "Status",
@@ -87,14 +68,14 @@ const Users: React.FC = () => {
 
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
-    { label: strings.USERS, isActive: true, icon: FiUser },
+    { label: strings.VEHICLE_MASTERS, isActive: true, icon: FiTruck },
   ];
 
   useEffect(() => {
-    loadUsers();
+    loadVehicleMasters();
   }, []);
 
-  const loadUsers = async (
+  const loadVehicleMasters = async (
     search: string = "",
     page: number = currentPage,
     limit: number = pageSize
@@ -102,47 +83,49 @@ const Users: React.FC = () => {
     setLoading(true);
     try {
       const result: PaginatedResponse<Row> = search
-        ? await userServices.search(search, page, limit)
-        : await userServices.getAll(page, limit);
+        ? await vehicleMasterServices.search(search, page, limit)
+        : await vehicleMasterServices.getAll(page, limit);
 
-      setUsers(result.data);
+      setVehicleMasters(result.data);
       setTotalRows(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(result.page);
     } catch (error: any) {
-      console.error("Error loading users:", error);
-      toast.error(error.message || "Failed to fetch users");
+      console.error("Error loading vehicle masters:", error);
+      toast.error(error.message || "Failed to fetch vehicle masters");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddUser = () => {
-    navigate(urls.addUserViewPath);
+  const handleAddVehicleMaster = () => {
+    navigate(urls.addVehicleMasterViewPath);
   };
 
   // Handle edit click from DataTable
-  const handleEditUser = (id: string | number) => {
-    const selectedUser = users.find((user) => user.id === id);
-    navigate(`${urls.editUserViewPath}/${id}`, {
-      state: { userData: selectedUser },
+  const handleEditVehicleMaster = (id: string | number) => {
+    const selectedVehicleMaster = vehicleMasters.find(
+      (vehicleMaster) => vehicleMaster.id === id
+    );
+    navigate(`${urls.editVehicleMasterViewPath}/${id}`, {
+      state: { vehicleMasterData: selectedVehicleMaster },
     });
   };
 
-  const handleDeleteUser = async (
+  const handleDeleteVehicleMaster = async (
     id: string | number,
     deletedRow: Row,
     rows: Row[]
   ) => {
     try {
-      const result = await userServices.inactivate(id);
+      const result = await vehicleMasterServices.inactivate(id);
       toast.success(result.message);
-      await loadUsers(searchValue, currentPage, pageSize); // Reload current page
+      await loadVehicleMasters(searchValue, currentPage, pageSize); // Reload current page
     } catch (error: any) {
-      console.error("Error inactivating user:", error);
+      console.error("Error inactivating vehicle master:", error);
       toast.error(error.message);
       // Revert the rows on error
-      setUsers(rows);
+      setVehicleMasters(rows);
     }
   };
 
@@ -150,39 +133,39 @@ const Users: React.FC = () => {
     console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
-    loadUsers(searchText, 1, pageSize);
+    loadVehicleMasters(searchText, 1, pageSize);
   };
 
   // Pagination handlers
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadUsers(searchValue, page, pageSize);
+    loadVehicleMasters(searchValue, page, pageSize);
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setCurrentPage(1); // Reset to first page
-    loadUsers(searchValue, 1, size);
+    loadVehicleMasters(searchValue, 1, size);
   };
 
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={strings.USERS}
+        title={strings.VEHICLE_MASTERS}
         breadcrumbs={breadcrumbs}
         showAddButton
-        addButtonText={strings.ADD_USER}
-        onAddClick={handleAddUser}
+        addButtonText={strings.ADD_VEHICLE_MASTER}
+        onAddClick={handleAddVehicleMaster}
       />
 
       <div className="p-6">
         <DataTable
           columns={columns}
-          rows={users}
+          rows={vehicleMasters}
           loading={loading}
           onSearch={handleSearch}
-          onDeleteRow={handleDeleteUser}
-          onEditClick={handleEditUser}
+          onDeleteRow={handleDeleteVehicleMaster}
+          onEditClick={handleEditVehicleMaster}
           pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
           // Server-side pagination props
@@ -193,8 +176,8 @@ const Users: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.usersViewPath,
-            filename: "users",
+            modulePath: urls.vehicleMastersViewPath,
+            filename: "vehicle-masters",
           }}
         />
       </div>
@@ -202,4 +185,4 @@ const Users: React.FC = () => {
   );
 };
 
-export default Users;
+export default VehicleMasters;

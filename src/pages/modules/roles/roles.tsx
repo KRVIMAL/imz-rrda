@@ -4,12 +4,11 @@ import { FiEye, FiHome, FiShield } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { roleServices } from "./services/roles.services";
-import strings from "../../../global/constants/string-contants";
-import urls from "../../../global/constants/url-constants";
+import { roleServices } from "./services/rolesServices";
+import strings from "../../../global/constants/StringConstants";
+import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
 import { tabTitle } from "../../../utils/tab-title";
-import Button from "../../../components/ui/Button";
 import PermissionsModal from "../../../components/ui/Modal/PermissionsModal";
 
 // Add interface for paginated response
@@ -62,7 +61,6 @@ const Roles: React.FC = () => {
         <div className="flex items-center space-x-2 w-full">
           <div className="truncate flex-1 min-w-0" title={params.value}>
             {params.value}
-            
           </div>
           <button
             onClick={() => handleViewPermissions(params.row)}
@@ -80,7 +78,7 @@ const Roles: React.FC = () => {
       width: 150,
       renderCell: (params) => (
         <div className="flex items-center space-x-2 w-full">
-          <div className="truncate flex-1 min-w-0 text-xs" title={params.value} >
+          <div className="truncate flex-1 min-w-0 text-xs" title={params.value}>
             {params.value}
           </div>
           <button

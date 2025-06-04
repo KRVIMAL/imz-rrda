@@ -4,9 +4,9 @@ import { FiEye, FiHome, FiUsers } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { accountServices } from "./services/accounts.services";
-import strings from "../../../global/constants/string-contants";
-import urls from "../../../global/constants/url-constants";
+import { accountServices } from "./services/accountsServices";
+import strings from "../../../global/constants/StringConstants";
+import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
 import AccountHierarchyModal from "../../../components/ui/Modal/AccountHierarchyModal";
 
@@ -28,10 +28,10 @@ const Accounts: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalRows, setTotalRows] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
+  // const [totalRows, setTotalRows] = useState(0);
+  // const [totalPages, setTotalPages] = useState(0);
 
   const [isHierarchyModalOpen, setIsHierarchyModalOpen] = useState(false);
   const [selectedAccountForHierarchy, setSelectedAccountForHierarchy] =

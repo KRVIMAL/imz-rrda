@@ -1,13 +1,15 @@
+// src/modules/vehicles/pages/Vehicles.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiHome, FiUser } from "react-icons/fi";
+import { FiHome, FiTruck } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { userServices } from "./services/usersServices";
+import { vehicleServices } from "./services/vehiclesServices";
 import strings from "../../../global/constants/StringConstants";
 import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
+import { tabTitle } from "../../../utils/tab-title";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -20,9 +22,10 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-const Users: React.FC = () => {
+const Vehicles: React.FC = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState<Row[]>([]);
+  tabTitle(strings.VEHICLES);
+  const [vehicles, setVehicles] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -33,30 +36,50 @@ const Users: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
-    { field: "userId", headerName: "User ID", width: 120 },
-    { field: "accountOrGroup", headerName: "Account/Group", width: 150 },
-    { field: "username", headerName: "Username", width: 130 },
-    { field: "firstName", headerName: "First Name", width: 120 },
-    { field: "middleName", headerName: "Middle Name", width: 120 },
-    { field: "lastName", headerName: "Last Name", width: 120 },
-    { field: "email", headerName: "Email", width: 200 },
-    { field: "contactNo", headerName: "Contact No", width: 130 },
+    { field: "brandName", headerName: "Brand Name", width: 150 },
+    { field: "modelName", headerName: "Model Name", width: 150 },
     {
-      field: "userRole",
-      headerName: "User Role",
-      width: 130,
+      field: "vehicleType",
+      headerName: "Vehicle Type",
+      width: 120,
       renderCell: (params) => (
         <span
           className={`px-2 py-1 rounded text-xs font-medium ${
-            params.value === "Superadmin"
-              ? "bg-red-100 text-red-800"
-              : params.value === "Admin"
+            params.value === "car"
               ? "bg-blue-100 text-blue-800"
-              : "bg-green-100 text-green-800"
+              : params.value === "truck"
+              ? "bg-green-100 text-green-800"
+              : params.value === "bike"
+              ? "bg-purple-100 text-purple-800"
+              : "bg-gray-100 text-gray-800"
           }`}
         >
-          {params.value || "User"}
+          {params.value?.toUpperCase()}
         </span>
+      ),
+    },
+    {
+      field: "icon",
+      headerName: "Icon",
+      width: 100,
+      renderCell: (params) => (
+        <div className="flex items-center">
+          {params.value ? (
+            <img
+              src={params.value}
+              alt="Vehicle Icon"
+              className="w-8 h-8 object-contain rounded"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/placeholder-icon.png"; // Fallback icon
+              }}
+            />
+          ) : (
+            <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+              <FiTruck className="w-4 h-4 text-gray-500" />
+            </div>
+          )}
+        </div>
       ),
     },
     {
@@ -87,14 +110,14 @@ const Users: React.FC = () => {
 
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
-    { label: strings.USERS, isActive: true, icon: FiUser },
+    { label: strings.VEHICLES, isActive: true, icon: FiTruck },
   ];
 
   useEffect(() => {
-    loadUsers();
+    loadVehicles();
   }, []);
 
-  const loadUsers = async (
+  const loadVehicles = async (
     search: string = "",
     page: number = currentPage,
     limit: number = pageSize
@@ -102,47 +125,47 @@ const Users: React.FC = () => {
     setLoading(true);
     try {
       const result: PaginatedResponse<Row> = search
-        ? await userServices.search(search, page, limit)
-        : await userServices.getAll(page, limit);
+        ? await vehicleServices.search(search, page, limit)
+        : await vehicleServices.getAll(page, limit);
 
-      setUsers(result.data);
+      setVehicles(result.data);
       setTotalRows(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(result.page);
     } catch (error: any) {
-      console.error("Error loading users:", error);
-      toast.error(error.message || "Failed to fetch users");
+      console.error("Error loading vehicles:", error);
+      toast.error(error.message || "Failed to fetch vehicles");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddUser = () => {
-    navigate(urls.addUserViewPath);
+  const handleAddVehicle = () => {
+    navigate(urls.addVehicleViewPath);
   };
 
   // Handle edit click from DataTable
-  const handleEditUser = (id: string | number) => {
-    const selectedUser = users.find((user) => user.id === id);
-    navigate(`${urls.editUserViewPath}/${id}`, {
-      state: { userData: selectedUser },
+  const handleEditVehicle = (id: string | number) => {
+    const selectedVehicle = vehicles.find((vehicle) => vehicle.id === id);
+    navigate(`${urls.editVehicleViewPath}/${id}`, {
+      state: { vehicleData: selectedVehicle },
     });
   };
 
-  const handleDeleteUser = async (
+  const handleDeleteVehicle = async (
     id: string | number,
     deletedRow: Row,
     rows: Row[]
   ) => {
     try {
-      const result = await userServices.inactivate(id);
+      const result = await vehicleServices.inactivate(id);
       toast.success(result.message);
-      await loadUsers(searchValue, currentPage, pageSize); // Reload current page
+      await loadVehicles(searchValue, currentPage, pageSize); // Reload current page
     } catch (error: any) {
-      console.error("Error inactivating user:", error);
+      console.error("Error inactivating vehicle:", error);
       toast.error(error.message);
       // Revert the rows on error
-      setUsers(rows);
+      setVehicles(rows);
     }
   };
 
@@ -150,39 +173,39 @@ const Users: React.FC = () => {
     console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
-    loadUsers(searchText, 1, pageSize);
+    loadVehicles(searchText, 1, pageSize);
   };
 
   // Pagination handlers
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadUsers(searchValue, page, pageSize);
+    loadVehicles(searchValue, page, pageSize);
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setCurrentPage(1); // Reset to first page
-    loadUsers(searchValue, 1, size);
+    loadVehicles(searchValue, 1, size);
   };
 
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={strings.USERS}
+        title={strings.VEHICLES}
         breadcrumbs={breadcrumbs}
         showAddButton
-        addButtonText={strings.ADD_USER}
-        onAddClick={handleAddUser}
+        addButtonText={strings.ADD_VEHICLE}
+        onAddClick={handleAddVehicle}
       />
 
       <div className="p-6">
         <DataTable
           columns={columns}
-          rows={users}
+          rows={vehicles}
           loading={loading}
           onSearch={handleSearch}
-          onDeleteRow={handleDeleteUser}
-          onEditClick={handleEditUser}
+          onDeleteRow={handleDeleteVehicle}
+          onEditClick={handleEditVehicle}
           pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
           // Server-side pagination props
@@ -193,8 +216,8 @@ const Users: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.usersViewPath,
-            filename: "users",
+            modulePath: urls.vehiclesViewPath,
+            filename: "vehicles",
           }}
         />
       </div>
@@ -202,4 +225,5 @@ const Users: React.FC = () => {
   );
 };
 
-export default Users;
+export default Vehicles;
+

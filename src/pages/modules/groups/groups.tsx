@@ -4,9 +4,9 @@ import { FiHome, FiUsers } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { groupServices } from "./services/groups.services";
-import strings from "../../../global/constants/string-contants";
-import urls from "../../../global/constants/url-constants";
+import { groupServices } from "./services/groupsServices";
+import strings from "../../../global/constants/StringConstants";
+import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
 import { tabTitle } from "../../../utils/tab-title";
 
@@ -26,7 +26,7 @@ const Groups: React.FC = () => {
   const [groups, setGroups] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  tabTitle(strings.GROUPS)
+  tabTitle(strings.GROUPS);
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -55,9 +55,9 @@ const Groups: React.FC = () => {
         </span>
       ),
     },
-    { 
-      field: "imeiDisplay", 
-      headerName: "Assets/IMEI", 
+    {
+      field: "imeiDisplay",
+      headerName: "Assets/IMEI",
       width: 200,
       renderCell: (params) => (
         <div className="truncate" title={params.value}>
@@ -67,9 +67,9 @@ const Groups: React.FC = () => {
     },
     { field: "stateName", headerName: "State Name", width: 130 },
     { field: "cityName", headerName: "City Name", width: 130 },
-    { 
-      field: "remark", 
-      headerName: "Remark", 
+    {
+      field: "remark",
+      headerName: "Remark",
       width: 150,
       renderCell: (params) => (
         <div className="truncate" title={params.value}>

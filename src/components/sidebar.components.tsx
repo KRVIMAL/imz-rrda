@@ -1,4 +1,3 @@
-// src/components/Sidebar.tsx - Updated with theme support
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -9,12 +8,11 @@ import {
   FiSmartphone,
   FiShield,
   FiTruck,
+  FiHome,
 } from "react-icons/fi";
 const sidebarItems = [
-  // { name: "Dashboard", href: "/", icon: FiHome },
-  // { name: "Map View", href: "/map", icon: FiMap },
+  { name: "Dashboard", href: "/", icon: FiHome },
   // { name: "Style Guide", href: "/styleguide", icon: FiUsers },
-  // { name: "Analytics", href: "/analytics", icon: FiMap },
   // { name: "Select Demo", href: "/selectdemo", icon: FiFileText },
   // { name: "Input Demo", href: "/inputdemo", icon: FiFileText },
   // { name: "Table Demo", href: "/table-demo", icon: FiGrid },
@@ -32,10 +30,6 @@ const sidebarItems = [
     href: "/devices-onboarding",
     icon: FiSmartphone,
   },
-  // { name: "Reports", href: "/reports", icon: FiFileText },
-  // { name: "Alerts", href: "/alerts", icon: FiAlertTriangle },
-  // { name: "Users", href: "/users", icon: FiUsers },
-  // { name: "Settings", href: "/settings", icon: FiSettings },
 ];
 
 interface SidebarProps {

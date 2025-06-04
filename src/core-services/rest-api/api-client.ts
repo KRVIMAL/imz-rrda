@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { store } from '../../store';
 import { checkTokenExpiry, clearAuthData } from '../../store/slices/auth-slices.store';
+import urls from '../../global/constants/UrlConstants';
 
 export const apiClient = axios.create({
-  baseURL: "http://192.168.1.9:9876/", // Updated base URL to match login endpoint
-  timeout: 10000, // Increased timeout for better reliability
+  // baseURL: "http://192.168.1.9:9876/", // Updated base URL to match login endpoint
+  baseURL:urls.baseURL,
+  timeout: 10000, // Increased timeout for better reliabilit
   headers: {
     'Content-Type': 'application/json',
   },
