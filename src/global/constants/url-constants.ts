@@ -37,7 +37,12 @@ export class UrlConstants {
   editDeviceOnboardingViewPath = `${this.deviceOnboardingViewPath}/edit`;
 
 
-  // Accounts URLs - ADD THIS
+    // Groups URLs 
+  groupsViewPath = "/groups";
+  addGroupViewPath = `${this.groupsViewPath}/add`;
+  editGroupViewPath = `${this.groupsViewPath}/edit`;
+
+  // Accounts URLs
   accountsViewPath = "/accounts";
 
 }

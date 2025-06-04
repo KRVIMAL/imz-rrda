@@ -24,6 +24,8 @@ import VehicleMasters from "./pages/masters/vehicle-masters/VehicleMasters";
 import AddEditVehicleMasterForm from "./pages/masters/vehicle-masters/add-vehicle-master/AddEditVehicleMasterForm";
 import DeviceOnboarding from "./pages/modules/device-onboarding/device-onboarding";
 import AddEditDeviceOnboardingForm from "./pages/modules/device-onboarding/add-device-onboarding/add-device-onboarding-form";
+import Groups from "./pages/modules/groups/groups";
+import AddEditGroupForm from "./pages/modules/groups/add-groups/add-group-form";
 function App() {
   return (
     <ThemeProvider>
@@ -105,6 +107,17 @@ function App() {
                       <Route
                         path="/devices-onboarding/edit/:id"
                         element={<AddEditDeviceOnboardingForm />}
+                      />
+
+                      {/* Groups module Routes */}
+                      <Route path="/groups" element={<Groups />} />
+                      <Route
+                        path="/groups/add"
+                        element={<AddEditGroupForm />}
+                      />
+                      <Route
+                        path="/groups/edit/:id"
+                        element={<AddEditGroupForm />}
                       />
                       <Route
                         path="/reports"

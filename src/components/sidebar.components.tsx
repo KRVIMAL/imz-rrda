@@ -16,23 +16,24 @@ import {
 } from "react-icons/fi";
 
 const sidebarItems = [
-  { name: "Dashboard", href: "/", icon: FiHome },
-  { name: "Map View", href: "/map", icon: FiMap },
-  { name: "Style Guide", href: "/styleguide", icon: FiUsers },
-  { name: "Analytics", href: "/analytics", icon: FiMap },
-  { name: "Select Demo", href: "/selectdemo", icon: FiFileText },
-  { name: "Input Demo", href: "/inputdemo", icon: FiFileText },
-  { name: "Table Demo", href: "/table-demo", icon: FiGrid },
+  // { name: "Dashboard", href: "/", icon: FiHome },
+  // { name: "Map View", href: "/map", icon: FiMap },
+  // { name: "Style Guide", href: "/styleguide", icon: FiUsers },
+  // { name: "Analytics", href: "/analytics", icon: FiMap },
+  // { name: "Select Demo", href: "/selectdemo", icon: FiFileText },
+  // { name: "Input Demo", href: "/inputdemo", icon: FiFileText },
+  // { name: "Table Demo", href: "/table-demo", icon: FiGrid },
   { name: "Devices", href: "/devices", icon: FiHardDrive },
   { name: "Vehicles", href: "/vehicles", icon: FiUsers },
-  { name: "Drivers", href: "/drivers", icon: FiHardDrive },
   { name: "Clients", href: "/clients", icon: FiUsers },
+  { name: "Drivers", href: "/drivers", icon: FiHardDrive },
   { name: "Vehicles Master", href: "/vehicle-masters", icon: FiUsers },
+  { name: "Groups", href: "/groups", icon: FiUsers },
   { name: "Device Onboarding", href: "/devices-onboarding", icon: FiUsers },
-  { name: "Reports", href: "/reports", icon: FiFileText },
-  { name: "Alerts", href: "/alerts", icon: FiAlertTriangle },
-  { name: "Users", href: "/users", icon: FiUsers },
-  { name: "Settings", href: "/settings", icon: FiSettings },
+  // { name: "Reports", href: "/reports", icon: FiFileText },
+  // { name: "Alerts", href: "/alerts", icon: FiAlertTriangle },
+  // { name: "Users", href: "/users", icon: FiUsers },
+  // { name: "Settings", href: "/settings", icon: FiSettings },
 ];
 
 interface SidebarProps {

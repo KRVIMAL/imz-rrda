@@ -9,6 +9,7 @@ export class StringConstants {
   VEHICLE_MASTERS = "Vehicle Masters";
   VEHICLE_MASTER = "VEHICLE_MASTER";
   DEVICE_ONBOARDING_MODULE = "DEVICE_ONBOARDING"; // Module identifier
+  GROUPS_MODULE = "GROUPS"; 
 
   // Navigation
   HOME = "Home";
@@ -19,6 +20,9 @@ export class StringConstants {
   TRANSPORTERS = "Transporters";
   CONTRACTORS = "Contractors";
   DEVICE_ONBOARDING = "Device On-boarding";
+  GROUPS = "Groups";
+
+
   // Status
   ACTIVE = "Active";
   INACTIVE = "Inactive";
@@ -53,6 +57,12 @@ export class StringConstants {
   ADD_DEVICE_ONBOARDING = "Add Device On-boarding";
   UPDATE_DEVICE_ONBOARDING = "Update Device On-boarding";
   EDIT_DEVICE_ONBOARDING = "Edit Device On-boarding";
+
+
+  // Groups specific 
+  ADD_GROUP = "Add Group";
+  UPDATE_GROUP = "Update Group";
+  EDIT_GROUP = "Edit Group";
 
   // Client specific
   ADD_CLIENT = "Add Client";
@@ -90,7 +100,7 @@ export class StringConstants {
   VEHICLE_MODEL_NAME = "Vehicle Model";
   DRIVER_SELECTION = "Driver Selection";
 
-  // Device On-boarding form labels - ADD THESE
+  // Device On-boarding form labels 
   ACCOUNT_NAME = "Account Name";
   DEVICE_IMEI = "Device IMEI";
   DEVICE_SERIAL_NO = "Device Serial No";
@@ -99,6 +109,15 @@ export class StringConstants {
   SIM_NO_1_OPERATOR = "SIM No 1 Operator";
   SIM_NO_2_OPERATOR = "SIM No 2 Operator";
   VEHICLE_DESCRIPTION = "Vehicle Description";
+
+  // Groups form labels 
+  GROUP_NAME = "Group Name";
+  GROUP_TYPE = "Group Type";
+  SELECT_ASSET_IMEI = "Select Asset/IMEI";
+  // STATE_NAME = "State Name";
+  // CITY_NAME = "City Name";
+  // REMARK = "Remark";
+  // CONTACT_NO = "Contact No";
 
   // Client form labels
   CLIENT_NAME = "Client Name";
