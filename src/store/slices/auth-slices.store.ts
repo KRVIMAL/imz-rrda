@@ -85,7 +85,7 @@ export const authSlice = createSlice({
       state.tokenType = tokenType;
       state.expiresIn = expiresIn;
       state.expiresAt = Date.now() + (expiresIn * 1000); // Convert seconds to milliseconds
-    
+      state.user=user;
       state.isAuthenticated = true;
       
       // Store in localStorage for persistence

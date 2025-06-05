@@ -17,6 +17,7 @@ const Login: React.FC = () => {
   const from = location.state?.from?.pathname || "/";
 
   if (user) {
+    console.log({ user });
     return <Navigate to={from} replace />;
   }
 
