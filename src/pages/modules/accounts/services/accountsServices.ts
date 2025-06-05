@@ -114,6 +114,7 @@ interface AccountHierarchyResponse {
 
 // Transform API account data to Row format
 const transformAccountToRow = (account: any): Row => {
+  console.log({account})
   return {
     id: account._id,
     accountId: account.accountId || "N/A",
@@ -156,6 +157,7 @@ getAll: async (): Promise<Row[]> => {
       accounts.push({
         _id: response.data._id,
         accountName: response.data.accountName,
+        accountId:response?.data?.accountId,
         level: response.data.level,
         hierarchyPath: response.data.hierarchyPath,
         client: response.data.client,
@@ -174,6 +176,7 @@ getAll: async (): Promise<Row[]> => {
         response.data.children.forEach((child:any) => {
           accounts.push({
             _id: child._id,
+            accountId:child.accountId,
             accountName: child.accountName,
             level: child.level,
             hierarchyPath: child.hierarchyPath,
