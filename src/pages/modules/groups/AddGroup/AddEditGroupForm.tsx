@@ -377,7 +377,7 @@ const AddEditGroupForm: React.FC = () => {
 
       setTimeout(() => {
         navigate(urls.groupsViewPath);
-      }, 1500);
+      }, 1300);
     } catch (error: any) {
       console.error("Error saving group:", error);
       toast.error(error.message || "Failed to save group");

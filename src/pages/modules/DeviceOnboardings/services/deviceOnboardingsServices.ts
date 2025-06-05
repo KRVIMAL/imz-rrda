@@ -162,10 +162,6 @@ const transformDeviceOnboardingToRow = (device: DeviceOnboardingData): Row => ({
   driverModule: device.driver || "", // This should be the driver ID
 });
 
-// Hardcoded account ID - you can replace this with localStorage value later
-const state = store.getState().auth;
-const accountId = state?.user?.account?._id;
-const ACCOUNT_ID = accountId;
 
 export const deviceOnboardingServices = {
   getAll: async (
@@ -446,7 +442,7 @@ export const deviceOnboardingServices = {
   getAccountHierarchy: async (): Promise<Account[]> => {
     try {
       const response: ApiResponse<AccountHierarchyResponse> = await getRequest(
-        `${urls.accountsViewPath}/${ACCOUNT_ID}/hierarchy-optimized`
+        `${urls.accountsViewPath}/${store.getState()?.auth?.user?.account?._id}/hierarchy-optimized`
       );
       if (response.success) {
         // Extract immediate children accounts

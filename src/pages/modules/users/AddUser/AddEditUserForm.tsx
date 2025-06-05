@@ -479,7 +479,7 @@ const AddEditUserForm: React.FC = () => {
 
       setTimeout(() => {
         navigate(urls.usersViewPath);
-      }, 1500);
+      }, 1300);
     } catch (error: any) {
       console.error("Error saving user:", error);
       toast.error(error.message || "Failed to save user");

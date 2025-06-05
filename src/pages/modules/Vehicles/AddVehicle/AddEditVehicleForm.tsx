@@ -260,7 +260,7 @@ const AddEditVehicleForm: React.FC = () => {
       // Navigate back after a short delay to show the success message
       setTimeout(() => {
         navigate(urls.vehiclesViewPath);
-      }, 1500);
+      }, 1300);
     } catch (error: any) {
       console.error("Error saving vehicle:", error);
       toast.error(error.message || "Failed to save vehicle");

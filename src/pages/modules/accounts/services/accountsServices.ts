@@ -112,11 +112,6 @@ interface AccountHierarchyResponse {
   parentAccount?: ParentAccountInfo;
 }
 
-// Hardcoded account ID - replace with localStorage later
-  const state = store.getState().auth;
-  const accountId = state?.user?.account?._id;
-  const ACCOUNT_ID = accountId;
-  console.log({ACCOUNT_ID})
 // Transform API account data to Row format
 const transformAccountToRow = (account: any): Row => {
   return {
@@ -150,7 +145,7 @@ export const accountServices = {
 getAll: async (): Promise<Row[]> => {
   try {
     const response: any = await getRequest(
-      `${urls.accountsViewPath}/${ACCOUNT_ID}/hierarchy-optimized`
+      `${urls.accountsViewPath}/${store.getState()?.auth?.user?.account?._id}/hierarchy-optimized`
     );
 
     if (response.success) {
@@ -380,7 +375,7 @@ getAll: async (): Promise<Row[]> => {
 getAccountHierarchy: async (): Promise<{ parentAccount: ParentAccountInfo | null; currentAccount: ParentAccountInfo | null }> => {
   try {
     const response: ApiResponse<AccountHierarchyResponse> = await getRequest(
-      `${urls.accountsViewPath}/${ACCOUNT_ID}/hierarchy-optimized`
+      `${urls.accountsViewPath}/${store.getState()?.auth?.user?.account?._id}/hierarchy-optimized`
     );
 
     if (response.success) {

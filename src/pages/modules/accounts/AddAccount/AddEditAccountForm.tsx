@@ -9,6 +9,7 @@ import { accountServices, Client } from "../services/accountsServices";
 import strings from "../../../../global/constants/StringConstants";
 import urls from "../../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
+import { store } from "../../../../store";
 
 // Form state type
 interface AccountFormState {
@@ -245,7 +246,7 @@ const AddEditAccountForm: React.FC = () => {
     try {
       const accountData = {
         accountName: formData.accountName.value,
-        parentAccount: "684014ff67dfbeac2fd2707d",
+        parentAccount: store.getState()?.auth?.user?.account?._id,
         clientId: formData.clientId.value,
         status: formData.status.value,
       };
@@ -257,7 +258,7 @@ const AddEditAccountForm: React.FC = () => {
 
       setTimeout(() => {
         navigate(urls.accountsViewPath);
-      }, 1500);
+      }, 1300);
     } catch (error: any) {
       console.error("Error saving account:", error);
       toast.error(error.message || "Failed to save account");
@@ -311,7 +312,7 @@ const AddEditAccountForm: React.FC = () => {
               <div>
                 <CustomInput
                   label={strings.PARENT_ACCOUNT}
-                  value={parentAccountName}
+                  value={store.getState()?.auth?.user?.account?.accountName}
                   onChange={() => {}} // Read only
                   required={false}
                   placeholder="Parent account will be auto-selected"

@@ -451,7 +451,7 @@ const AddEditDeviceOnboardingForm: React.FC = () => {
 
       setTimeout(() => {
         navigate(urls.deviceOnboardingViewPath);
-      }, 1500);
+      }, 1300);
     } catch (error: any) {
       console.error("Error saving device:", error);
       toast.error(error.message || "Failed to save device");

@@ -331,7 +331,7 @@ const AddEditRoleForm: React.FC = () => {
 
       setTimeout(() => {
         navigate(urls.rolesViewPath);
-      }, 1500);
+      }, 1300);
     } catch (error: any) {
       console.error("Error saving role:", error);
       toast.error(error.message || "Failed to save role");
