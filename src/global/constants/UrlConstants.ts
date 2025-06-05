@@ -57,6 +57,9 @@ export class UrlConstants {
   addUserViewPath = `${this.usersViewPath}/add`;
   editUserViewPath = `${this.usersViewPath}/edit`;
 
+   // Road Master URLs - ADD THESE
+  roadMasterViewPath = "/omms/data/state-db";
+
     // Roles URLs - ADD THESE
   rolesViewPath = "/roles";
   addRoleViewPath = `${this.rolesViewPath}/add`;

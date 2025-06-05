@@ -31,6 +31,7 @@ const sidebarItems = [
   },
   { name: "Groups Master", href: "/group-master", icon: FiUsers },
   { name: "Users", href: "/users", icon: FiUsers },
+  { name: "Roads", href: "/roads", icon: FiUsers },
 ];
 
 interface SidebarProps {

@@ -14,6 +14,7 @@ export class StringConstants {
   ROLES_MODULE = "ROLES";
   ACCOUNTS_MODULE = "ACCOUNTS";
   USERS_MODULE = "USERS";
+   ROAD_MASTER_MODULE = "ROAD_MASTER";  
 
   // Navigation
   HOME = "Home";
@@ -30,6 +31,8 @@ export class StringConstants {
   ROLES = "Roles";
   ACCOUNTS = "Accounts";
   USERS = "Users";
+  ROAD_MASTER = "Road Master";  
+
 
   // Status
   ACTIVE = "Active";
@@ -45,6 +48,9 @@ export class StringConstants {
   SAVE = "Save";
   NEXT = "Next";
   PREVIOUS = "Previous";
+  EXPORT = "Export";  // ADD THIS
+
+
 
   // Device specific
   ADD_DEVICE = "Add Device";
@@ -86,6 +92,10 @@ export class StringConstants {
   ADD_USER = "Add User";
   UPDATE_USER = "Update User";
   EDIT_USER = "Edit User";
+
+   // Road Master specific - ADD THESE (Read-only module, no add/edit)
+  VIEW_ROAD_MASTER = "View Road Master";
+  EXPORT_ROAD_MASTER = "Export Road Master";
 
   // Roles specific
   ADD_ROLE = "Add Role";
@@ -211,6 +221,33 @@ export class StringConstants {
   INVALID_LICENSE_FORMAT = "Invalid license format";
   INVALID_IMEI_FORMAT = "IMEI should be 15-17 characters";
   INVALID_PASSWORD_LENGTH = "Password must be at least 6 characters";
+
+  // Road Master labels - ADD THESE
+  DISTRICT_NAME = "District Name";
+  SCHEME_TYPE = "Scheme Type";
+  PACKAGE_NO = "Package No";
+  ROAD_CODE = "Road Code";
+  ROAD_NAME = "Road Name";
+  PIU_NAME = "PIU Name";
+  CONTRACTOR_NAME = "Contractor Name";
+  NO_OF_DEVICES = "No. of Devices";
+  WORK_STAGE = "Work Stage";
+  DEVICE_INSTALLATION_STATUS = "Device Installation Status";
+  KML_DATA_STATUS = "KML Data Status";
+  SANCTION_DATE = "Sanction Date";
+  SANCTION_LENGTH = "Sanction Length";
+  ACTIVITY_NAME = "Activity Name";
+  ACTIVITY_QUANTITY = "Activity Quantity";
+  ACTIVITY = "Activity";
+  ACTUAL_ACTIVITY_START_DATE = "Actual Activity Start Date";
+  ACTIVITY_COMPLETION_DATE = "Activity Completion Date";
+  ACTUAL_ACTIVITY_COMPLETION_DATE = "Actual Activity Completion Date";
+  AWARD_DATE = "Award Date";
+  COMPLETED_ROAD_LENGTH = "Completed Road Length";
+  COMPLETION_DATE = "Completion Date";
+  EXECUTED_QUANTITY = "Executed Quantity";
+  PIMS_FINALIZE_DATE = "PIMS Finalize Date";
+
 }
 
 let strings = new StringConstants();

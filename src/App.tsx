@@ -35,6 +35,7 @@ import GroupModules from "./pages/Modules/GroupModule/GroupModules";
 import AddEditGroupModuleForm from "./pages/Modules/GroupModule/AddGroupModule/AddEditGroupModuleForm";
 import GroupMasters from "./pages/Masters/GroupMaster/GroupMasters";
 import AddEditGroupMasterForm from "./pages/Masters/GroupMaster/AddGroupMasterForm/AddEditGroupMasterForm";
+import RoadMaster from "./pages/Masters/RoadMaster/RoadMaster";
 function App() {
   useTokenExpiry();
   return (
@@ -199,6 +200,7 @@ function App() {
                           <div className="card card-body">Settings Page</div>
                         }
                       />
+                      <Route path="/roads" element={<RoadMaster />} />
                     </Routes>
                   </Layout>
                 </ProtectedRoute>
