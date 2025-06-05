@@ -33,6 +33,7 @@ const Drivers: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
+    { field: "driverId", headerName: "Driver ID", width: 150 },
     { field: "name", headerName: "Driver Name", width: 150 },
     { field: "contactNo", headerName: "Contact No", width: 130 },
     { field: "email", headerName: "Email", width: 200 },

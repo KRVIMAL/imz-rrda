@@ -126,6 +126,7 @@ const Accounts: React.FC = () => {
     setLoading(true);
     try {
       const result = await accountServices.getAll();
+      // setAccounts(result);
       setAllAccounts(result);
       setFilteredAccounts(result);
     } catch (error: any) {

@@ -16,6 +16,7 @@ interface ApiResponse<T> {
 }
 
 interface DriverData {
+  driverId:string,
   _id: string;
   name: string;
   contactNo: string;
@@ -54,6 +55,7 @@ interface PaginatedResponse<T> {
 
 // Transform API driver data to Row format
 const transformDriverToRow = (driver: DriverData): Row => ({
+  driverId:driver.driverId,
   id: driver._id,
   name: driver.name,
   contactNo: driver.contactNo,

@@ -34,6 +34,7 @@ const VehicleMasters: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
+    { field: "vehcileMasterId", headerName: "Vehicle Master ID", width: 140 },
     { field: "vehicleNumber", headerName: "Vehicle Number", width: 140 },
     { field: "chassisNumber", headerName: "Chassis Number", width: 180 },
     { field: "engineNumber", headerName: "Engine Number", width: 180 },

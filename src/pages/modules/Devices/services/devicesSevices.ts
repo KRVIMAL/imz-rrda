@@ -55,6 +55,7 @@ interface PaginatedResponse<T> {
 
 // Transform API device data to Row format
 const transformDeviceToRow = (device: DeviceData): Row => ({
+  deviceId:device.deviceId,
   id: device._id,
   modelName: device.modelName,
   manufacturerName: device.manufacturerName,

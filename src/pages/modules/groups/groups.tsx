@@ -34,6 +34,7 @@ const Groups: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
+    { field: "groupId", headerName: "Group ID", width: 150 },
     { field: "groupName", headerName: "Group Name", width: 150 },
     {
       field: "groupType",

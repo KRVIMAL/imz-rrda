@@ -15,6 +15,7 @@ interface ApiResponse<T> {
 }
 
 interface VehicleData {
+  vehcileId:string;
   _id: string;
   brandName: string;
   modelName: string;
@@ -51,6 +52,7 @@ interface PaginatedResponse<T> {
 
 // Transform API vehicle data to Row format
 const transformVehicleToRow = (vehicle: VehicleData): Row => ({
+  vehcileId:vehicle.vehcileId,
   id: vehicle._id,
   brandName: vehicle.brandName,
   modelName: vehicle.modelName,

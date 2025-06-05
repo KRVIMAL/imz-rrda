@@ -42,6 +42,7 @@ interface DriverInfo {
 }
 
 interface VehicleMasterData {
+  vehcileMasterId:string;
   _id: string;
   vehicleNumber: string;
   chassisNumber: string;
@@ -101,6 +102,7 @@ export interface DriverModule {
 
 // Transform API vehicle master data to Row format
 const transformVehicleMasterToRow = (vehicleMaster: VehicleMasterData): Row => ({
+  vehcileMasterId:vehicleMaster.vehcileMasterId,
   id: vehicleMaster._id,
   vehicleNumber: vehicleMaster.vehicleNumber,
   chassisNumber: vehicleMaster.chassisNumber,

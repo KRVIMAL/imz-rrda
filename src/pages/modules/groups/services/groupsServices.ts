@@ -34,6 +34,7 @@ interface ImeiDevice {
 }
 
 interface GroupData {
+  groupId:string;
   _id: string;
   groupName: string;
   groupType: string;
@@ -102,6 +103,7 @@ const transformGroupToRow = (group: GroupData): Row => {
   }
 
   return {
+    groupId:group.groupId,
     id: group._id,
     groupName: group.groupName,
     groupType: group.groupType,

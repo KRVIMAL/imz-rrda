@@ -21,15 +21,15 @@ const sidebarItems = [
   { name: "Clients", href: "/clients", icon: FiUsers },
   { name: "Drivers", href: "/drivers", icon: FiUsers },
   { name: "Vehicles Master", href: "/vehicle-masters", icon: FiTruck },
-  { name: "Accounts", href: "/accounts", icon: FiShield },
+  { name: "Accounts", href: "/accounts", icon: FiUsers },
   { name: "Groups", href: "/groups", icon: FiUsers },
-  { name: "Roles", href: "/roles", icon: FiUsers },
+  { name: "Roles", href: "/roles", icon: FiShield },
   {
     name: "Device Onboarding",
     href: "/devices-onboarding",
     icon: FiSmartphone,
   },
-  { name: "Users", href: "/users", icon: FiShield },
+  { name: "Users", href: "/users", icon: FiUsers },
 ];
 
 interface SidebarProps {
