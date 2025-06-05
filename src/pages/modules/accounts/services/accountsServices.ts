@@ -119,7 +119,7 @@ const transformAccountToRow = (account: any): Row => {
     id: account._id,
     accountId: account.accountId || "N/A",
     accountName: account.accountName,
-    parentAccountName:account?.parentAccount?.accountName,
+    parentAccountName:account?.parentAccount?.accountName || "N/A",
     contactName: account.client?.contactName || "N/A",
     email: account.client?.email || "N/A",
     contactNo: account.client?.contactNo || "N/A",
