@@ -96,8 +96,6 @@ const AddEditDriverForm: React.FC = () => {
     if (isEdit && id) {
       // Get data from navigation state first, fallback to API
       const { state } = location;
-      console.log({ state });
-
       if (state?.driverData) {
         setFormData(initialFormState(state.driverData));
       } else {
@@ -116,7 +114,6 @@ const AddEditDriverForm: React.FC = () => {
         navigate(urls.driversViewPath);
       }
     } catch (error: any) {
-      console.error("Error loading driver:", error);
       toast.error(error.message || "Failed to fetch driver");
       navigate(urls.driversViewPath);
     } finally {
@@ -333,7 +330,6 @@ const AddEditDriverForm: React.FC = () => {
         navigate(urls.driversViewPath);
       }, 1500);
     } catch (error: any) {
-      console.error("Error saving driver:", error);
       toast.error(error.message || "Failed to save driver");
     } finally {
       setSaving(false);

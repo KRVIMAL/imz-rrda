@@ -170,7 +170,6 @@ const Vehicles: React.FC = () => {
   };
 
   const handleSearch = (searchText: string) => {
-    console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
     loadVehicles(searchText, 1, pageSize);
@@ -226,4 +225,3 @@ const Vehicles: React.FC = () => {
 };
 
 export default Vehicles;
-

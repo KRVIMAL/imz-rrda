@@ -122,7 +122,6 @@ const AddEditRoleForm: React.FC = () => {
     try {
       const role = await roleServices.getById(id!);
       if (role) {
-        console.log("Loaded role data:", role); // Debug log
         setFormData(initialFormState(role));
       } else {
         navigate(urls.rolesViewPath);

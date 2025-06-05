@@ -248,7 +248,6 @@ export const deviceOnboardingServices = {
       );
 
       if (response.success) {
-        console.log({ response: response?.data });
         return {
           device: transformDeviceOnboardingToRow(response.data),
           message: response.message || "Device created successfully",
@@ -449,7 +448,6 @@ export const deviceOnboardingServices = {
       const response: ApiResponse<AccountHierarchyResponse> = await getRequest(
         `${urls.accountsViewPath}/${ACCOUNT_ID}/hierarchy-optimized`
       );
-      console.log({ response });
       if (response.success) {
         // Extract immediate children accounts
         return response.data.children.filter(

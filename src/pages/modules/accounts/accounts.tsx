@@ -192,7 +192,7 @@ const Accounts: React.FC = () => {
   };
 
   // const handleSearch = (searchText: string) => {
-  //   console.log({ searchText });
+  //
   //   setSearchValue(searchText);
   //   setCurrentPage(1); // Reset to first page on search
   //   loadAccounts(searchText, 1, pageSize);

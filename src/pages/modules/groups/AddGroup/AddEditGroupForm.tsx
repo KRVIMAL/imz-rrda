@@ -87,7 +87,6 @@ const AddEditGroupForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  console.log({ location });
   const isEdit = Boolean(id);
   tabTitle(isEdit === true ? strings.EDIT_GROUP : strings.ADD_GROUP);
   const [loading, setLoading] = useState(false);

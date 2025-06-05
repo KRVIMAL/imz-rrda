@@ -125,7 +125,6 @@ const AddEditDeviceOnboardingForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  console.log({ location });
   const isEdit = Boolean(id);
   tabTitle(
     isEdit === true
@@ -220,7 +219,6 @@ const AddEditDeviceOnboardingForm: React.FC = () => {
     try {
       const response = await deviceOnboardingServices.getById(id!);
       if (response) {
-        console.log("API response for edit:", response); // Debug log
         setFormData(initialFormState(response));
       } else {
         navigate(urls.deviceOnboardingViewPath);

@@ -116,10 +116,9 @@ interface AccountHierarchyResponse {
   const state = store.getState().auth;
   const accountId = state?.user?.account?._id;
   const ACCOUNT_ID = accountId;
-
+  console.log({ACCOUNT_ID})
 // Transform API account data to Row format
 const transformAccountToRow = (account: any): Row => {
-  console.log('Acount',account)
   return {
     id: account._id,
     accountId: account.accountId || "N/A",

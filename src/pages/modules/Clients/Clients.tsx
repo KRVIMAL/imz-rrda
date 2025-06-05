@@ -26,6 +26,7 @@ interface PaginatedResponse<T> {
 const Clients: React.FC = () => {
   const state = store.getState().auth;
   const accountId = state.user.account._id;
+  
   const navigate = useNavigate();
   tabTitle(strings.CLIENTS);
   const [clients, setClients] = useState<Row[]>([]);
@@ -138,7 +139,6 @@ const Clients: React.FC = () => {
   };
 
   const handleSearch = (searchText: string) => {
-    console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
     loadClients(searchText, 1, pageSize);

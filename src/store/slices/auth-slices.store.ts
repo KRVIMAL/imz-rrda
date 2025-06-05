@@ -79,8 +79,6 @@ export const authSlice = createSlice({
   reducers: {
     setAuthData: (state, action: PayloadAction<LoginResponse>) => {
       const { user, accessToken, tokenType, expiresIn} = action.payload;
-
-      console.log({user})
       state.accessToken = accessToken;
       state.tokenType = tokenType;
       state.expiresIn = expiresIn;

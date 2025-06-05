@@ -100,7 +100,6 @@ const AddEditVehicleForm: React.FC = () => {
     if (isEdit && id) {
       // Get data from navigation state first, fallback to API
       const { state } = location;
-      console.log({ state });
 
       if (state?.vehicleData) {
         setFormData(initialFormState(state.vehicleData));

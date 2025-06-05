@@ -1,32 +1,30 @@
-
-
 // src/pages/DataTableDemo.tsx - Demo page with examples
-import React, { useState, useEffect } from 'react';
-import DataTable from '../components/ui/DataTable/DataTable';
-import { Column, Row } from '../components/ui/DataTable/types';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import React, { useState, useEffect } from "react";
+import DataTable from "../components/ui/DataTable/DataTable";
+import { Column, Row } from "../components/ui/DataTable/types";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 
 // Mock data service (similar to your seller.js)
-const mockDataService:any = {
+const mockDataService: any = {
   rows: [
     {
       id: 1,
       login: "cycle-depot",
-      title: "Cycle-Depot", 
+      title: "Cycle-Depot",
       desc: "Premium bicycle store",
       dateCreated: "2023-03-09",
       status: "Active",
-      revenue: 25000
+      revenue: 25000,
     },
     {
       id: 2,
       login: "toplowriderstore",
       title: "Top Lowrider",
       desc: "Custom lowrider bikes",
-      dateCreated: "2023-03-09", 
+      dateCreated: "2023-03-09",
       status: "Active",
-      revenue: 18500
+      revenue: 18500,
     },
     {
       id: 3,
@@ -34,8 +32,8 @@ const mockDataService:any = {
       title: "Mountain Bikes Pro",
       desc: "Professional mountain biking equipment",
       dateCreated: "2023-02-15",
-      status: "Inactive", 
-      revenue: 32000
+      status: "Inactive",
+      revenue: 32000,
     },
     {
       id: 4,
@@ -44,80 +42,80 @@ const mockDataService:any = {
       desc: "Urban commuter bicycles",
       dateCreated: "2023-01-20",
       status: "Active",
-      revenue: 15750
+      revenue: 15750,
     },
     {
-        id: 5,
-        login: "cycle-depot 5",
-        title: "Cycle-Depot", 
-        desc: "Premium bicycle store",
-        dateCreated: "2023-03-09",
-        status: "Active",
-        revenue: 25000
-      },
-      {
-        id: 6,
-        login: "toplowriderstore 6",
-        title: "Top Lowrider",
-        desc: "Custom lowrider bikes",
-        dateCreated: "2023-03-09", 
-        status: "Active",
-        revenue: 18500
-      },
-      {
-        id: 7,
-        login: "mountainbikes 7",
-        title: "Mountain Bikes Pro",
-        desc: "Professional mountain biking equipment",
-        dateCreated: "2023-02-15",
-        status: "Inactive", 
-        revenue: 32000
-      },
-      {
-        id: 8,
-        login: "citycycles 8",
-        title: "City Cycles",
-        desc: "Urban commuter bicycles",
-        dateCreated: "2023-01-20",
-        status: "Active",
-        revenue: 15750
-      },
-      {
-        id: 9,
-        login: "cycle-depot 9",
-        title: "Cycle-Depot", 
-        desc: "Premium bicycle store",
-        dateCreated: "2023-03-09",
-        status: "Active",
-        revenue: 25000
-      },
-      {
-        id: 10,
-        login: "toplowriderstore 10",
-        title: "Top Lowrider",
-        desc: "Custom lowrider bikes",
-        dateCreated: "2023-03-09", 
-        status: "Active",
-        revenue: 18500
-      },
-      {
-        id: 11,
-        login: "mountainbikes 11",
-        title: "Mountain Bikes Pro",
-        desc: "Professional mountain biking equipment",
-        dateCreated: "2023-02-15",
-        status: "Inactive", 
-        revenue: 32000
-      },
-      {
-        id: 12,
-        login: "citycycles 12",
-        title: "City Cycles",
-        desc: "Urban commuter bicycles",
-        dateCreated: "2023-01-20",
-        status: "Active",
-        revenue: 15750
-      }
+      id: 5,
+      login: "cycle-depot 5",
+      title: "Cycle-Depot",
+      desc: "Premium bicycle store",
+      dateCreated: "2023-03-09",
+      status: "Active",
+      revenue: 25000,
+    },
+    {
+      id: 6,
+      login: "toplowriderstore 6",
+      title: "Top Lowrider",
+      desc: "Custom lowrider bikes",
+      dateCreated: "2023-03-09",
+      status: "Active",
+      revenue: 18500,
+    },
+    {
+      id: 7,
+      login: "mountainbikes 7",
+      title: "Mountain Bikes Pro",
+      desc: "Professional mountain biking equipment",
+      dateCreated: "2023-02-15",
+      status: "Inactive",
+      revenue: 32000,
+    },
+    {
+      id: 8,
+      login: "citycycles 8",
+      title: "City Cycles",
+      desc: "Urban commuter bicycles",
+      dateCreated: "2023-01-20",
+      status: "Active",
+      revenue: 15750,
+    },
+    {
+      id: 9,
+      login: "cycle-depot 9",
+      title: "Cycle-Depot",
+      desc: "Premium bicycle store",
+      dateCreated: "2023-03-09",
+      status: "Active",
+      revenue: 25000,
+    },
+    {
+      id: 10,
+      login: "toplowriderstore 10",
+      title: "Top Lowrider",
+      desc: "Custom lowrider bikes",
+      dateCreated: "2023-03-09",
+      status: "Active",
+      revenue: 18500,
+    },
+    {
+      id: 11,
+      login: "mountainbikes 11",
+      title: "Mountain Bikes Pro",
+      desc: "Professional mountain biking equipment",
+      dateCreated: "2023-02-15",
+      status: "Inactive",
+      revenue: 32000,
+    },
+    {
+      id: 12,
+      login: "citycycles 12",
+      title: "City Cycles",
+      desc: "Urban commuter bicycles",
+      dateCreated: "2023-01-20",
+      status: "Active",
+      revenue: 15750,
+    },
   ],
 
   getAll: () => {
@@ -134,7 +132,7 @@ const mockDataService:any = {
         if (row.isNew) {
           mockDataService.rows.push(row as any);
         } else {
-          mockDataService.rows = mockDataService.rows.map((r:any) => 
+          mockDataService.rows = mockDataService.rows.map((r: any) =>
             r.id === row.id ? { ...r, ...row } : r
           );
         }
@@ -146,12 +144,16 @@ const mockDataService:any = {
   deleteRow: (rowId: string | number) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const deletedRow = mockDataService.rows.find((r:any) => r.id === rowId);
-        mockDataService.rows = mockDataService.rows.filter((r:any) => r.id !== rowId);
+        const deletedRow = mockDataService.rows.find(
+          (r: any) => r.id === rowId
+        );
+        mockDataService.rows = mockDataService.rows.filter(
+          (r: any) => r.id !== rowId
+        );
         resolve({ data: deletedRow });
       }, 500);
     });
-  }
+  },
 };
 
 const DataTableDemo: React.FC = () => {
@@ -161,79 +163,82 @@ const DataTableDemo: React.FC = () => {
   // Column definitions
   const columns: Column[] = [
     {
-      field: 'id',
-      headerName: 'ID',
+      field: "id",
+      headerName: "ID",
       width: 80,
-      type: 'number',
-      align: 'center',
-      editable: false
+      type: "number",
+      align: "center",
+      editable: false,
     },
     {
-      field: 'login',
-      headerName: 'Login',
+      field: "login",
+      headerName: "Login",
       width: 120,
-      type: 'string',
-      align: 'center',
-      editable: true
+      type: "string",
+      align: "center",
+      editable: true,
     },
     {
-      field: 'title',
-      headerName: 'Title',
+      field: "title",
+      headerName: "Title",
       width: 200,
-      type: 'string',
-      editable: true
+      type: "string",
+      editable: true,
     },
     {
-      field: 'desc',
-      headerName: 'Description',
+      field: "desc",
+      headerName: "Description",
       width: 300,
-      type: 'string',
-      editable: true
+      type: "string",
+      editable: true,
     },
     {
-      field: 'status',
-      headerName: 'Status',
+      field: "status",
+      headerName: "Status",
       width: 120,
-      type: 'string',
-      align: 'center',
+      type: "string",
+      align: "center",
       editable: true,
       renderCell: (params) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          params.value === 'Active' 
-            ? 'bg-success-100 text-success-800'
-            : 'bg-gray-100 text-gray-800'
-        }`}>
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            params.value === "Active"
+              ? "bg-success-100 text-success-800"
+              : "bg-gray-100 text-gray-800"
+          }`}
+        >
           {params.value}
         </span>
-      )
+      ),
     },
     {
-      field: 'revenue',
-      headerName: 'Revenue',
+      field: "revenue",
+      headerName: "Revenue",
       width: 120,
-      type: 'number',
-      align: 'right',
+      type: "number",
+      align: "right",
       editable: true,
       renderCell: (params) => (
         <span className="font-semibold text-success-600">
           ${params.value?.toLocaleString()}
         </span>
-      )
+      ),
     },
     {
-      field: 'dateCreated',
-      headerName: 'Date Created',
+      field: "dateCreated",
+      headerName: "Date Created",
       width: 150,
-      type: 'date',
-      align: 'center',
-      editable: false
-    }
+      type: "date",
+      align: "center",
+      editable: false,
+    },
   ];
 
   // Load data
   useEffect(() => {
     setLoading(true);
-    mockDataService.getAll()
+    mockDataService
+      .getAll()
       .then((res: any) => {
         setRows(res.data.map((r: any, i: number) => ({ ...r, no: i + 1 })));
       })
@@ -243,65 +248,82 @@ const DataTableDemo: React.FC = () => {
   }, []);
 
   // Event handlers
-  const handleSaveRow = (id: string | number, updatedRow: Row, oldRow: Row, oldRows: Row[]) => {
-    console.log('Saving row:', updatedRow);
-    
-    mockDataService.saveRow(updatedRow)
+  const handleSaveRow = (
+    id: string | number,
+    updatedRow: Row,
+    oldRow: Row,
+    oldRows: Row[]
+  ) => {
+    mockDataService
+      .saveRow(updatedRow)
       .then((res: any) => {
         const dbRow = res.data;
-        setRows(oldRows.map(r => r.id === updatedRow.id ? { ...dbRow } : r));
+        setRows(
+          oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
+        );
       })
-      .catch((err:Int32ArrayConstructor) => {
-        console.error('Error saving row:', err);
+      .catch((err: Int32ArrayConstructor) => {
+        console.error("Error saving row:", err);
         setRows(oldRows); // Revert on error
       });
   };
 
-  const handleDeleteRow = (id: string | number, oldRow: Row, oldRows: Row[]) => {
-    console.log('Deleting row:', id);
-    
-    mockDataService.deleteRow(id)
+  const handleDeleteRow = (
+    id: string | number,
+    oldRow: Row,
+    oldRows: Row[]
+  ) => {
+    console.log("Deleting row:", id);
+
+    mockDataService
+      .deleteRow(id)
       .then((res: any) => {
         const dbRowId = res.data.id;
-        setRows(oldRows.filter(r => r.id !== dbRowId));
+        setRows(oldRows.filter((r) => r.id !== dbRowId));
       })
-      .catch((err:any) => {
-        console.error('Error deleting row:', err);
+      .catch((err: any) => {
+        console.error("Error deleting row:", err);
         setRows(oldRows); // Revert on error
       });
   };
 
   const createRowData = (rows: Row[]) => {
-    const newId = Math.max(...rows.map(r => Number(r.id) || 0)) + 1;
-    const newNo = Math.max(...rows.map(r => Number(r.no) || 0)) + 1;
-    return { 
-      id: newId, 
+    const newId = Math.max(...rows.map((r) => Number(r.id) || 0)) + 1;
+    const newNo = Math.max(...rows.map((r) => Number(r.no) || 0)) + 1;
+    return {
+      id: newId,
       no: newNo,
-      login: '',
-      title: '',
-      desc: '',
-      status: 'Active',
+      login: "",
+      title: "",
+      desc: "",
+      status: "Active",
       revenue: 0,
-      dateCreated: new Date().toISOString().split('T')[0],
-      isNew: true
+      dateCreated: new Date().toISOString().split("T")[0],
+      isNew: true,
     };
   };
 
   return (
     <div className="space-y-xl">
       <div>
-        <h1 className="text-heading-1 text-text-primary mb-md">DataTable Demo</h1>
+        <h1 className="text-heading-1 text-text-primary mb-md">
+          DataTable Demo
+        </h1>
         <p className="text-body text-text-secondary">
-          A comprehensive data table with CRUD operations, sorting, filtering, pagination, and export functionality.
+          A comprehensive data table with CRUD operations, sorting, filtering,
+          pagination, and export functionality.
         </p>
       </div>
 
       {/* Full Featured Table */}
       <Card>
         <Card.Header>
-          <h3 className="text-heading-3 text-text-primary">Full Featured CRUD Table</h3>
+          <h3 className="text-heading-3 text-text-primary">
+            Full Featured CRUD Table
+          </h3>
           <p className="text-body-small text-text-secondary mt-1">
-            Complete table with all features: Add, Edit, Delete, Search, Sort, Filter, Export
+            Complete table with all features: Add, Edit, Delete, Search, Sort,
+            Filter, Export
           </p>
         </Card.Header>
         <Card.Body className="p-0">
@@ -430,7 +452,7 @@ const CustomToolbar: React.FC<any> = (props) => {
     onSearchChange,
     visibleColumns,
     onColumnVisibilityChange,
-    columns
+    columns,
   } = props;
 
   const [showColumnMenu, setShowColumnMenu] = useState(false);
@@ -438,12 +460,12 @@ const CustomToolbar: React.FC<any> = (props) => {
 
   const exportToCSV = () => {
     // Export logic here
-    console.log('Exporting to CSV');
+    console.log("Exporting to CSV");
   };
 
   const exportToExcel = () => {
-    // Export logic here  
-    console.log('Exporting to Excel');
+    // Export logic here
+    console.log("Exporting to Excel");
   };
 
   return (
@@ -458,20 +480,30 @@ const CustomToolbar: React.FC<any> = (props) => {
           >
             <span>Columns</span>
           </Button>
-          
+
           {showColumnMenu && (
             <div className="absolute top-full left-0 mt-2 w-48 bg-theme-primary border border-border-light rounded-lg shadow-lg z-dropdown">
               <div className="p-2">
-                {columns?.filter((col: any) => col.field !== 'actions').map((column: any) => (
-                  <label key={column.field} className="flex items-center space-x-2 p-2 hover:bg-theme-tertiary rounded cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={visibleColumns?.[column.field]}
-                      onChange={(e) => onColumnVisibilityChange?.(column.field, e.target.checked)}
-                    />
-                    <span className="text-sm">{column.headerName}</span>
-                  </label>
-                ))}
+                {columns
+                  ?.filter((col: any) => col.field !== "actions")
+                  .map((column: any) => (
+                    <label
+                      key={column.field}
+                      className="flex items-center space-x-2 p-2 hover:bg-theme-tertiary rounded cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={visibleColumns?.[column.field]}
+                        onChange={(e) =>
+                          onColumnVisibilityChange?.(
+                            column.field,
+                            e.target.checked
+                          )
+                        }
+                      />
+                      <span className="text-sm">{column.headerName}</span>
+                    </label>
+                  ))}
               </div>
             </div>
           )}
@@ -485,14 +517,20 @@ const CustomToolbar: React.FC<any> = (props) => {
           >
             Export
           </Button>
-          
+
           {showExportMenu && (
             <div className="absolute top-full left-0 mt-2 w-32 bg-theme-primary border border-border-light rounded-lg shadow-lg z-dropdown">
               <div className="p-1">
-                <button onClick={exportToCSV} className="w-full text-left px-3 py-2 text-sm hover:bg-theme-tertiary rounded">
+                <button
+                  onClick={exportToCSV}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-theme-tertiary rounded"
+                >
                   CSV
                 </button>
-                <button onClick={exportToExcel} className="w-full text-left px-3 py-2 text-sm hover:bg-theme-tertiary rounded">
+                <button
+                  onClick={exportToExcel}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-theme-tertiary rounded"
+                >
                   Excel
                 </button>
               </div>
