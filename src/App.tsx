@@ -31,6 +31,10 @@ import AddEditAccountForm from "./pages/Modules/Accounts/AddAccount/AddEditAccou
 import Users from "./pages/Modules/Users/Users";
 import AddEditUserForm from "./pages/Modules/Users/AddUser/AddEditUserForm";
 import { useTokenExpiry } from "./hooks/useTokenExpiry";
+import GroupModules from "./pages/Modules/GroupModule/GroupModules";
+import AddEditGroupModuleForm from "./pages/Modules/GroupModule/AddGroupModule/AddEditGroupModuleForm";
+import GroupMasters from "./pages/Masters/GroupMaster/GroupMasters";
+import AddEditGroupMasterForm from "./pages/Masters/GroupMaster/AddGroupMasterForm/AddEditGroupMasterForm";
 function App() {
   useTokenExpiry();
   return (
@@ -114,7 +118,7 @@ function App() {
                       />
 
                       {/* Groups module Routes */}
-                      <Route path="/groups" element={<Groups />} />
+                      {/* <Route path="/groups" element={<Groups />} />
                       <Route
                         path="/groups/add"
                         element={<AddEditGroupForm />}
@@ -122,7 +126,7 @@ function App() {
                       <Route
                         path="/groups/edit/:id"
                         element={<AddEditGroupForm />}
-                      />
+                      /> */}
                       {/* Roles module Routes */}
                       <Route path="/roles" element={<Roles />} />
                       <Route path="/roles/add" element={<AddEditRoleForm />} />
@@ -149,6 +153,17 @@ function App() {
                         element={<AddEditUserForm />}
                       />
 
+                      {/* Groups module new one Routes */}
+                      <Route path="/groups" element={<GroupModules />} />
+                      <Route
+                        path="/groups/add"
+                        element={<AddEditGroupModuleForm />}
+                      />
+                      <Route
+                        path="/groups/edit/:id"
+                        element={<AddEditGroupModuleForm />}
+                      />
+
                       <Route
                         path="/reports"
                         element={
@@ -166,6 +181,17 @@ function App() {
                         element={
                           <div className="card card-body">Users Page</div>
                         }
+                      />
+
+                      {/* Groups module new one Routes */}
+                      <Route path="/group-master" element={<GroupMasters />} />
+                      <Route
+                        path="/group-master/add"
+                        element={<AddEditGroupMasterForm />}
+                      />
+                      <Route
+                        path="/group-master/edit/:id"
+                        element={<AddEditGroupMasterForm />}
                       />
                       <Route
                         path="/settings"

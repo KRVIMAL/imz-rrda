@@ -10,6 +10,7 @@ export class StringConstants {
   VEHICLE_MASTER = "VEHICLE_MASTER";
   DEVICE_ONBOARDING_MODULE = "DEVICE_ONBOARDING"; // Module identifier
   GROUPS_MODULE = "GROUPS";
+  GROUP_MODULES_MODULE = "GROUP_MODULES";  // ADD THIS (replaces GROUPS_MODULE)
   ROLES_MODULE = "ROLES";
   ACCOUNTS_MODULE = "ACCOUNTS";
   USERS_MODULE = "USERS";
@@ -23,7 +24,9 @@ export class StringConstants {
   TRANSPORTERS = "Transporters";
   CONTRACTORS = "Contractors";
   DEVICE_ONBOARDING = "Device On-boarding";
-  GROUPS = "Groups";
+  GROUPS = "Groups";  // Keep old for backward compatibility
+  GROUP_MODULES = "Group Modules";
+  GROUP_MASTERS="Group Masters"
   ROLES = "Roles";
   ACCOUNTS = "Accounts";
   USERS = "Users";
@@ -63,10 +66,20 @@ export class StringConstants {
   UPDATE_DEVICE_ONBOARDING = "Update Device On-boarding";
   EDIT_DEVICE_ONBOARDING = "Edit Device On-boarding";
 
-  // Groups specific
+// Groups specific (old)
   ADD_GROUP = "Add Group";
   UPDATE_GROUP = "Update Group";
   EDIT_GROUP = "Edit Group";
+
+  // Group Modules specific - ADD THESE (new)
+  ADD_GROUP_MODULE = "Add Group Module";
+  UPDATE_GROUP_MODULE = "Update Group Module";
+  EDIT_GROUP_MODULE = "Edit Group Module";
+
+
+  ADD_GROUP_MASTER = "Add Group Master";
+  UPDATE_GROUP_MASTER = "Update Group Master";
+  EDIT_GROUP_MASTER = "Edit Group Master";
 
 
   // Users specific 
@@ -130,7 +143,7 @@ export class StringConstants {
   SIM_NO_2_OPERATOR = "SIM No 2 Operator";
   VEHICLE_DESCRIPTION = "Vehicle Description";
 
-  // Groups form labels
+// Groups form labels (old)
   GROUP_NAME = "Group Name";
   GROUP_TYPE = "Group Type";
   SELECT_ASSET_IMEI = "Select Asset/IMEI";
@@ -139,6 +152,14 @@ export class StringConstants {
   // REMARK = "Remark";
   // CONTACT_NO = "Contact No";
 
+  // Group Modules form labels - ADD THESE (new, simpler)
+  // GROUP_TYPE = "Group Type";  // Already exists above
+  // STATE_NAME = "State Name";  // Already exists above
+  // CITY_NAME = "City Name";    // Already exists above
+  // REMARK = "Remark";          // Already exists above
+  // CONTACT_NO = "Contact No";  // Already exists above
+
+  GROUP_MODULE = "Group Module"
 
   // Users form labels - ADD THESE
   SELECT_ACCOUNT_OR_GROUP = "Select Account or Group";

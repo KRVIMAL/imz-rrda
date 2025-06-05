@@ -37,11 +37,20 @@ export class UrlConstants {
   editDeviceOnboardingViewPath = `${this.deviceOnboardingViewPath}/edit`;
 
 
-    // Groups URLs 
+  // Groups URLs (old)
   groupsViewPath = "/groups";
   addGroupViewPath = `${this.groupsViewPath}/add`;
   editGroupViewPath = `${this.groupsViewPath}/edit`;
 
+  // Group Module URLs - ADD THESE (new)
+  groupModuleViewPath = "/group-master";  // Note: API endpoint is /group-master
+  addGroupModuleViewPath = `${this.groupModuleViewPath}/add`;
+  editGroupModuleViewPath = `${this.groupModuleViewPath}/edit`;
+
+
+ groupMastersViewPath = "/group-master";  // Note: API endpoint is /group-master
+  // addGroupModuleViewPath = `${this.groupModuleViewPath}/add`;
+  // editGroupModuleViewPath = `${this.groupModuleViewPath}/edit`;
 
   // Users URLs - ADD THESE
   usersViewPath = "/users";

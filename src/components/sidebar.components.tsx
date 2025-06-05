@@ -29,6 +29,7 @@ const sidebarItems = [
     href: "/devices-onboarding",
     icon: FiSmartphone,
   },
+  { name: "Groups Master", href: "/group-master", icon: FiUsers },
   { name: "Users", href: "/users", icon: FiUsers },
 ];
 
