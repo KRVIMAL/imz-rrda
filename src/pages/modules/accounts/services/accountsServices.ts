@@ -6,6 +6,7 @@ import {
   patchRequest,
 } from "../../../../core-services/rest-api/apiHelpers";
 import urls from "../../../../global/constants/UrlConstants";
+import { store } from "../../../../store";
 
 // Define interfaces for API responses
 interface ApiResponse<T> {
@@ -112,7 +113,9 @@ interface AccountHierarchyResponse {
 }
 
 // Hardcoded account ID - replace with localStorage later
-const HARDCODED_ACCOUNT_ID = "6840140467dfbeac2fd2705c";
+  const state = store.getState().auth;
+  const accountId = state?.user?.account?._id;
+  const ACCOUNT_ID = accountId;
 
 // Transform API account data to Row format
 const transformAccountToRow = (account: any): Row => {
@@ -148,7 +151,7 @@ export const accountServices = {
 getAll: async (): Promise<Row[]> => {
   try {
     const response: any = await getRequest(
-      `${urls.accountsViewPath}/${HARDCODED_ACCOUNT_ID}/hierarchy-optimized`
+      `${urls.accountsViewPath}/${ACCOUNT_ID}/hierarchy-optimized`
     );
 
     if (response.success) {
@@ -378,7 +381,7 @@ getAll: async (): Promise<Row[]> => {
 getAccountHierarchy: async (): Promise<{ parentAccount: ParentAccountInfo | null; currentAccount: ParentAccountInfo | null }> => {
   try {
     const response: ApiResponse<AccountHierarchyResponse> = await getRequest(
-      `${urls.accountsViewPath}/${HARDCODED_ACCOUNT_ID}/hierarchy-optimized`
+      `${urls.accountsViewPath}/${ACCOUNT_ID}/hierarchy-optimized`
     );
 
     if (response.success) {

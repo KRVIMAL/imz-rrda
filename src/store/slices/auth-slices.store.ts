@@ -52,6 +52,7 @@ interface LoginResponse {
   accessToken: string;
   tokenType: string;
   expiresIn: number;
+  accountId:string;
 }
 
 export interface AuthState {
@@ -77,13 +78,14 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setAuthData: (state, action: PayloadAction<LoginResponse>) => {
-      const { user, accessToken, tokenType, expiresIn } = action.payload;
-      
+      const { user, accessToken, tokenType, expiresIn} = action.payload;
+
+      console.log({user})
       state.accessToken = accessToken;
       state.tokenType = tokenType;
       state.expiresIn = expiresIn;
       state.expiresAt = Date.now() + (expiresIn * 1000); // Convert seconds to milliseconds
-      state.user = user;
+    
       state.isAuthenticated = true;
       
       // Store in localStorage for persistence

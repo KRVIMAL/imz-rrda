@@ -41,11 +41,8 @@ const Login: React.FC = () => {
             <ThemeToggle />
           </div>
           <h2 className="text-heading-1 text-text-primary">
-            Sign in to HPRRDA DPIU
+            Sign in to IMZ RRDA
           </h2>
-          <p className="mt-sm text-body text-text-muted">
-            Use: sirodtest / Sirod@123456
-          </p>
         </div>
 
         {/* Login Form */}
@@ -106,7 +103,7 @@ const Login: React.FC = () => {
         {/* Footer */}
         <div className="text-center">
           <p className="text-body-small text-text-muted">
-            Secure access to HPRRDA project management system
+            Secure access to IMZ RRDA project management system
           </p>
         </div>
       </div>

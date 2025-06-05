@@ -1,6 +1,6 @@
 export class UrlConstants {
 
-  baseURL=import.meta.env.VITE_API_BASE_URL;
+  baseURL=import.meta.env.VITE_API_BASE_URL_LOCAL;
   landingViewPath = "/";
 
   // Device URLs

@@ -10,6 +10,7 @@ import strings from "../../../global/constants/StringConstants";
 import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
 import { tabTitle } from "../../../utils/tab-title";
+import { store } from "../../../store";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -23,6 +24,8 @@ interface PaginatedResponse<T> {
 }
 
 const Clients: React.FC = () => {
+  const state = store.getState().auth;
+  const accountId = state.user.account._id;
   const navigate = useNavigate();
   tabTitle(strings.CLIENTS);
   const [clients, setClients] = useState<Row[]>([]);

@@ -6,6 +6,7 @@ import {
   patchRequest,
 } from "../../../../core-services/rest-api/apiHelpers";
 import urls from "../../../../global/constants/UrlConstants";
+import { store } from "../../../../store";
 
 // Define interfaces for API responses
 interface ApiResponse<T> {
@@ -144,6 +145,10 @@ const flattenAccountHierarchy = (account: AccountHierarchyResponse, result: Flat
 
   return result;
 };
+
+const state = store.getState().auth;
+const accountId = state?.user?.account?._id;
+const ACCOUNT_ID = accountId;
 
 export const userServices = {
   getAll: async (
@@ -395,7 +400,7 @@ export const userServices = {
   },
 
   // Get Account Hierarchy (flattened) for dropdown
-  getAccountHierarchy: async (accountId: string = "6840140467dfbeac2fd2705c"): Promise<FlatAccount[]> => {
+  getAccountHierarchy: async (accountId: string = ACCOUNT_ID): Promise<FlatAccount[]> => {
     try {
       const response: ApiResponse<AccountHierarchyResponse> = await getRequest(
         `${urls.accountsViewPath}/${accountId}/hierarchy-optimized`

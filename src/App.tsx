@@ -43,134 +43,139 @@ function App() {
             <Route
               path="/*"
               element={
-                // <ProtectedRoute>
-                <Layout>
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/styleguide" element={<StyleGuide />} />
-                    <Route path="/selectDemo" element={<SelectDemo />} />
-                    <Route path="/inputDemo" element={<InputDemo />} />
-                    <Route path="/table-demo" element={<DataTableDemo />} />
-                    {/* Device Module Routes */}
-                    <Route path="/devices" element={<Devices />} />
-                    <Route path="/devices/add" element={<AddDeviceForm />} />
-                    <Route
-                      path="/devices/edit/:id"
-                      element={<AddDeviceForm />}
-                    />
-                    {/* Client Module Routes */}
-                    <Route path="/clients" element={<Clients />} />
-                    <Route path="/clients/add" element={<AddClientForm />} />
-                    <Route
-                      path="/clients/edit/:id"
-                      element={<AddClientForm />}
-                    />
-                    {/* Vehicle Module Routes */}
-                    <Route path="/vehicles" element={<Vehicles />} />
-                    <Route
-                      path="/vehicles/add"
-                      element={<AddEditVehicleForm />}
-                    />
-                    <Route
-                      path="/vehicles/edit/:id"
-                      element={<AddEditVehicleForm />}
-                    />
-                    {/* Driver Master Routes */}
-                    <Route path="/drivers" element={<Drivers />} />
-                    <Route
-                      path="/drivers/add"
-                      element={<AddEditDriverForm />}
-                    />
-                    <Route
-                      path="/drivers/edit/:id"
-                      element={<AddEditDriverForm />}
-                    />
-                    {/* Vehicle Master Routes */}
-                    <Route
-                      path="/vehicle-masters"
-                      element={<VehicleMasters />}
-                    />
-                    <Route
-                      path="/vehicle-masters/add"
-                      element={<AddEditVehicleMasterForm />}
-                    />
-                    <Route
-                      path="/vehicle-masters/edit/:id"
-                      element={<AddEditVehicleMasterForm />}
-                    />
+                <ProtectedRoute>
+                  <Layout>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/styleguide" element={<StyleGuide />} />
+                      <Route path="/selectDemo" element={<SelectDemo />} />
+                      <Route path="/inputDemo" element={<InputDemo />} />
+                      <Route path="/table-demo" element={<DataTableDemo />} />
+                      {/* Device Module Routes */}
+                      <Route path="/devices" element={<Devices />} />
+                      <Route path="/devices/add" element={<AddDeviceForm />} />
+                      <Route
+                        path="/devices/edit/:id"
+                        element={<AddDeviceForm />}
+                      />
+                      {/* Client Module Routes */}
+                      <Route path="/clients" element={<Clients />} />
+                      <Route path="/clients/add" element={<AddClientForm />} />
+                      <Route
+                        path="/clients/edit/:id"
+                        element={<AddClientForm />}
+                      />
+                      {/* Vehicle Module Routes */}
+                      <Route path="/vehicles" element={<Vehicles />} />
+                      <Route
+                        path="/vehicles/add"
+                        element={<AddEditVehicleForm />}
+                      />
+                      <Route
+                        path="/vehicles/edit/:id"
+                        element={<AddEditVehicleForm />}
+                      />
+                      {/* Driver Master Routes */}
+                      <Route path="/drivers" element={<Drivers />} />
+                      <Route
+                        path="/drivers/add"
+                        element={<AddEditDriverForm />}
+                      />
+                      <Route
+                        path="/drivers/edit/:id"
+                        element={<AddEditDriverForm />}
+                      />
+                      {/* Vehicle Master Routes */}
+                      <Route
+                        path="/vehicle-masters"
+                        element={<VehicleMasters />}
+                      />
+                      <Route
+                        path="/vehicle-masters/add"
+                        element={<AddEditVehicleMasterForm />}
+                      />
+                      <Route
+                        path="/vehicle-masters/edit/:id"
+                        element={<AddEditVehicleMasterForm />}
+                      />
 
-                    {/* Device onboarding module Routes */}
-                    <Route
-                      path="/devices-onboarding"
-                      element={<DeviceOnboarding />}
-                    />
-                    <Route
-                      path="/devices-onboarding/add"
-                      element={<AddEditDeviceOnboardingForm />}
-                    />
-                    <Route
-                      path="/devices-onboarding/edit/:id"
-                      element={<AddEditDeviceOnboardingForm />}
-                    />
+                      {/* Device onboarding module Routes */}
+                      <Route
+                        path="/devices-onboarding"
+                        element={<DeviceOnboarding />}
+                      />
+                      <Route
+                        path="/devices-onboarding/add"
+                        element={<AddEditDeviceOnboardingForm />}
+                      />
+                      <Route
+                        path="/devices-onboarding/edit/:id"
+                        element={<AddEditDeviceOnboardingForm />}
+                      />
 
-                    {/* Groups module Routes */}
-                    <Route path="/groups" element={<Groups />} />
-                    <Route path="/groups/add" element={<AddEditGroupForm />} />
-                    <Route
-                      path="/groups/edit/:id"
-                      element={<AddEditGroupForm />}
-                    />
-                    {/* Roles module Routes */}
-                    <Route path="/roles" element={<Roles />} />
-                    <Route path="/roles/add" element={<AddEditRoleForm />} />
-                    <Route
-                      path="/roles/edit/:id"
-                      element={<AddEditRoleForm />}
-                    />
-                    {/* Roles module Routes */}
-                    <Route path="/accounts" element={<Accounts />} />
-                    <Route
-                      path="/accounts/add"
-                      element={<AddEditAccountForm />}
-                    />
-                    <Route
-                      path="/accounts/edit/:id"
-                      element={<AddEditAccountForm />}
-                    />
+                      {/* Groups module Routes */}
+                      <Route path="/groups" element={<Groups />} />
+                      <Route
+                        path="/groups/add"
+                        element={<AddEditGroupForm />}
+                      />
+                      <Route
+                        path="/groups/edit/:id"
+                        element={<AddEditGroupForm />}
+                      />
+                      {/* Roles module Routes */}
+                      <Route path="/roles" element={<Roles />} />
+                      <Route path="/roles/add" element={<AddEditRoleForm />} />
+                      <Route
+                        path="/roles/edit/:id"
+                        element={<AddEditRoleForm />}
+                      />
+                      {/* Roles module Routes */}
+                      <Route path="/accounts" element={<Accounts />} />
+                      <Route
+                        path="/accounts/add"
+                        element={<AddEditAccountForm />}
+                      />
+                      <Route
+                        path="/accounts/edit/:id"
+                        element={<AddEditAccountForm />}
+                      />
 
-                    {/* Users module Routes */}
-                    <Route path="/users" element={<Users />} />
-                    <Route path="/users/add" element={<AddEditUserForm />} />
-                    <Route
-                      path="/users/edit/:id"
-                      element={<AddEditUserForm />}
-                    />
+                      {/* Users module Routes */}
+                      <Route path="/users" element={<Users />} />
+                      <Route path="/users/add" element={<AddEditUserForm />} />
+                      <Route
+                        path="/users/edit/:id"
+                        element={<AddEditUserForm />}
+                      />
 
-                    <Route
-                      path="/reports"
-                      element={
-                        <div className="card card-body">Reports Page</div>
-                      }
-                    />
-                    <Route
-                      path="/alerts"
-                      element={
-                        <div className="card card-body">Alerts Page</div>
-                      }
-                    />
-                    <Route
-                      path="/users"
-                      element={<div className="card card-body">Users Page</div>}
-                    />
-                    <Route
-                      path="/settings"
-                      element={
-                        <div className="card card-body">Settings Page</div>
-                      }
-                    />
-                  </Routes>
-                </Layout>
-                // </ProtectedRoute>
+                      <Route
+                        path="/reports"
+                        element={
+                          <div className="card card-body">Reports Page</div>
+                        }
+                      />
+                      <Route
+                        path="/alerts"
+                        element={
+                          <div className="card card-body">Alerts Page</div>
+                        }
+                      />
+                      <Route
+                        path="/users"
+                        element={
+                          <div className="card card-body">Users Page</div>
+                        }
+                      />
+                      <Route
+                        path="/settings"
+                        element={
+                          <div className="card card-body">Settings Page</div>
+                        }
+                      />
+                    </Routes>
+                  </Layout>
+                </ProtectedRoute>
               }
             />
           </Routes>

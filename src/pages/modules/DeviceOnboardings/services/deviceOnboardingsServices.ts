@@ -6,6 +6,7 @@ import {
   patchRequest,
 } from "../../../../core-services/rest-api/apiHelpers";
 import urls from "../../../../global/constants/UrlConstants";
+import { store } from "../../../../store";
 
 // Define interfaces for API responses
 interface ApiResponse<T> {
@@ -156,13 +157,15 @@ const transformDeviceOnboardingToRow = (device: DeviceOnboardingData): Row => ({
   inactiveTime: new Date(device.updatedAt).toISOString().split("T")[0],
   // Store IDs for edit functionality - ensure these are properly mapped
   account: device.account || "",
-  vehicleModule: device.vehicleNo || "",  // This should be the vehicle module ID
-  vehicleMaster: device.vehicle || "",    // This should be the vehicle master ID
-  driverModule: device.driver || "",      // This should be the driver ID
+  vehicleModule: device.vehicleNo || "", // This should be the vehicle module ID
+  vehicleMaster: device.vehicle || "", // This should be the vehicle master ID
+  driverModule: device.driver || "", // This should be the driver ID
 });
 
 // Hardcoded account ID - you can replace this with localStorage value later
-const ACCOUNT_ID = "683bebacc0b850eb96447a30";
+const state = store.getState().auth;
+const accountId = state?.user?.account?._id;
+const ACCOUNT_ID = accountId;
 
 export const deviceOnboardingServices = {
   getAll: async (
@@ -170,13 +173,11 @@ export const deviceOnboardingServices = {
     limit: number = 10
   ): Promise<PaginatedResponse<Row>> => {
     try {
-      const response: ApiResponse<DeviceOnboardingListResponse> = await getRequest(
-        urls.deviceOnboardingViewPath,
-        {
+      const response: ApiResponse<DeviceOnboardingListResponse> =
+        await getRequest(urls.deviceOnboardingViewPath, {
           page,
           limit,
-        }
-      );
+        });
 
       if (response.success) {
         return {
@@ -189,7 +190,9 @@ export const deviceOnboardingServices = {
           hasPrev: response.data.pagination.hasPrev,
         };
       } else {
-        throw new Error(response.message || "Failed to fetch device onboardings");
+        throw new Error(
+          response.message || "Failed to fetch device onboardings"
+        );
       }
     } catch (error: any) {
       console.error("Error fetching device onboardings:", error.message);
@@ -245,12 +248,15 @@ export const deviceOnboardingServices = {
       );
 
       if (response.success) {
+        console.log({ response: response?.data });
         return {
           device: transformDeviceOnboardingToRow(response.data),
           message: response.message || "Device created successfully",
         };
       } else {
-        throw new Error(response.message || "Failed to create device onboarding");
+        throw new Error(
+          response.message || "Failed to create device onboarding"
+        );
       }
     } catch (error: any) {
       console.error("Error creating device onboarding:", error.message);
@@ -266,17 +272,26 @@ export const deviceOnboardingServices = {
       const payload: any = {};
 
       // Only include fields that are provided
-      if (deviceData.account !== undefined) payload.account = deviceData.account;
-      if (deviceData.deviceIMEI !== undefined) payload.deviceIMEI = deviceData.deviceIMEI;
-      if (deviceData.deviceSerialNo !== undefined) payload.deviceSerialNo = deviceData.deviceSerialNo;
-      if (deviceData.vehicleModule !== undefined) payload.vehicleNo = deviceData.vehicleModule;
+      if (deviceData.account !== undefined)
+        payload.account = deviceData.account;
+      if (deviceData.deviceIMEI !== undefined)
+        payload.deviceIMEI = deviceData.deviceIMEI;
+      if (deviceData.deviceSerialNo !== undefined)
+        payload.deviceSerialNo = deviceData.deviceSerialNo;
+      if (deviceData.vehicleModule !== undefined)
+        payload.vehicleNo = deviceData.vehicleModule;
       if (deviceData.simNo1 !== undefined) payload.simNo1 = deviceData.simNo1;
       if (deviceData.simNo2 !== undefined) payload.simNo2 = deviceData.simNo2;
-      if (deviceData.simNo1Operator !== undefined) payload.simNo1Operator = deviceData.simNo1Operator;
-      if (deviceData.simNo2Operator !== undefined) payload.simNo2Operator = deviceData.simNo2Operator;
-      if (deviceData.vehicleDescription !== undefined) payload.vehicleDescription = deviceData.vehicleDescription;
-      if (deviceData.vehicleMaster !== undefined) payload.vehicle = deviceData.vehicleMaster;
-      if (deviceData.driverModule !== undefined) payload.driver = deviceData.driverModule;
+      if (deviceData.simNo1Operator !== undefined)
+        payload.simNo1Operator = deviceData.simNo1Operator;
+      if (deviceData.simNo2Operator !== undefined)
+        payload.simNo2Operator = deviceData.simNo2Operator;
+      if (deviceData.vehicleDescription !== undefined)
+        payload.vehicleDescription = deviceData.vehicleDescription;
+      if (deviceData.vehicleMaster !== undefined)
+        payload.vehicle = deviceData.vehicleMaster;
+      if (deviceData.driverModule !== undefined)
+        payload.driver = deviceData.driverModule;
       if (deviceData.status !== undefined) payload.status = deviceData.status;
 
       const response: ApiResponse<DeviceOnboardingData> = await patchRequest(
@@ -290,7 +305,9 @@ export const deviceOnboardingServices = {
           message: response.message || "Device updated successfully",
         };
       } else {
-        throw new Error(response.message || "Failed to update device onboarding");
+        throw new Error(
+          response.message || "Failed to update device onboarding"
+        );
       }
     } catch (error: any) {
       console.error("Error updating device onboarding:", error.message);
@@ -330,14 +347,12 @@ export const deviceOnboardingServices = {
         return deviceOnboardingServices.getAll(page, limit);
       }
 
-      const response: ApiResponse<DeviceOnboardingListResponse> = await getRequest(
-        `${urls.deviceOnboardingViewPath}/search`,
-        {
+      const response: ApiResponse<DeviceOnboardingListResponse> =
+        await getRequest(`${urls.deviceOnboardingViewPath}/search`, {
           searchText: searchText.trim(),
           page,
           limit,
-        }
-      );
+        });
 
       if (response.success) {
         return {
@@ -370,7 +385,9 @@ export const deviceOnboardingServices = {
       );
 
       if (response.success) {
-        return response.data.data.filter((vehicle) => vehicle.status === "active");
+        return response.data.data.filter(
+          (vehicle) => vehicle.status === "active"
+        );
       } else {
         throw new Error(response.message || "Failed to fetch vehicle modules");
       }
@@ -392,8 +409,8 @@ export const deviceOnboardingServices = {
       );
 
       if (response.success) {
-        return response.data.data.filter((driver) => 
-          driver.status === "active" || driver.isActive === true
+        return response.data.data.filter(
+          (driver) => driver.status === "active" || driver.isActive === true
         );
       } else {
         throw new Error(response.message || "Failed to fetch driver modules");
@@ -432,12 +449,16 @@ export const deviceOnboardingServices = {
       const response: ApiResponse<AccountHierarchyResponse> = await getRequest(
         `${urls.accountsViewPath}/${ACCOUNT_ID}/hierarchy-optimized`
       );
-
+      console.log({ response });
       if (response.success) {
         // Extract immediate children accounts
-        return response.data.children.filter((account) => account.status === "active");
+        return response.data.children.filter(
+          (account) => account.status === "active"
+        );
       } else {
-        throw new Error(response.message || "Failed to fetch account hierarchy");
+        throw new Error(
+          response.message || "Failed to fetch account hierarchy"
+        );
       }
     } catch (error: any) {
       console.error("Error fetching account hierarchy:", error.message);
