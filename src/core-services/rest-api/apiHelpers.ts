@@ -88,7 +88,7 @@ export const exportService = {
   ) => {
     try {
       const response = await fetch(
-        `http://192.168.1.58:9876${modulePath}/export?format=${format}`,
+        `http://192.168.1.36:9876${modulePath}?format=${format}`,
         {
           method: "GET",
           headers: {

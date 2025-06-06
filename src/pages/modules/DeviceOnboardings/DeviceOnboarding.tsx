@@ -199,7 +199,7 @@ const DeviceOnboarding: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.deviceOnboardingViewPath,
+            modulePath: `${urls.deviceOnboardingViewPath}/export`,
             filename: "device-onboarding",
           }}
         />

@@ -302,7 +302,7 @@ const RoadMaster: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.roadMasterViewPath,
+             modulePath: urls.roadMasterExportPath,
             filename: "road-master-data",
           }}
           // Disable edit/delete for read-only module

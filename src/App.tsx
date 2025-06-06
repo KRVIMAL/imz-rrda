@@ -1,3 +1,4 @@
+// App.tsx - Updated routing section
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -22,20 +23,23 @@ import VehicleMasters from "./pages/Masters/VehicleMaster/VehicleMasters";
 import AddEditVehicleMasterForm from "./pages/Masters/VehicleMaster/AddVehicleMaster/AddEditVehicleMasterForm";
 import DeviceOnboarding from "./pages/Modules/DeviceOnboardings/DeviceOnboarding";
 import AddEditDeviceOnboardingForm from "./pages/Modules/DeviceOnboardings/AddDeviceOnboarding/AddEditDeviceOnboardingForm";
+
+// Groups (Simple groups - Group Modules)
 import Groups from "./pages/Modules/Groups/Groups";
-import AddEditGroupForm from "./pages/Modules/Groups/AddGroup/AddEditGroupForm";
+import AddEditGroupForm from "./pages/Modules/Groups/AddEditGroupForm";
+
+// Groups Master (Complex groups with IMEI)
+import GroupsMaster from "./pages/Masters/GroupMaster/GroupsMaster";
+import AddEditGroupsMasterForm from "./pages/Masters/GroupMaster/AddGroupsMaster/AddEditGroupsMasterForm";
+
 import Roles from "./pages/Modules/Roles/Roles";
 import AddEditRoleForm from "./pages/Modules/Roles/AddRole/AddEditRoleForm";
 import Accounts from "./pages/Modules/Accounts/Accounts";
 import AddEditAccountForm from "./pages/Modules/Accounts/AddAccount/AddEditAccountForm";
 import Users from "./pages/Modules/Users/Users";
 import AddEditUserForm from "./pages/Modules/Users/AddUser/AddEditUserForm";
-import { useTokenExpiry } from "./hooks/useTokenExpiry";
-import GroupModules from "./pages/Modules/GroupModule/GroupModules";
-import AddEditGroupModuleForm from "./pages/Modules/GroupModule/AddGroupModule/AddEditGroupModuleForm";
-import GroupMasters from "./pages/Masters/GroupMaster/GroupMasters";
-import AddEditGroupMasterForm from "./pages/Masters/GroupMaster/AddGroupMasterForm/AddEditGroupMasterForm";
 import RoadMaster from "./pages/Masters/RoadMaster/RoadMaster";
+import { useTokenExpiry } from "./hooks/useTokenExpiry";
 function App() {
   useTokenExpiry();
   return (
@@ -56,6 +60,7 @@ function App() {
                       <Route path="/selectDemo" element={<SelectDemo />} />
                       <Route path="/inputDemo" element={<InputDemo />} />
                       <Route path="/table-demo" element={<DataTableDemo />} />
+
                       {/* Device Module Routes */}
                       <Route path="/devices" element={<Devices />} />
                       <Route path="/devices/add" element={<AddDeviceForm />} />
@@ -63,6 +68,7 @@ function App() {
                         path="/devices/edit/:id"
                         element={<AddDeviceForm />}
                       />
+
                       {/* Client Module Routes */}
                       <Route path="/clients" element={<Clients />} />
                       <Route path="/clients/add" element={<AddClientForm />} />
@@ -70,6 +76,7 @@ function App() {
                         path="/clients/edit/:id"
                         element={<AddClientForm />}
                       />
+
                       {/* Vehicle Module Routes */}
                       <Route path="/vehicles" element={<Vehicles />} />
                       <Route
@@ -80,6 +87,7 @@ function App() {
                         path="/vehicles/edit/:id"
                         element={<AddEditVehicleForm />}
                       />
+
                       {/* Driver Master Routes */}
                       <Route path="/drivers" element={<Drivers />} />
                       <Route
@@ -90,6 +98,7 @@ function App() {
                         path="/drivers/edit/:id"
                         element={<AddEditDriverForm />}
                       />
+
                       {/* Vehicle Master Routes */}
                       <Route
                         path="/vehicle-masters"
@@ -118,8 +127,8 @@ function App() {
                         element={<AddEditDeviceOnboardingForm />}
                       />
 
-                      {/* Groups module Routes */}
-                      {/* <Route path="/groups" element={<Groups />} />
+                      {/* Groups Routes (Simple groups - Group Modules) */}
+                      <Route path="/groups" element={<Groups />} />
                       <Route
                         path="/groups/add"
                         element={<AddEditGroupForm />}
@@ -127,7 +136,19 @@ function App() {
                       <Route
                         path="/groups/edit/:id"
                         element={<AddEditGroupForm />}
-                      /> */}
+                      />
+
+                      {/* Groups Master Routes (Complex groups with IMEI) */}
+                      <Route path="/groups-master" element={<GroupsMaster />} />
+                      <Route
+                        path="/groups-master/add"
+                        element={<AddEditGroupsMasterForm />}
+                      />
+                      <Route
+                        path="/groups-master/edit/:id"
+                        element={<AddEditGroupsMasterForm />}
+                      />
+
                       {/* Roles module Routes */}
                       <Route path="/roles" element={<Roles />} />
                       <Route path="/roles/add" element={<AddEditRoleForm />} />
@@ -135,7 +156,8 @@ function App() {
                         path="/roles/edit/:id"
                         element={<AddEditRoleForm />}
                       />
-                      {/* Roles module Routes */}
+
+                      {/* Accounts module Routes */}
                       <Route path="/accounts" element={<Accounts />} />
                       <Route
                         path="/accounts/add"
@@ -154,17 +176,10 @@ function App() {
                         element={<AddEditUserForm />}
                       />
 
-                      {/* Groups module new one Routes */}
-                      <Route path="/groups" element={<GroupModules />} />
-                      <Route
-                        path="/groups/add"
-                        element={<AddEditGroupModuleForm />}
-                      />
-                      <Route
-                        path="/groups/edit/:id"
-                        element={<AddEditGroupModuleForm />}
-                      />
+                      {/* Road Master Routes (Read-only) */}
+                      <Route path="/roads" element={<RoadMaster />} />
 
+                      {/* Other routes */}
                       <Route
                         path="/reports"
                         element={
@@ -178,29 +193,11 @@ function App() {
                         }
                       />
                       <Route
-                        path="/users"
-                        element={
-                          <div className="card card-body">Users Page</div>
-                        }
-                      />
-
-                      {/* Groups module new one Routes */}
-                      <Route path="/group-master" element={<GroupMasters />} />
-                      <Route
-                        path="/group-master/add"
-                        element={<AddEditGroupMasterForm />}
-                      />
-                      <Route
-                        path="/group-master/edit/:id"
-                        element={<AddEditGroupMasterForm />}
-                      />
-                      <Route
                         path="/settings"
                         element={
                           <div className="card card-body">Settings Page</div>
                         }
                       />
-                      <Route path="/roads" element={<RoadMaster />} />
                     </Routes>
                   </Layout>
                 </ProtectedRoute>

@@ -250,7 +250,7 @@ const Roles: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.rolesViewPath,
+            modulePath: `${urls.rolesViewPath}/export`,
             filename: "roles",
           }}
         />

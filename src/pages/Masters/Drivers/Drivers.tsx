@@ -172,7 +172,7 @@ const Drivers: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.driversViewPath,
+            modulePath: `${urls.driversViewPath}/export`,
             filename: "drivers",
           }}
         />

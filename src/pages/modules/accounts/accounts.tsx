@@ -231,7 +231,7 @@ const Accounts: React.FC = () => {
           onEditClick={handleEditAccount}
           // Remove pagination props since we're using static data
           exportConfig={{
-            modulePath: urls.accountsViewPath,
+            modulePath: `${urls.accountsViewPath}/export`,
             filename: "accounts",
           }}
         />

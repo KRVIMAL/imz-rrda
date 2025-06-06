@@ -24,9 +24,6 @@ interface PaginatedResponse<T> {
 }
 
 const Clients: React.FC = () => {
-  const state = store.getState().auth;
-  const accountId = state.user.account._id;
-  
   const navigate = useNavigate();
   tabTitle(strings.CLIENTS);
   const [clients, setClients] = useState<Row[]>([]);
@@ -184,7 +181,7 @@ const Clients: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.clientsViewPath,
+            modulePath: `${urls.clientsViewPath}/export`,
             filename: "clients",
           }}
         />

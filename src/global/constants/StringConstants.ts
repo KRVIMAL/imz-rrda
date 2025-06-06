@@ -1,3 +1,4 @@
+// StringConstants.ts - Updated and reorganized
 export class StringConstants {
   // Modules
   DEVICE = "DEVICE";
@@ -6,15 +7,14 @@ export class StringConstants {
   CLIENT = "CLIENT";
   TRANSPORTER = "TRANSPORTER";
   CONTRACTOR = "CONTRACTOR";
-  VEHICLE_MASTERS = "Vehicle Masters";
   VEHICLE_MASTER = "VEHICLE_MASTER";
-  DEVICE_ONBOARDING_MODULE = "DEVICE_ONBOARDING"; // Module identifier
-  GROUPS_MODULE = "GROUPS";
-  GROUP_MODULES_MODULE = "GROUP_MODULES";  // ADD THIS (replaces GROUPS_MODULE)
+  DEVICE_ONBOARDING_MODULE = "DEVICE_ONBOARDING";
+  GROUPS_MODULE = "GROUPS"; // Simple groups (Group Modules)
+  GROUPS_MASTER_MODULE = "GROUPS_MASTER"; // Complex groups with IMEI (Group Masters)
   ROLES_MODULE = "ROLES";
   ACCOUNTS_MODULE = "ACCOUNTS";
   USERS_MODULE = "USERS";
-   ROAD_MASTER_MODULE = "ROAD_MASTER";  
+  ROAD_MASTER_MODULE = "ROAD_MASTER";
 
   // Navigation
   HOME = "Home";
@@ -24,15 +24,14 @@ export class StringConstants {
   CLIENTS = "Clients";
   TRANSPORTERS = "Transporters";
   CONTRACTORS = "Contractors";
+  VEHICLE_MASTERS = "Vehicle Masters";
   DEVICE_ONBOARDING = "Device On-boarding";
-  GROUPS = "Groups";  // Keep old for backward compatibility
-  GROUP_MODULES = "Group Modules";
-  GROUP_MASTERS="Group Masters"
+  GROUPS = "Groups"; // Simple groups
+  GROUPS_MASTER = "Groups Master"; // Complex groups
   ROLES = "Roles";
   ACCOUNTS = "Accounts";
   USERS = "Users";
-  ROAD_MASTER = "Road Master";  
-
+  ROAD_MASTER = "Road Master";
 
   // Status
   ACTIVE = "Active";
@@ -48,9 +47,7 @@ export class StringConstants {
   SAVE = "Save";
   NEXT = "Next";
   PREVIOUS = "Previous";
-  EXPORT = "Export";  // ADD THIS
-
-
+  EXPORT = "Export";
 
   // Device specific
   ADD_DEVICE = "Add Device";
@@ -72,28 +69,22 @@ export class StringConstants {
   UPDATE_DEVICE_ONBOARDING = "Update Device On-boarding";
   EDIT_DEVICE_ONBOARDING = "Edit Device On-boarding";
 
-// Groups specific (old)
+  // Groups specific (Simple groups - Group Modules)
   ADD_GROUP = "Add Group";
   UPDATE_GROUP = "Update Group";
   EDIT_GROUP = "Edit Group";
 
-  // Group Modules specific - ADD THESE (new)
-  ADD_GROUP_MODULE = "Add Group Module";
-  UPDATE_GROUP_MODULE = "Update Group Module";
-  EDIT_GROUP_MODULE = "Edit Group Module";
+  // Groups Master specific (Complex groups with IMEI)
+  ADD_GROUPS_MASTER = "Add Groups Master";
+  UPDATE_GROUPS_MASTER = "Update Groups Master";
+  EDIT_GROUPS_MASTER = "Edit Groups Master";
 
-
-  ADD_GROUP_MASTER = "Add Group Master";
-  UPDATE_GROUP_MASTER = "Update Group Master";
-  EDIT_GROUP_MASTER = "Edit Group Master";
-
-
-  // Users specific 
+  // Users specific
   ADD_USER = "Add User";
   UPDATE_USER = "Update User";
   EDIT_USER = "Edit User";
 
-   // Road Master specific - ADD THESE (Read-only module, no add/edit)
+  // Road Master specific (Read-only module)
   VIEW_ROAD_MASTER = "View Road Master";
   EXPORT_ROAD_MASTER = "Export Road Master";
 
@@ -128,6 +119,10 @@ export class StringConstants {
   IP_ADDRESS = "IP Address";
   PORT = "Port";
   STATUS = "Status";
+  STATE_NAME = "State Name";
+  CITY_NAME = "City Name";
+  REMARK = "Remark";
+  CONTACT_NO = "Contact No";
 
   // Driver form labels
   DRIVER_NAME = "Driver Name";
@@ -153,25 +148,15 @@ export class StringConstants {
   SIM_NO_2_OPERATOR = "SIM No 2 Operator";
   VEHICLE_DESCRIPTION = "Vehicle Description";
 
-// Groups form labels (old)
+  // Groups form labels (Simple groups)
   GROUP_NAME = "Group Name";
   GROUP_TYPE = "Group Type";
+
+  // Groups Master form labels (Complex groups with IMEI)
+  GROUP_MODULE = "Group Module";
   SELECT_ASSET_IMEI = "Select Asset/IMEI";
-  // STATE_NAME = "State Name";
-  // CITY_NAME = "City Name";
-  // REMARK = "Remark";
-  // CONTACT_NO = "Contact No";
 
-  // Group Modules form labels - ADD THESE (new, simpler)
-  // GROUP_TYPE = "Group Type";  // Already exists above
-  // STATE_NAME = "State Name";  // Already exists above
-  // CITY_NAME = "City Name";    // Already exists above
-  // REMARK = "Remark";          // Already exists above
-  // CONTACT_NO = "Contact No";  // Already exists above
-
-  GROUP_MODULE = "Group Module"
-
-  // Users form labels - ADD THESE
+  // Users form labels
   SELECT_ACCOUNT_OR_GROUP = "Select Account or Group";
   USERNAME = "Username";
   FIRST_NAME = "First Name";
@@ -188,7 +173,7 @@ export class StringConstants {
   MODULE_PERMISSIONS = "Module Permissions";
   USER_ROLE_TYPE = "User Role Type";
 
-  // Accounts form labels - ADD THESE
+  // Accounts form labels
   PARENT_ACCOUNT = "Parent Account";
   CLIENT_SELECTION = "Client Selection";
 
@@ -196,33 +181,16 @@ export class StringConstants {
   CLIENT_NAME = "Client Name";
   CONTACT_NAME = "Contact Name";
   EMAIL_ID = "Email ID";
-  CONTACT_NO = "Contact No";
   PAN_NUMBER = "Pan Number";
   AADHAR_NUMBER = "Aadhar Number";
   GST_NUMBER = "GST Number";
-  STATE_NAME = "State Name";
-  CITY_NAME = "City Name";
-  REMARK = "Remark";
 
   // Vehicle form labels
   BRAND_NAME = "Brand Name";
   VEHICLE_TYPE = "Vehicle Type";
   ICON = "Icon";
 
-  // Validation messages
-  REQUIRED_FIELD = "This field is required";
-  INVALID_IP_FORMAT = "Invalid IP Address format";
-  INVALID_PORT_RANGE = "Port must be between 1 and 65535";
-  INVALID_EMAIL_FORMAT = "Invalid email format";
-  INVALID_CONTACT_FORMAT = "Invalid contact number format";
-  INVALID_PAN_FORMAT = "Invalid PAN format";
-  INVALID_AADHAR_FORMAT = "Invalid Aadhar format";
-  INVALID_GST_FORMAT = "Invalid GST format";
-  INVALID_LICENSE_FORMAT = "Invalid license format";
-  INVALID_IMEI_FORMAT = "IMEI should be 15-17 characters";
-  INVALID_PASSWORD_LENGTH = "Password must be at least 6 characters";
-
-  // Road Master labels - ADD THESE
+  // Road Master labels
   DISTRICT_NAME = "District Name";
   SCHEME_TYPE = "Scheme Type";
   PACKAGE_NO = "Package No";
@@ -248,6 +216,18 @@ export class StringConstants {
   EXECUTED_QUANTITY = "Executed Quantity";
   PIMS_FINALIZE_DATE = "PIMS Finalize Date";
 
+  // Validation messages
+  REQUIRED_FIELD = "This field is required";
+  INVALID_IP_FORMAT = "Invalid IP Address format";
+  INVALID_PORT_RANGE = "Port must be between 1 and 65535";
+  INVALID_EMAIL_FORMAT = "Invalid email format";
+  INVALID_CONTACT_FORMAT = "Invalid contact number format";
+  INVALID_PAN_FORMAT = "Invalid PAN format";
+  INVALID_AADHAR_FORMAT = "Invalid Aadhar format";
+  INVALID_GST_FORMAT = "Invalid GST format";
+  INVALID_LICENSE_FORMAT = "Invalid license format";
+  INVALID_IMEI_FORMAT = "IMEI should be 15-17 characters";
+  INVALID_PASSWORD_LENGTH = "Password must be at least 6 characters";
 }
 
 let strings = new StringConstants();

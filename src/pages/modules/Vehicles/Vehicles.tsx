@@ -216,7 +216,7 @@ const Vehicles: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.vehiclesViewPath,
+            modulePath: `${urls.vehiclesViewPath}/export`,
             filename: "vehicles",
           }}
         />

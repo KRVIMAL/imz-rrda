@@ -6,16 +6,16 @@ import CustomInput from "../../../../components/ui/CustomInput";
 import Select from "../../../../components/ui/Select";
 import Card from "../../../../components/ui/Card";
 import {
-  groupMasterServices,
+  groupsMasterServices,
   GroupModuleForDropdown,
   DeviceForImei,
-} from "../services/groupMaster.services";
+} from "../services/groupsMaster.services";
 import urls from "../../../../global/constants/UrlConstants";
 import strings from "../../../../global/constants/StringConstants";
 import toast from "react-hot-toast";
 
 // Form state type
-interface GroupMasterFormState {
+interface GroupsMasterFormState {
   groupName: {
     value: string;
     error: string;
@@ -35,7 +35,7 @@ interface GroupMasterFormState {
 }
 
 // Initial form state
-const initialFormState = (preState?: any): GroupMasterFormState => ({
+const initialFormState = (preState?: any): GroupsMasterFormState => ({
   groupName: {
     value: preState?.groupName || "",
     error: "",
@@ -54,7 +54,7 @@ const initialFormState = (preState?: any): GroupMasterFormState => ({
   },
 });
 
-const AddEditGroupMasterForm: React.FC = () => {
+const AddEditGroupsMasterForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -62,7 +62,7 @@ const AddEditGroupMasterForm: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<GroupMasterFormState>(
+  const [formData, setFormData] = useState<GroupsMasterFormState>(
     initialFormState()
   );
 
@@ -81,54 +81,59 @@ const AddEditGroupMasterForm: React.FC = () => {
   const breadcrumbs = [
     { label: strings.HOME, href: urls.landingViewPath, icon: FiHome },
     {
-      label: strings.GROUP_MASTERS,
-      href: urls.groupMastersViewPath,
+      label: strings.GROUPS_MASTER,
+      href: urls.groupsMasterViewPath,
       icon: FiUsers,
     },
     {
-      label: isEdit ? strings.EDIT_GROUP_MASTER : strings.ADD_GROUP_MASTER,
+      label: isEdit ? strings.EDIT_GROUPS_MASTER : strings.ADD_GROUPS_MASTER,
       isActive: true,
       icon: FiPlus,
     },
   ];
 
+  // Update the useEffect to ensure proper loading order:
   useEffect(() => {
     const initializeForm = async () => {
+      // Load dropdown data first and wait for it to complete
       await loadDropdownData();
 
       if (isEdit && id) {
-        // Check if data is passed via navigation state first
         const { state } = location;
-        if (state?.groupMasterData) {
-          console.log("Using navigation state data:", state.groupMasterData);
+        if (state?.groupsMasterData) {
+          console.log("Using navigation state data:", state.groupsMasterData);
+          console.log("Available group modules:", groupModules); // Debug log
 
-          // Ensure IMEI array contains only string IDs
           const cleanedData = {
-            ...state.groupMasterData,
-            imei: Array.isArray(state.groupMasterData.imei)
-              ? state.groupMasterData.imei.filter(
+            ...state.groupsMasterData,
+            imei: Array.isArray(state.groupsMasterData.imei)
+              ? state.groupsMasterData.imei.filter(
                   (id: any) => typeof id === "string" && id.trim()
                 )
               : [],
+            groupModule:
+              typeof state.groupsMasterData.groupModule === "object"
+                ? state.groupsMasterData.groupModule?._id || ""
+                : state.groupsMasterData.groupModule || "",
           };
 
+          console.log("Cleaned data for form:", cleanedData); // Debug log
           setFormData(initialFormState(cleanedData));
         } else {
-          // Fallback to API call
-          await loadGroupMaster();
+          await loadGroupsMaster();
         }
       }
     };
 
     initializeForm();
-  }, [isEdit, id, location]);
+  }, [isEdit, id, location]); // Remove groupModules dependency to avoid infinite loop
 
   const loadDropdownData = async () => {
     setLoadingDropdowns(true);
     try {
       const [groupModulesData, devicesData] = await Promise.all([
-        groupMasterServices.getGroupModules(),
-        groupMasterServices.getDevicesForImei(),
+        groupsMasterServices.getGroupModules(),
+        groupsMasterServices.getDevicesForImei(),
       ]);
 
       setGroupModules(groupModulesData);
@@ -146,38 +151,44 @@ const AddEditGroupMasterForm: React.FC = () => {
     }
   };
 
-  const loadGroupMaster = async () => {
+  // In the loadGroupsMaster function, update this part:
+  const loadGroupsMaster = async () => {
     setLoading(true);
     try {
-      const groupMaster = await groupMasterServices.getById(id!);
-      if (groupMaster) {
-        console.log("Loaded group master data:", groupMaster);
+      const groupsMaster = await groupsMasterServices.getById(id!);
+      if (groupsMaster) {
+        console.log("Loaded groups master data:", groupsMaster);
 
         // Ensure IMEI array contains only string IDs
-        const cleanedGroupMaster = {
-          ...groupMaster,
-          imei: Array.isArray(groupMaster.imei)
-            ? groupMaster.imei.filter(
+        const cleanedGroupsMaster = {
+          ...groupsMaster,
+          imei: Array.isArray(groupsMaster.imei)
+            ? groupsMaster.imei.filter(
                 (id) => typeof id === "string" && id.trim()
               )
             : [],
+          // Make sure groupModule is the ID string, not an object
+          groupModule:
+            typeof groupsMaster.groupModule === "object"
+              ? groupsMaster.groupModule?._id || ""
+              : groupsMaster.groupModule || "",
         };
 
-        setFormData(initialFormState(cleanedGroupMaster));
+        setFormData(initialFormState(cleanedGroupsMaster));
       } else {
-        navigate(urls.groupMastersViewPath);
+        navigate(urls.groupsMasterViewPath);
       }
     } catch (error: any) {
-      console.error("Error loading group master:", error);
-      toast.error(error.message || "Failed to fetch group master");
-      navigate(urls.groupMastersViewPath);
+      console.error("Error loading groups master:", error);
+      toast.error(error.message || "Failed to fetch groups master");
+      navigate(urls.groupsMasterViewPath);
     } finally {
       setLoading(false);
     }
   };
 
   const handleInputChange =
-    (field: keyof GroupMasterFormState) =>
+    (field: keyof GroupsMasterFormState) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prev) => ({
         ...prev,
@@ -189,7 +200,7 @@ const AddEditGroupMasterForm: React.FC = () => {
     };
 
   const handleSelectChange =
-    (field: keyof GroupMasterFormState) =>
+    (field: keyof GroupsMasterFormState) =>
     (value: string | string[] | null) => {
       setFormData((prev) => ({
         ...prev,
@@ -203,7 +214,7 @@ const AddEditGroupMasterForm: React.FC = () => {
       }));
     };
 
-  const handleBlur = (field: keyof GroupMasterFormState) => () => {
+  const handleBlur = (field: keyof GroupsMasterFormState) => () => {
     const value = formData[field].value;
     let error = "";
 
@@ -232,7 +243,7 @@ const AddEditGroupMasterForm: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-    const errors: Partial<GroupMasterFormState> = {};
+    const errors: Partial<GroupsMasterFormState> = {};
     let isValid = true;
 
     // Group Name validation
@@ -281,33 +292,33 @@ const AddEditGroupMasterForm: React.FC = () => {
         ),
       ];
 
-      const groupMasterData = {
+      const groupsMasterData = {
         groupName: formData.groupName.value,
         groupModule: formData.groupModule.value,
         imei: uniqueImeiIds, // Array of device-onboarding IDs (strings only)
         status: formData.status.value,
       };
 
-      console.log("Saving group master data:", groupMasterData); // Debug log
+      console.log("Saving groups master data:", groupsMasterData); // Debug log
 
       const result = isEdit
-        ? await groupMasterServices.update(id!, groupMasterData)
-        : await groupMasterServices.create(groupMasterData);
+        ? await groupsMasterServices.update(id!, groupsMasterData)
+        : await groupsMasterServices.create(groupsMasterData);
       toast.success(result.message);
 
       setTimeout(() => {
-        navigate(urls.groupMastersViewPath);
+        navigate(urls.groupsMasterViewPath);
       }, 1500);
     } catch (error: any) {
-      console.error("Error saving group master:", error);
-      toast.error(error.message || "Failed to save group master");
+      console.error("Error saving groups master:", error);
+      toast.error(error.message || "Failed to save groups master");
     } finally {
       setSaving(false);
     }
   };
 
   const handleCancel = () => {
-    navigate(urls.groupMastersViewPath);
+    navigate(urls.groupsMasterViewPath);
   };
 
   // Create options for dropdowns
@@ -332,7 +343,7 @@ const AddEditGroupMasterForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={isEdit ? strings.EDIT_GROUP_MASTER : strings.ADD_GROUP_MASTER}
+        title={isEdit ? strings.EDIT_GROUPS_MASTER : strings.ADD_GROUPS_MASTER}
         breadcrumbs={breadcrumbs}
         showCancelButton
         showSaveButton
@@ -415,4 +426,4 @@ const AddEditGroupMasterForm: React.FC = () => {
   );
 };
 
-export default AddEditGroupMasterForm;
+export default AddEditGroupsMasterForm;

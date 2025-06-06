@@ -1,18 +1,15 @@
 export class UrlConstants {
-
-  baseURL=import.meta.env.VITE_API_BASE_URL_LOCAL;
+  baseURL = import.meta.env.VITE_API_BASE_URL_LOCAL;
   landingViewPath = "/";
 
   // Device URLs
   devicesViewPath = "/devices";
   addDeviceViewPath = `${this.devicesViewPath}/add`;
-  editDeviceViewPath = `${this.devicesViewPath}/edit`; 
-
+  editDeviceViewPath = `${this.devicesViewPath}/edit`;
   // Client URLs
   clientsViewPath = "/clients";
   addClientViewPath = `${this.clientsViewPath}/add`;
   editClientViewPath = `${this.clientsViewPath}/edit`;
-
 
   // Driver URLs
   driversViewPath = "/drivers";
@@ -24,52 +21,52 @@ export class UrlConstants {
   addVehicleViewPath = `${this.vehiclesViewPath}/add`;
   editVehicleViewPath = `${this.vehiclesViewPath}/edit`;
 
-
-  // Vehicle Master URLs 
+  // Vehicle Master URLs
   vehicleMastersViewPath = "/vehicle-masters";
   addVehicleMasterViewPath = `${this.vehicleMastersViewPath}/add`;
   editVehicleMasterViewPath = `${this.vehicleMastersViewPath}/edit`;
 
-
-   // Device On-boarding URLs 
+  // Device On-boarding URLs
   deviceOnboardingViewPath = "/devices-onboarding";
   addDeviceOnboardingViewPath = `${this.deviceOnboardingViewPath}/add`;
   editDeviceOnboardingViewPath = `${this.deviceOnboardingViewPath}/edit`;
 
-
-  // Groups URLs (old)
+  // Groups URLs (Simple groups - Group Modules)
+  // Frontend route: /groups
+  // API endpoint: /group-master
   groupsViewPath = "/groups";
   addGroupViewPath = `${this.groupsViewPath}/add`;
   editGroupViewPath = `${this.groupsViewPath}/edit`;
 
-  // Group Module URLs - ADD THESE (new)
-  groupModuleViewPath = "/group-master";  // Note: API endpoint is /group-master
-  addGroupModuleViewPath = `${this.groupModuleViewPath}/add`;
-  editGroupModuleViewPath = `${this.groupModuleViewPath}/edit`;
+  // Groups Master URLs (Complex groups with IMEI)
+  // Frontend route: /groups-master  
+  // API endpoint: /groups
+  groupsMasterViewPath = "/groups-master";
+  addGroupsMasterViewPath = `${this.groupsMasterViewPath}/add`;
+  editGroupsMasterViewPath = `${this.groupsMasterViewPath}/edit`;
 
+  // API endpoint mappings (CORRECTED - for backend calls)
+  groupModuleViewPath = "/group-master"; // API endpoint for simple groups (Group Modules)
+  groupMasterViewPath = "/groups";       // API endpoint for complex groups (Groups Master)
 
- groupMastersViewPath = "/group-master";  // Note: API endpoint is /group-master
-  // addGroupModuleViewPath = `${this.groupModuleViewPath}/add`;
-  // editGroupModuleViewPath = `${this.groupModuleViewPath}/edit`;
-
-  // Users URLs - ADD THESE
+  // Users URLs
   usersViewPath = "/users";
   addUserViewPath = `${this.usersViewPath}/add`;
   editUserViewPath = `${this.usersViewPath}/edit`;
 
-   // Road Master URLs - ADD THESE
+  // Road Master URLs
   roadMasterViewPath = "/omms/data/state-db";
-
-    // Roles URLs - ADD THESE
+  roadMasterExportPath="/omms/export"
+  // Roles URLs
   rolesViewPath = "/roles";
   addRoleViewPath = `${this.rolesViewPath}/add`;
   editRoleViewPath = `${this.rolesViewPath}/edit`;
 
-  // Accounts URLs 
+  // Accounts URLs
   accountsViewPath = "/accounts";
   addAccountViewPath = `${this.accountsViewPath}/add`;
   editAccountViewPath = `${this.accountsViewPath}/edit`;
-
 }
+
 let urls = new UrlConstants();
 export default urls;

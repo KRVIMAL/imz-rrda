@@ -1,3 +1,4 @@
+// Sidebar.tsx - Updated with clear naming
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -9,6 +10,7 @@ import {
   FiShield,
   FiTruck,
   FiHome,
+  FiMap,
 } from "react-icons/fi";
 const sidebarItems = [
   { name: "Dashboard", href: "/", icon: FiHome },
@@ -16,22 +18,30 @@ const sidebarItems = [
   // { name: "Select Demo", href: "/selectdemo", icon: FiFileText },
   // { name: "Input Demo", href: "/inputdemo", icon: FiFileText },
   // { name: "Table Demo", href: "/table-demo", icon: FiGrid },
+
+  // Core Modules
   { name: "Devices", href: "/devices", icon: FiHardDrive },
   { name: "Vehicles", href: "/vehicles", icon: FiTruck },
   { name: "Clients", href: "/clients", icon: FiUsers },
+
+  // Masters
   { name: "Drivers", href: "/drivers", icon: FiUsers },
-  { name: "Vehicles Master", href: "/vehicle-masters", icon: FiTruck },
+  { name: "Vehicle Masters", href: "/vehicle-masters", icon: FiTruck },
+
+  // Management
   { name: "Accounts", href: "/accounts", icon: FiUsers },
-  { name: "Groups", href: "/groups", icon: FiUsers },
+  { name: "Groups", href: "/groups", icon: FiUsers }, // Simple groups
+  { name: "Groups Master", href: "/groups-master", icon: FiUsers }, // Complex groups with IMEI
   { name: "Roles", href: "/roles", icon: FiShield },
+  { name: "Users", href: "/users", icon: FiUsers },
+
+  // Operations
   {
     name: "Device Onboarding",
     href: "/devices-onboarding",
     icon: FiSmartphone,
   },
-  { name: "Groups Master", href: "/group-master", icon: FiUsers },
-  { name: "Users", href: "/users", icon: FiUsers },
-  { name: "Roads", href: "/roads", icon: FiUsers },
+  { name: "Road Master", href: "/roads", icon: FiMap },
 ];
 
 interface SidebarProps {

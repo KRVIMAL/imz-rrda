@@ -1,4 +1,4 @@
-// Groups services with proper pagination and IMEI relationship mapping
+// Groups services (Simple groups - Group Modules) with corrected API endpoints
 import { Row } from "../../../../components/ui/DataTable/types";
 import {
   getRequest,
@@ -15,35 +15,17 @@ interface ApiResponse<T> {
   data: T;
 }
 
-interface ImeiDevice {
-  _id: string;
-  account?: string;
-  deviceIMEI: string;
-  deviceSerialNo: string;
-  simNo1: string;
-  simNo2: string;
-  simNo1Operator: string;
-  simNo2Operator: string;
-  vehicleDescription: string;
-  vehicle?: string;
-  driver?: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
-
 interface GroupData {
-  groupId:string;
   _id: string;
-  groupName: string;
+  groupMasterId: string;
   groupType: string;
-  imei: ImeiDevice[] | string[]; // Can be populated objects or just IDs
   stateName: string;
   cityName: string;
   remark: string;
   contactNo: string;
   status: string;
+  createdTime: string;
+  updatedTime: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -52,8 +34,8 @@ interface GroupData {
 interface GroupsListResponse {
   data: GroupData[];
   pagination: {
-    page: string | number;
-    limit: string;
+    page: number;
+    limit: number;
     total: number;
     totalPages: number;
     hasNext: boolean;
@@ -72,54 +54,20 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-// Device for IMEI dropdown
-export interface DeviceForImei {
-  _id: string;
-  deviceIMEI: string;
-  deviceSerialNo: string;
-  vehicleDescription: string;
-}
-
 // Transform API group data to Row format
-const transformGroupToRow = (group: GroupData): Row => {
-  // Handle IMEI array - extract IMEIs for display and IDs for edit
-  let imeiDisplay = "N/A";
-  let imeiIds: string[] = [];
-
-  if (Array.isArray(group.imei)) {
-    if (group.imei.length > 0) {
-      // Check if items have deviceIMEI (populated) or are just strings (IDs)
-      if (typeof group.imei[0] === 'object' && 'deviceIMEI' in group.imei[0]) {
-        // Populated objects
-        const populatedImei = group.imei as ImeiDevice[];
-        imeiDisplay = populatedImei.map(device => device.deviceIMEI).join(", ");
-        imeiIds = populatedImei.map(device => device._id);
-      } else {
-        // Just IDs
-        imeiIds = group.imei as string[];
-        imeiDisplay = `${imeiIds.length} device(s)`;
-      }
-    }
-  }
-
-  return {
-    groupId:group.groupId,
-    id: group._id,
-    groupName: group.groupName,
-    groupType: group.groupType,
-    imeiDisplay: imeiDisplay,
-    stateName: group.stateName,
-    cityName: group.cityName,
-    remark: group.remark,
-    contactNo: group.contactNo,
-    status: group.status,
-    createdTime: new Date(group.createdAt).toISOString().split("T")[0],
-    updatedTime: new Date(group.updatedAt).toISOString().split("T")[0],
-    inactiveTime: new Date(group.updatedAt).toISOString().split("T")[0],
-    // Store IMEI IDs for edit functionality
-    imei: imeiIds,
-  };
-};
+const transformGroupToRow = (group: GroupData): Row => ({
+  id: group._id,
+  groupMasterId: group.groupMasterId,
+  groupType: group.groupType,
+  stateName: group.stateName,
+  cityName: group.cityName,
+  remark: group.remark,
+  contactNo: group.contactNo,
+  status: group.status,
+  createdTime: new Date(group.createdTime || group.createdAt).toISOString().split("T")[0],
+  updatedTime: new Date(group.updatedTime || group.updatedAt).toISOString().split("T")[0],
+  inactiveTime: new Date(group.updatedTime || group.updatedAt).toISOString().split("T")[0],
+});
 
 export const groupServices = {
   getAll: async (
@@ -127,8 +75,9 @@ export const groupServices = {
     limit: number = 10
   ): Promise<PaginatedResponse<Row>> => {
     try {
+      // Using corrected API endpoint: /group-master for simple groups
       const response: ApiResponse<GroupsListResponse> = await getRequest(
-        urls.groupsViewPath,
+        urls.groupModuleViewPath, // This points to "/group-master"
         {
           page,
           limit,
@@ -139,10 +88,8 @@ export const groupServices = {
         return {
           data: response.data.data.map(transformGroupToRow),
           total: response.data.pagination.total,
-          page: typeof response.data.pagination.page === 'string' 
-            ? parseInt(response.data.pagination.page) 
-            : response.data.pagination.page,
-          limit: parseInt(response.data.pagination.limit),
+          page: response.data.pagination.page,
+          limit: response.data.pagination.limit,
           totalPages: response.data.pagination.totalPages,
           hasNext: response.data.pagination.hasNext,
           hasPrev: response.data.pagination.hasPrev,
@@ -159,7 +106,7 @@ export const groupServices = {
   getById: async (id: string | number): Promise<Row | null> => {
     try {
       const response: ApiResponse<GroupData> = await getRequest(
-        `${urls.groupsViewPath}/${id}`
+        `${urls.groupModuleViewPath}/${id}`
       );
 
       if (response.success) {
@@ -184,18 +131,15 @@ export const groupServices = {
   ): Promise<{ group: Row; message: string }> => {
     try {
       const payload = {
-        groupName: groupData.groupName,
         groupType: groupData.groupType,
-        imei: groupData.imei || [], // Array of device-onboarding IDs
         stateName: groupData.stateName,
         cityName: groupData.cityName,
         remark: groupData.remark,
         contactNo: groupData.contactNo,
-        status: groupData.status || "active",
       };
 
       const response: ApiResponse<GroupData> = await postRequest(
-        urls.groupsViewPath,
+        urls.groupModuleViewPath,
         payload
       );
 
@@ -221,9 +165,7 @@ export const groupServices = {
       const payload: any = {};
 
       // Only include fields that are provided
-      if (groupData.groupName !== undefined) payload.groupName = groupData.groupName;
       if (groupData.groupType !== undefined) payload.groupType = groupData.groupType;
-      if (groupData.imei !== undefined) payload.imei = groupData.imei;
       if (groupData.stateName !== undefined) payload.stateName = groupData.stateName;
       if (groupData.cityName !== undefined) payload.cityName = groupData.cityName;
       if (groupData.remark !== undefined) payload.remark = groupData.remark;
@@ -231,7 +173,7 @@ export const groupServices = {
       if (groupData.status !== undefined) payload.status = groupData.status;
 
       const response: ApiResponse<GroupData> = await patchRequest(
-        `${urls.groupsViewPath}/${id}`,
+        `${urls.groupModuleViewPath}/${id}`,
         payload
       );
 
@@ -252,7 +194,7 @@ export const groupServices = {
   inactivate: async (id: string | number): Promise<{ message: string }> => {
     try {
       const response: ApiResponse<GroupData> = await patchRequest(
-        `${urls.groupsViewPath}/${id}`,
+        `${urls.groupModuleViewPath}/${id}`,
         {
           status: "inactive",
         }
@@ -282,9 +224,9 @@ export const groupServices = {
       }
 
       const response: ApiResponse<GroupsListResponse> = await getRequest(
-        urls.groupsViewPath,
+        `${urls.groupModuleViewPath}/search`,
         {
-          searchText: searchText.trim(),
+          search: searchText.trim(),
           page,
           limit,
         }
@@ -294,10 +236,8 @@ export const groupServices = {
         return {
           data: response.data.data.map(transformGroupToRow),
           total: response.data.pagination.total,
-          page: typeof response.data.pagination.page === 'string' 
-            ? parseInt(response.data.pagination.page) 
-            : response.data.pagination.page,
-          limit: parseInt(response.data.pagination.limit),
+          page: response.data.pagination.page,
+          limit: response.data.pagination.limit,
           totalPages: response.data.pagination.totalPages,
           hasNext: response.data.pagination.hasNext,
           hasPrev: response.data.pagination.hasPrev,
@@ -308,28 +248,6 @@ export const groupServices = {
     } catch (error: any) {
       console.error("Error searching groups:", error.message);
       throw new Error(error.message || "Search failed");
-    }
-  },
-
-  // Get devices for IMEI dropdown
-  getDevicesForImei: async (): Promise<DeviceForImei[]> => {
-    try {
-      const response: ApiResponse<{ data: DeviceForImei[] }> = await getRequest(
-        urls.deviceOnboardingViewPath,
-        {
-          page: 1,
-          limit: 0, // Get all records
-        }
-      );
-
-      if (response.success) {
-        return response.data.data;
-      } else {
-        throw new Error(response.message || "Failed to fetch devices");
-      }
-    } catch (error: any) {
-      console.error("Error fetching devices for IMEI:", error.message);
-      throw new Error(error.message || "Failed to fetch devices");
     }
   },
 };

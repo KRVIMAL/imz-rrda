@@ -1,28 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { FiHome, FiUsers, FiPlus } from "react-icons/fi";
-import ModuleHeader from "../../../../components/ui/ModuleHeader";
-import CustomInput from "../../../../components/ui/CustomInput";
-import Select from "../../../../components/ui/Select";
-import Card from "../../../../components/ui/Card";
-import { groupServices, DeviceForImei } from "../services/groupsServices";
-import strings from "../../../../global/constants/StringConstants";
-import urls from "../../../../global/constants/UrlConstants";
+import ModuleHeader from "../../../components/ui/ModuleHeader";
+import CustomInput from "../../../components/ui/CustomInput";
+import Select from "../../../components/ui/Select";
+import Card from "../../../components/ui/Card";
+import { groupServices } from "./AddGroup/groups.services";
+import strings from "../../../global/constants/StringConstants";
+import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
-import { tabTitle } from "../../../../utils/tab-title";
 
 // Form state type
 interface GroupFormState {
-  groupName: {
-    value: string;
-    error: string;
-  };
   groupType: {
     value: string;
-    error: string;
-  };
-  imei: {
-    value: string[];
     error: string;
   };
   stateName: {
@@ -49,16 +40,8 @@ interface GroupFormState {
 
 // Initial form state
 const initialFormState = (preState?: any): GroupFormState => ({
-  groupName: {
-    value: preState?.groupName || "",
-    error: "",
-  },
   groupType: {
     value: preState?.groupType || "",
-    error: "",
-  },
-  imei: {
-    value: preState?.imei || [],
     error: "",
   },
   stateName: {
@@ -88,22 +71,10 @@ const AddEditGroupForm: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const isEdit = Boolean(id);
-  tabTitle(isEdit === true ? strings.EDIT_GROUP : strings.ADD_GROUP);
+
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<GroupFormState>(initialFormState());
-
-  // Dropdown data
-  const [devices, setDevices] = useState<DeviceForImei[]>([]);
-  const [loadingDropdowns, setLoadingDropdowns] = useState(false);
-
-  const groupTypeOptions = [
-    { value: "District", label: "District" },
-    { value: "Regional", label: "Regional" },
-    { value: "State", label: "State" },
-    { value: "National", label: "National" },
-    { value: "Zone", label: "Zone" },
-  ];
 
   const statusOptions = [
     { value: "active", label: "Active" },
@@ -153,36 +124,23 @@ const AddEditGroupForm: React.FC = () => {
   ];
 
   useEffect(() => {
-    const initializeForm = async () => {
-      await loadDropdownData();
+    if (isEdit && id) {
+      const { state } = location;
+      console.log({ state });
 
-      if (isEdit && id) {
-        await loadGroup();
+      if (state?.groupData) {
+        setFormData(initialFormState(state.groupData));
+      } else {
+        loadGroup();
       }
-    };
-
-    initializeForm();
-  }, [isEdit, id, location]);
-
-  const loadDropdownData = async () => {
-    setLoadingDropdowns(true);
-    try {
-      const devicesData = await groupServices.getDevicesForImei();
-      setDevices(devicesData);
-    } catch (error: any) {
-      console.error("Error loading dropdown data:", error);
-      toast.error("Failed to load devices data");
-    } finally {
-      setLoadingDropdowns(false);
     }
-  };
+  }, [isEdit, id, location]);
 
   const loadGroup = async () => {
     setLoading(true);
     try {
       const group = await groupServices.getById(id!);
       if (group) {
-        console.log("Loaded group data:", group); // Debug log
         setFormData(initialFormState(group));
       } else {
         navigate(urls.groupsViewPath);
@@ -213,10 +171,7 @@ const AddEditGroupForm: React.FC = () => {
       setFormData((prev) => ({
         ...prev,
         [field]: {
-          value:
-            field === "imei"
-              ? (value as string[]) || []
-              : (value as string) || "",
+          value: value as string,
           error: "",
         },
       }));
@@ -227,45 +182,30 @@ const AddEditGroupForm: React.FC = () => {
     let error = "";
 
     switch (field) {
-      case "groupName":
-        if (!value || (typeof value === "string" && !value.trim())) {
-          error = "Group Name is required";
-        }
-        break;
       case "groupType":
-        if (!value || (typeof value === "string" && !value.trim())) {
-          error = "Group Type is required";
-        }
+        if (!value.trim()) error = "Group Type is required";
         break;
       case "stateName":
-        if (!value || (typeof value === "string" && !value.trim())) {
-          error = "State Name is required";
-        }
+        if (!value.trim()) error = "State Name is required";
         break;
       case "cityName":
-        if (!value || (typeof value === "string" && !value.trim())) {
-          error = "City Name is required";
-        }
+        if (!value.trim()) error = "City Name is required";
+        break;
+      case "remark":
+        if (!value.trim()) error = "Remark is required";
         break;
       case "contactNo":
-        if (!value || (typeof value === "string" && !value.trim())) {
+        if (!value.trim()) {
           error = "Contact Number is required";
-        } else if (typeof value === "string") {
+        } else {
           const contactRegex = /^[\+]?[1-9][\d]{0,15}$/;
           if (!contactRegex.test(value.replace(/[\s\-\(\)]/g, ""))) {
             error = "Invalid contact number format";
           }
         }
         break;
-      case "remark":
-        if (!value || (typeof value === "string" && !value.trim())) {
-          error = "Remark is required";
-        }
-        break;
       case "status":
-        if (!value || (typeof value === "string" && !value.trim())) {
-          error = "Status is required";
-        }
+        if (!value.trim()) error = "Status is required";
         break;
     }
 
@@ -278,15 +218,6 @@ const AddEditGroupForm: React.FC = () => {
   const validateForm = (): boolean => {
     const errors: Partial<GroupFormState> = {};
     let isValid = true;
-
-    // Group Name validation
-    if (!formData.groupName.value.trim()) {
-      errors.groupName = {
-        ...formData.groupName,
-        error: "Group Name is required",
-      };
-      isValid = false;
-    }
 
     // Group Type validation
     if (!formData.groupType.value.trim()) {
@@ -315,6 +246,12 @@ const AddEditGroupForm: React.FC = () => {
       isValid = false;
     }
 
+    // Remark validation
+    if (!formData.remark.value.trim()) {
+      errors.remark = { ...formData.remark, error: "Remark is required" };
+      isValid = false;
+    }
+
     // Contact Number validation
     if (!formData.contactNo.value.trim()) {
       errors.contactNo = {
@@ -333,12 +270,6 @@ const AddEditGroupForm: React.FC = () => {
         };
         isValid = false;
       }
-    }
-
-    // Remark validation
-    if (!formData.remark.value.trim()) {
-      errors.remark = { ...formData.remark, error: "Remark is required" };
-      isValid = false;
     }
 
     // Status validation
@@ -360,9 +291,7 @@ const AddEditGroupForm: React.FC = () => {
     setSaving(true);
     try {
       const groupData = {
-        groupName: formData.groupName.value,
         groupType: formData.groupType.value,
-        imei: formData.imei.value, // Array of device-onboarding IDs
         stateName: formData.stateName.value,
         cityName: formData.cityName.value,
         remark: formData.remark.value,
@@ -377,7 +306,7 @@ const AddEditGroupForm: React.FC = () => {
 
       setTimeout(() => {
         navigate(urls.groupsViewPath);
-      }, 1300);
+      }, 1500);
     } catch (error: any) {
       console.error("Error saving group:", error);
       toast.error(error.message || "Failed to save group");
@@ -389,12 +318,6 @@ const AddEditGroupForm: React.FC = () => {
   const handleCancel = () => {
     navigate(urls.groupsViewPath);
   };
-
-  // Create options for IMEI multi-select dropdown
-  const imeiOptions = devices.map((device) => ({
-    value: device._id,
-    label: `${device.deviceIMEI} - ${device.vehicleDescription}`,
-  }));
 
   if (loading && isEdit) {
     return (
@@ -419,54 +342,18 @@ const AddEditGroupForm: React.FC = () => {
       <div className="p-6">
         <Card>
           <Card.Body className="p-6">
-            {loadingDropdowns && (
-              <div className="flex items-center justify-center py-4 mb-6">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-                <span className="ml-2 text-gray-600">
-                  Loading devices data...
-                </span>
-              </div>
-            )}
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <CustomInput
-                  label={strings.GROUP_NAME}
-                  value={formData.groupName.value}
-                  onChange={handleInputChange("groupName")}
-                  onBlur={handleBlur("groupName")}
-                  required
-                  placeholder="Enter group name"
-                  disabled={saving || loadingDropdowns}
-                  autoValidate={false}
-                  error={formData.groupName.error}
-                />
-              </div>
-
-              <div>
-                <Select
                   label={strings.GROUP_TYPE}
-                  options={groupTypeOptions}
                   value={formData.groupType.value}
-                  onChange={handleSelectChange("groupType")}
-                  placeholder="Select Group Type"
+                  onChange={handleInputChange("groupType")}
+                  onBlur={handleBlur("groupType")}
                   required
-                  disabled={saving || loadingDropdowns}
+                  placeholder="Enter group type (e.g., Manipur Police)"
+                  disabled={saving}
+                  autoValidate={false}
                   error={formData.groupType.error}
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <Select
-                  label={strings.SELECT_ASSET_IMEI}
-                  options={imeiOptions}
-                  value={formData.imei.value}
-                  onChange={handleSelectChange("imei")}
-                  placeholder="Select Assets/IMEI..."
-                  multiple
-                  disabled={saving || loadingDropdowns}
-                  error={formData.imei.error}
-                  helper="You can select multiple devices"
                 />
               </div>
 
@@ -478,7 +365,7 @@ const AddEditGroupForm: React.FC = () => {
                   onChange={handleSelectChange("stateName")}
                   placeholder="Select State"
                   required
-                  disabled={saving || loadingDropdowns}
+                  disabled={saving}
                   error={formData.stateName.error}
                 />
               </div>
@@ -491,23 +378,9 @@ const AddEditGroupForm: React.FC = () => {
                   onBlur={handleBlur("cityName")}
                   required
                   placeholder="Enter city name"
-                  disabled={saving || loadingDropdowns}
+                  disabled={saving}
                   autoValidate={false}
                   error={formData.cityName.error}
-                />
-              </div>
-
-              <div>
-                <CustomInput
-                  label={strings.REMARK}
-                  value={formData.remark.value}
-                  onChange={handleInputChange("remark")}
-                  onBlur={handleBlur("remark")}
-                  required
-                  placeholder="Enter remark"
-                  disabled={saving || loadingDropdowns}
-                  autoValidate={false}
-                  error={formData.remark.error}
                 />
               </div>
 
@@ -519,9 +392,23 @@ const AddEditGroupForm: React.FC = () => {
                   onBlur={handleBlur("contactNo")}
                   required
                   placeholder="Enter contact number"
-                  disabled={saving || loadingDropdowns}
+                  disabled={saving}
                   autoValidate={false}
                   error={formData.contactNo.error}
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <CustomInput
+                  label={strings.REMARK}
+                  value={formData.remark.value}
+                  onChange={handleInputChange("remark")}
+                  onBlur={handleBlur("remark")}
+                  required
+                  placeholder="Enter remark"
+                  disabled={saving}
+                  autoValidate={false}
+                  error={formData.remark.error}
                 />
               </div>
 
@@ -534,7 +421,7 @@ const AddEditGroupForm: React.FC = () => {
                     onChange={handleSelectChange("status")}
                     placeholder="Select Status"
                     required
-                    disabled={saving || loadingDropdowns}
+                    disabled={saving}
                     error={formData.status.error}
                   />
                 </div>

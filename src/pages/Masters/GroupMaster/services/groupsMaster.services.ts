@@ -1,4 +1,4 @@
-// Group Master services with complex relationship mapping
+// Groups Master services (Complex groups with IMEI) with corrected API endpoints
 import { Row } from "../../../../components/ui/DataTable/types";
 import {
   getRequest,
@@ -6,7 +6,6 @@ import {
   patchRequest,
 } from "../../../../core-services/rest-api/apiHelpers";
 import urls from "../../../../global/constants/UrlConstants";
-// import urls from "../../../../global/constants/url-constants";
 
 // Define interfaces for API responses
 interface ApiResponse<T> {
@@ -174,14 +173,15 @@ const transformGroupMasterToRow = (groupMaster: GroupMasterData): Row => {
   };
 };
 
-export const groupMasterServices = {
+export const groupsMasterServices = {
   getAll: async (
     page: number = 1,
     limit: number = 10
   ): Promise<PaginatedResponse<Row>> => {
     try {
+      // Using corrected API endpoint: /groups for complex groups (Groups Master)
       const response: ApiResponse<GroupMastersListResponse> = await getRequest(
-        urls.groupsViewPath,
+        urls.groupMasterViewPath, // This points to "/groups"
         {
           page,
           limit,
@@ -201,34 +201,34 @@ export const groupMasterServices = {
           hasPrev: response.data.pagination.hasPrev,
         };
       } else {
-        throw new Error(response.message || "Failed to fetch group masters");
+        throw new Error(response.message || "Failed to fetch groups master");
       }
     } catch (error: any) {
-      console.error("Error fetching group masters:", error.message);
-      throw new Error(error.message || "Failed to fetch group masters");
+      console.error("Error fetching groups master:", error.message);
+      throw new Error(error.message || "Failed to fetch groups master");
     }
   },
 
   getById: async (id: string | number): Promise<Row | null> => {
     try {
       const response: ApiResponse<GroupMasterData> = await getRequest(
-        `${urls.groupsViewPath}/${id}`
+        `${urls.groupMasterViewPath}/${id}`
       );
 
       if (response.success) {
         return transformGroupMasterToRow(response.data);
       } else {
-        throw new Error(response.message || "Group Master not found");
+        throw new Error(response.message || "Groups Master not found");
       }
     } catch (error: any) {
-      console.error("Error fetching group master:", error.message);
+      console.error("Error fetching groups master:", error.message);
       if (
         error.message.includes("not found") ||
         error.message.includes("404")
       ) {
         return null;
       }
-      throw new Error(error.message || "Failed to fetch group master");
+      throw new Error(error.message || "Failed to fetch groups master");
     }
   },
 
@@ -244,21 +244,21 @@ export const groupMasterServices = {
       };
 
       const response: ApiResponse<GroupMasterData> = await postRequest(
-        urls.groupsViewPath,
+        urls.groupMasterViewPath,
         payload
       );
 
       if (response.success) {
         return {
           groupMaster: transformGroupMasterToRow(response.data),
-          message: response.message || "Group created successfully",
+          message: response.message || "Groups Master created successfully",
         };
       } else {
-        throw new Error(response.message || "Failed to create group master");
+        throw new Error(response.message || "Failed to create groups master");
       }
     } catch (error: any) {
-      console.error("Error creating group master:", error.message);
-      throw new Error(error.message || "Failed to create group master");
+      console.error("Error creating groups master:", error.message);
+      throw new Error(error.message || "Failed to create groups master");
     }
   },
 
@@ -276,28 +276,28 @@ export const groupMasterServices = {
       if (groupMasterData.status !== undefined) payload.status = groupMasterData.status;
 
       const response: ApiResponse<GroupMasterData> = await patchRequest(
-        `${urls.groupsViewPath}/${id}`,
+        `${urls.groupMasterViewPath}/${id}`,
         payload
       );
 
       if (response.success) {
         return {
           groupMaster: transformGroupMasterToRow(response.data),
-          message: response.message || "Group updated successfully",
+          message: response.message || "Groups Master updated successfully",
         };
       } else {
-        throw new Error(response.message || "Failed to update group master");
+        throw new Error(response.message || "Failed to update groups master");
       }
     } catch (error: any) {
-      console.error("Error updating group master:", error.message);
-      throw new Error(error.message || "Failed to update group master");
+      console.error("Error updating groups master:", error.message);
+      throw new Error(error.message || "Failed to update groups master");
     }
   },
 
   inactivate: async (id: string | number): Promise<{ message: string }> => {
     try {
       const response: ApiResponse<GroupMasterData> = await patchRequest(
-        `${urls.groupsViewPath}/${id}`,
+        `${urls.groupMasterViewPath}/${id}`,
         {
           status: "inactive",
         }
@@ -305,14 +305,14 @@ export const groupMasterServices = {
 
       if (response.success) {
         return {
-          message: response.message || "Group inactivated successfully",
+          message: response.message || "Groups Master inactivated successfully",
         };
       } else {
-        throw new Error(response.message || "Failed to inactivate group master");
+        throw new Error(response.message || "Failed to inactivate groups master");
       }
     } catch (error: any) {
-      console.error("Error inactivating group master:", error.message);
-      throw new Error(error.message || "Failed to inactivate group master");
+      console.error("Error inactivating groups master:", error.message);
+      throw new Error(error.message || "Failed to inactivate groups master");
     }
   },
 
@@ -323,11 +323,11 @@ export const groupMasterServices = {
   ): Promise<PaginatedResponse<Row>> => {
     try {
       if (!searchText.trim()) {
-        return groupMasterServices.getAll(page, limit);
+        return groupsMasterServices.getAll(page, limit);
       }
 
       const response: ApiResponse<GroupMastersListResponse> = await getRequest(
-        `${urls.groupsViewPath}/search`,
+        `${urls.groupMasterViewPath}/search`,
         {
           search: searchText.trim(),
           page,
@@ -351,7 +351,7 @@ export const groupMasterServices = {
         throw new Error(response.message || "Search failed");
       }
     } catch (error: any) {
-      console.error("Error searching group masters:", error.message);
+      console.error("Error searching groups master:", error.message);
       throw new Error(error.message || "Search failed");
     }
   },
@@ -359,8 +359,9 @@ export const groupMasterServices = {
   // Get Group Modules for dropdown
   getGroupModules: async (): Promise<GroupModuleForDropdown[]> => {
     try {
+      // Use the simple groups API endpoint to get group modules
       const response: ApiResponse<{ data: GroupModuleForDropdown[] }> = await getRequest(
-        urls.groupModuleViewPath,
+        urls.groupModuleViewPath, // This points to "/group-master"
         {
           page: 1,
           limit: 0, // Get all records

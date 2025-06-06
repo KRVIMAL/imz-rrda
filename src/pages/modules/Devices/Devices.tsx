@@ -192,7 +192,7 @@ const Devices: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.devicesViewPath,
+            modulePath: `${urls.devicesViewPath}/export`,
             filename: "devices",
           }}
         />

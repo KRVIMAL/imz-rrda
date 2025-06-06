@@ -4,10 +4,9 @@ import { FiHome, FiUsers } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { groupMasterServices } from "./services/groupMaster.services";
+import { groupsMasterServices } from "./services/groupsMaster.services";
 import urls from "../../../global/constants/UrlConstants";
 import strings from "../../../global/constants/StringConstants";
-
 import toast from "react-hot-toast";
 
 // Add interface for paginated response
@@ -21,9 +20,9 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-const GroupMasters: React.FC = () => {
+const GroupsMaster: React.FC = () => {
   const navigate = useNavigate();
-  const [groupMasters, setGroupMasters] = useState<Row[]>([]);
+  const [groupsMaster, setGroupsMaster] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -97,14 +96,14 @@ const GroupMasters: React.FC = () => {
 
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
-    { label: strings.GROUP_MASTERS, isActive: true, icon: FiUsers },
+    { label: strings.GROUPS_MASTER, isActive: true, icon: FiUsers },
   ];
 
   useEffect(() => {
-    loadGroupMasters();
+    loadGroupsMaster();
   }, []);
 
-  const loadGroupMasters = async (
+  const loadGroupsMaster = async (
     search: string = "",
     page: number = currentPage,
     limit: number = pageSize
@@ -112,49 +111,49 @@ const GroupMasters: React.FC = () => {
     setLoading(true);
     try {
       const result: PaginatedResponse<Row> = search
-        ? await groupMasterServices.search(search, page, limit)
-        : await groupMasterServices.getAll(page, limit);
+        ? await groupsMasterServices.search(search, page, limit)
+        : await groupsMasterServices.getAll(page, limit);
 
-      setGroupMasters(result.data);
+      setGroupsMaster(result.data);
       setTotalRows(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(result.page);
     } catch (error: any) {
-      console.error("Error loading group masters:", error);
-      toast.error(error.message || "Failed to fetch group masters");
+      console.error("Error loading groups master:", error);
+      toast.error(error.message || "Failed to fetch groups master");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddGroupMaster = () => {
-    navigate(urls.addGroupModuleViewPath);
+  const handleAddGroupsMaster = () => {
+    navigate(urls.addGroupsMasterViewPath);
   };
 
   // Handle edit click from DataTable
-  const handleEditGroupMaster = (id: string | number) => {
-    const selectedGroupMaster = groupMasters.find(
+  const handleEditGroupsMaster = (id: string | number) => {
+    const selectedGroupsMaster = groupsMaster.find(
       (groupMaster) => groupMaster.id === id
     );
-    navigate(`${urls.editGroupModuleViewPath}/${id}`, {
-      state: { groupMasterData: selectedGroupMaster },
+    navigate(`${urls.editGroupsMasterViewPath}/${id}`, {
+      state: { groupsMasterData: selectedGroupsMaster },
     });
   };
 
-  const handleDeleteGroupMaster = async (
+  const handleDeleteGroupsMaster = async (
     id: string | number,
     deletedRow: Row,
     rows: Row[]
   ) => {
     try {
-      const result = await groupMasterServices.inactivate(id);
+      const result = await groupsMasterServices.inactivate(id);
       toast.success(result.message);
-      await loadGroupMasters(searchValue, currentPage, pageSize); // Reload current page
+      await loadGroupsMaster(searchValue, currentPage, pageSize); // Reload current page
     } catch (error: any) {
-      console.error("Error inactivating group master:", error);
+      console.error("Error inactivating groups master:", error);
       toast.error(error.message);
       // Revert the rows on error
-      setGroupMasters(rows);
+      setGroupsMaster(rows);
     }
   };
 
@@ -162,39 +161,39 @@ const GroupMasters: React.FC = () => {
     console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
-    loadGroupMasters(searchText, 1, pageSize);
+    loadGroupsMaster(searchText, 1, pageSize);
   };
 
   // Pagination handlers
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadGroupMasters(searchValue, page, pageSize);
+    loadGroupsMaster(searchValue, page, pageSize);
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setCurrentPage(1); // Reset to first page
-    loadGroupMasters(searchValue, 1, size);
+    loadGroupsMaster(searchValue, 1, size);
   };
 
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={strings.GROUP_MASTERS}
+        title={strings.GROUPS_MASTER}
         breadcrumbs={breadcrumbs}
         showAddButton
-        addButtonText={strings.ADD_GROUP_MASTER}
-        onAddClick={handleAddGroupMaster}
+        addButtonText={strings.ADD_GROUPS_MASTER}
+        onAddClick={handleAddGroupsMaster}
       />
 
       <div className="p-6">
         <DataTable
           columns={columns}
-          rows={groupMasters}
+          rows={groupsMaster}
           loading={loading}
           onSearch={handleSearch}
-          onDeleteRow={handleDeleteGroupMaster}
-          onEditClick={handleEditGroupMaster}
+          onDeleteRow={handleDeleteGroupsMaster}
+          onEditClick={handleEditGroupsMaster}
           pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
           // Server-side pagination props
@@ -205,8 +204,8 @@ const GroupMasters: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.groupsViewPath,
-            filename: "group-masters",
+            modulePath: `${urls.groupMasterViewPath}/export`,
+            filename: "groups-master",
           }}
         />
       </div>
@@ -214,4 +213,4 @@ const GroupMasters: React.FC = () => {
   );
 };
 
-export default GroupMasters;
+export default GroupsMaster;

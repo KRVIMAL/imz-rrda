@@ -192,7 +192,7 @@ const Users: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.usersViewPath,
+            modulePath: `${urls.usersViewPath}/export`,
             filename: "users",
           }}
         />
