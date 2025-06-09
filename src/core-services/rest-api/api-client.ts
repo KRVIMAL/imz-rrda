@@ -4,7 +4,7 @@ import { checkTokenExpiry, clearAuthData } from '../../store/slices/auth-slices.
 import urls from '../../global/constants/UrlConstants';
 
 export const apiClient = axios.create({
-  // baseURL: "http://192.168.1.9:9876/", // Updated base URL to match login endpoint
+  // baseURL: "http://192.168.1.36:9876/", // Updated base URL to match login endpoint
   baseURL:urls.baseURL,
   timeout: 10000, // Increased timeout for better reliabilit
   headers: {

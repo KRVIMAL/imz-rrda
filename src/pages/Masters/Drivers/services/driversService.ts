@@ -1,4 +1,4 @@
-// Updated driver services with proper pagination response
+// src/modules/drivers/services/driversService.ts - Updated with server-side filtering
 import { Row } from "../../../../components/ui/DataTable/types";
 import {
   getRequest,
@@ -16,7 +16,7 @@ interface ApiResponse<T> {
 }
 
 interface DriverData {
-  driverId:string,
+  driverId: string;
   _id: string;
   name: string;
   contactNo: string;
@@ -53,9 +53,24 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
+// Server-side filter interface (matches your API)
+interface ServerFilter {
+  field: string;
+  operator: string;
+  value: string;
+}
+
+// API request payload interface
+interface DriversRequestPayload {
+  page: number;
+  limit: number;
+  searchText?: string;
+  filters?: ServerFilter[];
+}
+
 // Transform API driver data to Row format
 const transformDriverToRow = (driver: DriverData): Row => ({
-  driverId:driver.driverId,
+  driverId: driver.driverId,
   id: driver._id,
   name: driver.name,
   contactNo: driver.contactNo,
@@ -68,19 +83,43 @@ const transformDriverToRow = (driver: DriverData): Row => ({
   inactiveTime: new Date(driver.updatedAt).toISOString().split("T")[0],
 });
 
+// Transform client-side filters to server-side format
+const transformFiltersToServerFormat = (filters: any[]): ServerFilter[] => {
+  return filters.map((filter) => ({
+    field: filter.field || filter.column, // Support both field and column properties
+    operator: filter.operator,
+    value: filter.value,
+  }));
+};
+
 export const driverServices = {
   getAll: async (
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
+    searchText?: string,
+    filters?: any[]
   ): Promise<PaginatedResponse<Row>> => {
     try {
-      const response: ApiResponse<DriversListResponse> = await getRequest(
-        urls.driversViewPath,
-        {
-          page,
-          limit,
-        }
+      const payload: DriversRequestPayload = {
+        page,
+        limit,
+      };
+
+      // Add search if provided
+      if (searchText && searchText.trim()) {
+        payload.searchText = searchText.trim();
+      }
+
+      // Add filters if provided
+      if (filters && filters.length > 0) {
+        payload.filters = transformFiltersToServerFormat(filters);
+      }
+
+      const response: ApiResponse<DriversListResponse> = await postRequest(
+        `${urls.driversViewPath}/listDriver`,
+        payload
       );
+      console.log({response})
 
       if (response.success) {
         return {
@@ -166,10 +205,13 @@ export const driverServices = {
 
       // Only include fields that are provided
       if (driverData.name !== undefined) payload.name = driverData.name;
-      if (driverData.contactNo !== undefined) payload.contactNo = driverData.contactNo;
+      if (driverData.contactNo !== undefined)
+        payload.contactNo = driverData.contactNo;
       if (driverData.email !== undefined) payload.email = driverData.email;
-      if (driverData.licenseNo !== undefined) payload.licenseNo = driverData.licenseNo;
-      if (driverData.adharNo !== undefined) payload.adharNo = driverData.adharNo;
+      if (driverData.licenseNo !== undefined)
+        payload.licenseNo = driverData.licenseNo;
+      if (driverData.adharNo !== undefined)
+        payload.adharNo = driverData.adharNo;
       if (driverData.status !== undefined) payload.status = driverData.status;
 
       const response: ApiResponse<DriverData> = await patchRequest(
@@ -213,42 +255,22 @@ export const driverServices = {
     }
   },
 
+  // Deprecated: Use getAll with searchText parameter instead
   search: async (
     searchText: string,
     page: number = 1,
     limit: number = 10
   ): Promise<PaginatedResponse<Row>> => {
-    try {
-      // If search is empty, return all drivers
-      if (!searchText.trim()) {
-        return driverServices.getAll(page, limit);
-      }
+    return driverServices.getAll(page, limit, searchText);
+  },
 
-      const response: ApiResponse<DriversListResponse> = await getRequest(
-        urls.driversViewPath,
-        {
-          searchText: searchText.trim(),
-          page,
-          limit,
-        }
-      );
-
-      if (response.success) {
-        return {
-          data: response.data.data.map(transformDriverToRow),
-          total: response.data.pagination.total,
-          page: parseInt(response.data.pagination.page),
-          limit: parseInt(response.data.pagination.limit),
-          totalPages: response.data.pagination.totalPages,
-          hasNext: response.data.pagination.hasNext,
-          hasPrev: response.data.pagination.hasPrev,
-        };
-      } else {
-        throw new Error(response.message || "Search failed");
-      }
-    } catch (error: any) {
-      console.error("Error searching drivers:", error.message);
-      throw new Error(error.message || "Search failed");
-    }
+  // New method specifically for filtering
+  getWithFilters: async (
+    page: number = 1,
+    limit: number = 10,
+    searchText?: string,
+    filters?: any[]
+  ): Promise<PaginatedResponse<Row>> => {
+    return driverServices.getAll(page, limit, searchText, filters);
   },
 };

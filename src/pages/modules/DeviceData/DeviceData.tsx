@@ -1,14 +1,16 @@
+// src/modules/clients/pages/Clients.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiHome, FiUsers } from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { groupModuleServices } from "./services/groupModule.services";
-import toast from "react-hot-toast";
+import { clientServices } from "./services/deviceData.services";
 import strings from "../../../global/constants/StringConstants";
 import urls from "../../../global/constants/UrlConstants";
+import toast from "react-hot-toast";
 import { tabTitle } from "../../../utils/tab-title";
+import { store } from "../../../store";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -21,10 +23,10 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-const GroupModules: React.FC = () => {
+const DeviceData: React.FC = () => {
   const navigate = useNavigate();
-  tabTitle(strings.GROUPS);
-  const [groupModules, setGroupModules] = useState<Row[]>([]);
+  tabTitle(strings.CLIENTS);
+  const [clients, setClients] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -35,30 +37,17 @@ const GroupModules: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const columns: Column[] = [
-    { field: "groupMasterId", headerName: "Group ID", width: 120 },
-    {
-      field: "groupType",
-      headerName: "Group Type",
-      width: 180,
-      renderCell: (params) => (
-        <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-          {params.value}
-        </span>
-      ),
-    },
-    { field: "stateName", headerName: "State Name", width: 150 },
-    { field: "cityName", headerName: "City Name", width: 130 },
-    {
-      field: "remark",
-      headerName: "Remark",
-      width: 200,
-      renderCell: (params) => (
-        <div className="truncate" title={params.value}>
-          {params.value}
-        </div>
-      ),
-    },
-    { field: "contactNo", headerName: "Contact No", width: 150 },
+    { field: "clientId", headerName: "Client Id", width: 120 },
+    { field: "name", headerName: "Client Name", width: 150 },
+    { field: "contactName", headerName: "Contact Name", width: 150 },
+    { field: "email", headerName: "Email ID", width: 200 },
+    { field: "contactNo", headerName: "Contact No", width: 130 },
+    { field: "panNumber", headerName: "Pan Number", width: 120 },
+    { field: "aadharNumber", headerName: "Aadhar Number", width: 130 },
+    { field: "gstNumber", headerName: "GST Number", width: 130 },
+    { field: "stateName", headerName: "State Name", width: 120 },
+    { field: "cityName", headerName: "City Name", width: 120 },
+    { field: "remark", headerName: "Remark", width: 150 },
     {
       field: "status",
       headerName: "Status",
@@ -87,14 +76,14 @@ const GroupModules: React.FC = () => {
 
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
-    { label: strings.GROUP_MODULES, isActive: true, icon: FiUsers },
+    { label: strings.CLIENTS, isActive: true, icon: FiUsers },
   ];
 
   useEffect(() => {
-    loadGroupModules();
+    loadClients();
   }, []);
 
-  const loadGroupModules = async (
+  const loadClients = async (
     search: string = "",
     page: number = currentPage,
     limit: number = pageSize
@@ -102,89 +91,86 @@ const GroupModules: React.FC = () => {
     setLoading(true);
     try {
       const result: PaginatedResponse<Row> = search
-        ? await groupModuleServices.search(search, page, limit)
-        : await groupModuleServices.getAll(page, limit);
+        ? await clientServices.search(search, page, limit)
+        : await clientServices.getAll(page, limit);
 
-      setGroupModules(result.data);
+      setClients(result.data);
       setTotalRows(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(result.page);
     } catch (error: any) {
-      console.error("Error loading group modules:", error);
-      toast.error(error.message || "Failed to fetch group modules");
+      console.error("Error loading clients:", error);
+      toast.error(error.message || "Failed to fetch clients");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddGroupModule = () => {
-    navigate(urls.addGroupViewPath);
+  const handleAddClient = () => {
+    navigate(urls.addClientViewPath);
   };
 
   // Handle edit click from DataTable
-  const handleEditGroupModule = (id: string | number) => {
-    const selectedGroupModule = groupModules.find(
-      (groupModule) => groupModule.id === id
-    );
-    navigate(`${urls.editGroupViewPath}/${id}`, {
-      state: { groupModuleData: selectedGroupModule },
+  const handleEditClient = (id: string | number) => {
+    const selectedClient = clients.find((client) => client.id === id);
+    navigate(`${urls.editClientViewPath}/${id}`, {
+      state: { clientData: selectedClient },
     });
   };
 
-  const handleDeleteGroupModule = async (
+  const handleDeleteClient = async (
     id: string | number,
     deletedRow: Row,
     rows: Row[]
   ) => {
     try {
-      const result = await groupModuleServices.inactivate(id);
+      const result = await clientServices.inactivate(id);
       toast.success(result.message);
-      await loadGroupModules(searchValue, currentPage, pageSize); // Reload current page
+      await loadClients(searchValue, currentPage, pageSize); // Reload current page
     } catch (error: any) {
-      console.error("Error inactivating group module:", error);
+      console.error("Error inactivating client:", error);
       toast.error(error.message);
       // Revert the rows on error
-      setGroupModules(rows);
+      setClients(rows);
     }
   };
 
   const handleSearch = (searchText: string) => {
-    console.log({ searchText });
     setSearchValue(searchText);
     setCurrentPage(1); // Reset to first page on search
-    loadGroupModules(searchText, 1, pageSize);
+    loadClients(searchText, 1, pageSize);
   };
 
   // Pagination handlers
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadGroupModules(searchValue, page, pageSize);
+    loadClients(searchValue, page, pageSize);
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setCurrentPage(1); // Reset to first page
-    loadGroupModules(searchValue, 1, size);
+    loadClients(searchValue, 1, size);
   };
 
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={strings.GROUP_MODULES}
+        title={strings.CLIENTS}
         breadcrumbs={breadcrumbs}
         showAddButton
-        addButtonText={strings.ADD_GROUP_MODULE}
-        onAddClick={handleAddGroupModule}
+        addButtonText={strings.ADD_CLIENT}
+        onAddClick={handleAddClient}
       />
 
       <div className="p-6">
         <DataTable
           columns={columns}
-          rows={groupModules}
+          rows={clients}
           loading={loading}
           onSearch={handleSearch}
-          onDeleteRow={handleDeleteGroupModule}
-          onEditClick={handleEditGroupModule}
+          onDeleteRow={handleDeleteClient}
+          onEditClick={handleEditClient}
           pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
           // Server-side pagination props
@@ -195,8 +181,8 @@ const GroupModules: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-            modulePath: urls.groupModuleViewPath,
-            filename: "group-modules",
+            modulePath: `${urls.clientsViewPath}/export`,
+            filename: "clients",
           }}
         />
       </div>
@@ -204,4 +190,4 @@ const GroupModules: React.FC = () => {
   );
 };
 
-export default GroupModules;
+export default DeviceData;

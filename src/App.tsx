@@ -40,6 +40,9 @@ import Users from "./pages/Modules/Users/Users";
 import AddEditUserForm from "./pages/Modules/Users/AddUser/AddEditUserForm";
 import RoadMaster from "./pages/Masters/RoadMaster/RoadMaster";
 import { useTokenExpiry } from "./hooks/useTokenExpiry";
+import TabsDemo from "./pages/TabsDemo";
+import DateTimeRangePickerDemo from "./pages/DateTimeRangePickerDemo";
+import DeviceData from "./pages/Modules/DeviceData/DeviceData";
 function App() {
   useTokenExpiry();
   return (
@@ -176,8 +179,15 @@ function App() {
                         element={<AddEditUserForm />}
                       />
 
+                      <Route path="/tabs-demo" element={<TabsDemo />} />
+                      <Route
+                        path="/datetime-picker-demo"
+                        element={<DateTimeRangePickerDemo />}
+                      />
                       {/* Road Master Routes (Read-only) */}
                       <Route path="/roads" element={<RoadMaster />} />
+
+                      <Route path="/devicedata" element={<DeviceData />} />
 
                       {/* Other routes */}
                       <Route

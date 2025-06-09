@@ -11,6 +11,8 @@ import {
   FiTruck,
   FiHome,
   FiMap,
+  FiFolder,
+  FiCalendar,
 } from "react-icons/fi";
 const sidebarItems = [
   { name: "Dashboard", href: "/", icon: FiHome },
@@ -35,6 +37,9 @@ const sidebarItems = [
   { name: "Roles", href: "/roles", icon: FiShield },
   { name: "Users", href: "/users", icon: FiUsers },
 
+  { name: "Tabs Demo", href: "/tabs-demo", icon: FiFolder },
+  { name: "DateTime Picker", href: "/datetime-picker-demo", icon: FiCalendar },
+
   // Operations
   {
     name: "Device Onboarding",
@@ -42,6 +47,7 @@ const sidebarItems = [
     icon: FiSmartphone,
   },
   { name: "Road Master", href: "/roads", icon: FiMap },
+  { name: "Device Data", href: "/devicedata", icon: FiMap },
 ];
 
 interface SidebarProps {

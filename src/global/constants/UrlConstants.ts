@@ -66,6 +66,9 @@ export class UrlConstants {
   accountsViewPath = "/accounts";
   addAccountViewPath = `${this.accountsViewPath}/add`;
   editAccountViewPath = `${this.accountsViewPath}/edit`;
+
+  //device data
+  deviceDataViewPath="/devicedata"
 }
 
 let urls = new UrlConstants();

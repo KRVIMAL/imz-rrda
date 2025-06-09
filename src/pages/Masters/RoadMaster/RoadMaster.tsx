@@ -302,7 +302,7 @@ const RoadMaster: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
           exportConfig={{
-             modulePath: urls.roadMasterExportPath,
+            modulePath: urls.roadMasterExportPath,
             filename: "road-master-data",
           }}
           // Disable edit/delete for read-only module
@@ -311,7 +311,7 @@ const RoadMaster: React.FC = () => {
       </div>
 
       {/* Export Options */}
-      <div className="fixed bottom-6 right-6 flex flex-col gap-2">
+      {/* <div className="fixed bottom-6 right-6 flex flex-col gap-2">
         <button
           onClick={() => handleExport("csv")}
           disabled={exporting}
@@ -333,7 +333,7 @@ const RoadMaster: React.FC = () => {
         >
           {exporting ? "Exporting..." : "Export Excel"}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

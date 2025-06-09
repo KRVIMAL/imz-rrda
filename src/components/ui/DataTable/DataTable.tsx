@@ -1,4 +1,4 @@
-// src/components/ui/DataTable/DataTable.tsx - Updated with server-side pagination
+// src/components/ui/DataTable/DataTable.tsx - Updated with server-side filtering
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -44,6 +44,9 @@ const DataTable: React.FC<DataTableProps> = ({
   onPageChange: externalPageChange,
   onPageSizeChange: externalPageSizeChange,
   disableClientSidePagination = false,
+  // Server-side filtering props
+  onFiltersChange: externalFiltersChange,
+  serverSideFiltering = false,
   exportConfig,
 }) => {
   const navigate = useNavigate();
@@ -149,11 +152,63 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   }, [columnStates, onColumnStateChange]);
 
-  // Process rows (sorting only, no pagination if server-side)
+  // Handle filters change with server-side filtering
+  useEffect(() => {
+    if (serverSideFiltering && externalFiltersChange) {
+      externalFiltersChange(filters);
+    }
+  }, [filters, serverSideFiltering, externalFiltersChange]);
+
+  // Process rows (sorting and filtering for client-side only)
   const processedRows = useMemo(() => {
+    if (serverSideFiltering) {
+      // For server-side filtering, just return rows as-is (filtering handled by server)
+      return internalRows;
+    }
+
     let filtered = internalRows;
 
-    // Apply sorting only (search and pagination handled by server)
+    // Apply client-side filtering
+    if (filters.length > 0) {
+      filtered = filtered.filter((row) => {
+        return filters.every((filter) => {
+          const value = row[filter.column];
+          const filterValue = filter.value.toLowerCase();
+          const cellValue = String(value || "").toLowerCase();
+
+          switch (filter.operator) {
+            case "contains":
+              return cellValue.includes(filterValue);
+            case "notContains":
+              return !cellValue.includes(filterValue);
+            case "equals":
+              return cellValue === filterValue;
+            case "notEquals":
+              return cellValue !== filterValue;
+            case "startsWith":
+              return cellValue.startsWith(filterValue);
+            case "endsWith":
+              return cellValue.endsWith(filterValue);
+            case "greaterThan":
+              return Number(value) > Number(filter.value);
+            case "lessThan":
+              return Number(value) < Number(filter.value);
+            case "greaterThanOrEqual":
+              return Number(value) >= Number(filter.value);
+            case "lessThanOrEqual":
+              return Number(value) <= Number(filter.value);
+            case "isEmpty":
+              return !value || String(value).trim() === "";
+            case "isNotEmpty":
+              return value && String(value).trim() !== "";
+            default:
+              return true;
+          }
+        });
+      });
+    }
+
+    // Apply sorting only (search and pagination handled by server for server-side mode)
     if (sortField) {
       filtered = [...filtered].sort((a, b) => {
         const aVal = a[sortField];
@@ -167,7 +222,7 @@ const DataTable: React.FC<DataTableProps> = ({
     }
 
     return filtered;
-  }, [internalRows, sortField, sortDirection]);
+  }, [internalRows, sortField, sortDirection, filters, serverSideFiltering]);
 
   // Pagination logic
   const currentPage = disableClientSidePagination
@@ -226,6 +281,16 @@ const DataTable: React.FC<DataTableProps> = ({
       }, 500); // 500ms debounce
 
       setSearchTimeout(timeout);
+    }
+  };
+
+  // Handle filters change
+  const handleFiltersChange = (newFilters: FilterCondition[]) => {
+    setFilters(newFilters);
+    
+    if (!serverSideFiltering) {
+      // For client-side filtering, reset to first page
+      setInternalCurrentPage(1);
     }
   };
 
@@ -357,7 +422,7 @@ const DataTable: React.FC<DataTableProps> = ({
         onColumnVisibilityChange={handleColumnVisibilityChange}
         showAddButton={false}
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={handleFiltersChange}
         showColumnMenu={showColumnMenu}
         setShowColumnMenu={setShowColumnMenu}
         showFilterComponent={showFilterComponent}

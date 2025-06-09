@@ -1,4 +1,4 @@
-// src/components/ui/DataTable/types.ts - Updated types with server-side pagination
+// src/components/ui/DataTable/types.ts - Updated types with server-side filtering
 import React from 'react';
 
 export interface Column {
@@ -43,8 +43,16 @@ export interface RowModesModel {
 
 export interface FilterCondition {
   id: string;
-  column: string;
+  field?: string;  // Make optional for backwards compatibility
+  column: string;  // Keep this for consistency with existing code
   operator: 'contains' | 'notContains' | 'equals' | 'notEquals' | 'startsWith' | 'endsWith' | 'greaterThan' | 'lessThan' | 'greaterThanOrEqual' | 'lessThanOrEqual' | 'isEmpty' | 'isNotEmpty';
+  value: string;
+}
+
+// Server-side filter format (matches your API)
+export interface ServerFilterCondition {
+  field: string;
+  operator: string;
   value: string;
 }
 
@@ -84,6 +92,9 @@ export interface DataTableProps {
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
   disableClientSidePagination?: boolean;
+  // Server-side filtering props
+  onFiltersChange?: (filters: FilterCondition[]) => void;
+  serverSideFiltering?: boolean;
   exportConfig?: {
     modulePath: string;
     filename: string;
@@ -107,6 +118,10 @@ export interface TableToolbarProps {
   setShowColumnMenu: (show: boolean) => void;
   showFilterComponent: boolean;
   setShowFilterComponent: (show: boolean) => void;
+  exportConfig?: {
+    modulePath: string;
+    filename: string;
+  };
 }
 
 export interface TableCellProps {
