@@ -69,6 +69,8 @@ export class UrlConstants {
 
   //device data
   deviceDataViewPath="/devicedata"
+  hexDataViewPath="/hex-data"
+  trackDataViewPath="/track-data"
 }
 
 let urls = new UrlConstants();

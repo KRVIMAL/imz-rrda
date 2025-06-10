@@ -15,6 +15,7 @@ export class StringConstants {
   ACCOUNTS_MODULE = "ACCOUNTS";
   USERS_MODULE = "USERS";
   ROAD_MASTER_MODULE = "ROAD_MASTER";
+  DEVICE_DATA_MODULE = "DEVICE_DATA";
 
   // Navigation
   HOME = "Home";
@@ -32,6 +33,8 @@ export class StringConstants {
   ACCOUNTS = "Accounts";
   USERS = "Users";
   ROAD_MASTER = "Road Master";
+  DEVICE_DATA = "Device Data";
+
 
   // Status
   ACTIVE = "Active";
@@ -83,6 +86,15 @@ export class StringConstants {
   ADD_USER = "Add User";
   UPDATE_USER = "Update User";
   EDIT_USER = "Edit User";
+
+
+
+  // Device Data specific - ADD THESE
+  HEX_DATA = "Hex Data";
+  TRACK_DATA = "Track Data";
+  SELECT_IMEI = "Select IMEI";
+  DATE_RANGE = "Date Range";
+  FILTER_DATA = "Filter Data";
 
   // Road Master specific (Read-only module)
   VIEW_ROAD_MASTER = "View Road Master";

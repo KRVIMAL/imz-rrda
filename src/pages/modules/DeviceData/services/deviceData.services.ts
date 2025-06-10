@@ -1,10 +1,6 @@
-// src/modules/clients/services/clients.services.ts
+// Device Data services for hex data and track data
 import { Row } from "../../../../components/ui/DataTable/types";
-import {
-  getRequest,
-  postRequest,
-  patchRequest,
-} from "../../../../core-services/rest-api/apiHelpers";
+import { getRequest } from "../../../../core-services/rest-api/apiHelpers";
 import urls from "../../../../global/constants/UrlConstants";
 
 // Define interfaces for API responses
@@ -15,27 +11,54 @@ interface ApiResponse<T> {
   data: T;
 }
 
-interface ClientData {
-  clientId:string;
+interface HexDataItem {
   _id: string;
-  name: string;
-  contactName: string;
-  email: string;
-  contactNo: string;
-  panNumber: string;
-  aadharNumber: string;
-  gstNumber: string;
-  stateName: string;
-  cityName: string;
-  remark: string;
-  status?: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  topic: string;
+  partition: number;
+  offset: number;
+  timestamp: string;
+  created_at: string;
+  imei: string;
+  rawHexData: string;
 }
 
-interface ClientsListResponse {
-  data: ClientData[];
+interface TrackDataItem {
+  _id: string;
+  gsmSignalStrength?: number;
+  gnssPdop?: number;
+  iccid2?: number;
+  satellites?: number;
+  analogInput1?: number;
+  unknownFields?: Record<string, any>;
+  ignition?: string;
+  gnssStatus?: string;
+  gnssHdop?: number;
+  externalVoltage?: number;
+  gsmAreaCode?: number;
+  imei: string;
+  dataMode?: string;
+  sleepMode?: string;
+  jamming?: string;
+  motion?: string;
+  dateTime: string;
+  longitude?: number;
+  bearing?: number;
+  iccid1?: number;
+  deviceType: string;
+  latitude?: number;
+  speed?: number;
+  eventIoId?: number;
+  totalIoElements?: number;
+  activeGSMOperator?: number;
+  priority?: number;
+  digitalInput1?: number;
+  gsmCellID?: number;
+  altitude?: number;
+  dateTimeUTC: string;
+}
+
+interface DataListResponse<T> {
+  data: T[];
   pagination: {
     page: string;
     limit: string;
@@ -57,43 +80,88 @@ interface PaginatedResponse<T> {
   hasPrev: boolean;
 }
 
-// Transform API client data to Row format
-const transformClientToRow = (client: ClientData): Row => ({
-  clientId:client.clientId,
-  id: client._id,
-  name: client.name,
-  contactName: client.contactName,
-  email: client.email,
-  contactNo: client.contactNo,
-  panNumber: client.panNumber,
-  aadharNumber: client.aadharNumber,
-  gstNumber: client.gstNumber,
-  stateName: client.stateName,
-  cityName: client.cityName,
-  remark: client.remark,
-  status: client.status || "active",
-  createdTime: new Date(client.createdAt).toISOString().split("T")[0],
-  updatedTime: new Date(client.updatedAt).toISOString().split("T")[0],
-  inactiveTime: new Date(client.updatedAt).toISOString().split("T")[0],
+// Transform hex data to Row format
+const transformHexDataToRow = (hexData: HexDataItem): Row => ({
+  id: hexData._id,
+  topic: hexData.topic,
+  partition: hexData.partition,
+  offset: hexData.offset,
+  timestamp: new Date(hexData.timestamp).toLocaleString(),
+  created_at: new Date(hexData.created_at).toLocaleString(),
+  imei: hexData.imei,
+  rawHexData: hexData.rawHexData,
 });
 
-export const clientServices = {
-  getAll: async (
+// Transform track data to Row format
+const transformTrackDataToRow = (trackData: TrackDataItem): Row => ({
+  id: trackData._id,
+  imei: trackData.imei,
+  deviceType: trackData.deviceType || "N/A",
+  dateTime: trackData.dateTime
+    ? new Date(trackData.dateTime).toLocaleString()
+    : "N/A",
+  dateTimeUTC: trackData.dateTimeUTC
+    ? new Date(trackData.dateTimeUTC).toLocaleString()
+    : "N/A",
+  latitude:
+    trackData.latitude !== undefined ? trackData.latitude.toFixed(6) : "N/A",
+  longitude:
+    trackData.longitude !== undefined ? trackData.longitude.toFixed(6) : "N/A",
+  speed: trackData.speed !== undefined ? trackData.speed : "N/A",
+  bearing: trackData.bearing !== undefined ? trackData.bearing : "N/A",
+  altitude: trackData.altitude !== undefined ? trackData.altitude : "N/A",
+  satellites: trackData.satellites !== undefined ? trackData.satellites : "N/A",
+  ignition: trackData.ignition || "N/A",
+  motion: trackData.motion || "N/A",
+  gsmSignalStrength:
+    trackData.gsmSignalStrength !== undefined
+      ? trackData.gsmSignalStrength
+      : "N/A",
+  externalVoltage:
+    trackData.externalVoltage !== undefined ? trackData.externalVoltage : "N/A",
+  digitalInput1:
+    trackData.digitalInput1 !== undefined ? trackData.digitalInput1 : "N/A",
+  analogInput1:
+    trackData.analogInput1 !== undefined ? trackData.analogInput1 : "N/A",
+  gsmAreaCode:
+    trackData.gsmAreaCode !== undefined ? trackData.gsmAreaCode : "N/A",
+  gsmCellID: trackData.gsmCellID !== undefined ? trackData.gsmCellID : "N/A",
+  activeGSMOperator:
+    trackData.activeGSMOperator !== undefined
+      ? trackData.activeGSMOperator
+      : "N/A",
+  gnssStatus: trackData.gnssStatus || "N/A",
+  jamming: trackData.jamming || "N/A",
+  dataMode: trackData.dataMode || "N/A",
+  sleepMode: trackData.sleepMode || "N/A",
+  priority: trackData.priority !== undefined ? trackData.priority : "N/A",
+  eventIoId: trackData.eventIoId !== undefined ? trackData.eventIoId : "N/A",
+  totalIoElements:
+    trackData.totalIoElements !== undefined ? trackData.totalIoElements : "N/A",
+});
+
+export const deviceDataServices = {
+  // Get Hex Data
+  getHexData: async (
+    imei: string,
+    startDate: string,
+    endDate: string,
     page: number = 1,
     limit: number = 10
   ): Promise<PaginatedResponse<Row>> => {
     try {
-      const response: ApiResponse<ClientsListResponse> = await getRequest(
-        urls.clientsViewPath,
-        {
+      const response: ApiResponse<DataListResponse<HexDataItem>> =
+        await getRequest(urls.hexDataViewPath, {
+          imei,
+          startDate,
+          endDate,
           page,
           limit,
-        }
-      );
+        });
 
       if (response.success) {
         return {
-          data: response.data.data.map(transformClientToRow),
+          data: response.data.data.map(transformHexDataToRow),
           total: response.data.pagination.total,
           page: parseInt(response.data.pagination.page),
           limit: parseInt(response.data.pagination.limit),
@@ -102,165 +170,34 @@ export const clientServices = {
           hasPrev: response.data.pagination.hasPrev,
         };
       } else {
-        throw new Error(response.message || "Failed to fetch clients");
+        throw new Error(response.message || "Failed to fetch hex data");
       }
     } catch (error: any) {
-      console.error("Error fetching clients:", error.message);
-      throw new Error(error.message || "Failed to fetch clients");
+      console.error("Error fetching hex data:", error.message);
+      throw new Error(error.message || "Failed to fetch hex data");
     }
   },
 
-  getById: async (id: string | number): Promise<Row | null> => {
-    try {
-      const response: ApiResponse<ClientData> = await getRequest(
-        `${urls.clientsViewPath}/${id}`
-      );
-
-      if (response.success) {
-        return transformClientToRow(response.data);
-      } else {
-        throw new Error(response.message || "Client not found");
-      }
-    } catch (error: any) {
-      console.error("Error fetching client:", error.message);
-      if (
-        error.message.includes("not found") ||
-        error.message.includes("404")
-      ) {
-        return null;
-      }
-      throw new Error(error.message || "Failed to fetch client");
-    }
-  },
-
-  create: async (
-    clientData: Partial<Row>
-  ): Promise<{ client: Row; message: string }> => {
-    try {
-      const payload = {
-        name: clientData.name,
-        contactName: clientData.contactName,
-        email: clientData.email,
-        contactNo: clientData.contactNo,
-        panNumber: clientData.panNumber,
-        aadharNumber: clientData.aadharNumber,
-        gstNumber: clientData.gstNumber,
-        stateName: clientData.stateName,
-        cityName: clientData.cityName,
-        remark: clientData.remark,
-        status: clientData.status || "active",
-      };
-
-      const response: ApiResponse<ClientData> = await postRequest(
-        urls.clientsViewPath,
-        payload
-      );
-
-      if (response.success) {
-        return {
-          client: transformClientToRow(response.data),
-          message: response.message || "Client created successfully",
-        };
-      } else {
-        throw new Error(response.message || "Failed to create client");
-      }
-    } catch (error: any) {
-      console.error("Error creating client:", error.message);
-      throw new Error(error.message || "Failed to create client");
-    }
-  },
-
-  update: async (
-    id: string | number,
-    clientData: Partial<Row>
-  ): Promise<{ client: Row; message: string }> => {
-    try {
-      const payload: any = {};
-
-      // Only include fields that are provided
-      if (clientData.name !== undefined) payload.name = clientData.name;
-      if (clientData.contactName !== undefined)
-        payload.contactName = clientData.contactName;
-      if (clientData.email !== undefined) payload.email = clientData.email;
-      if (clientData.contactNo !== undefined)
-        payload.contactNo = clientData.contactNo;
-      if (clientData.panNumber !== undefined)
-        payload.panNumber = clientData.panNumber;
-      if (clientData.aadharNumber !== undefined)
-        payload.aadharNumber = clientData.aadharNumber;
-      if (clientData.gstNumber !== undefined)
-        payload.gstNumber = clientData.gstNumber;
-      if (clientData.stateName !== undefined)
-        payload.stateName = clientData.stateName;
-      if (clientData.cityName !== undefined)
-        payload.cityName = clientData.cityName;
-      if (clientData.remark !== undefined) payload.remark = clientData.remark;
-      if (clientData.status !== undefined) payload.status = clientData.status;
-
-      const response: ApiResponse<ClientData> = await patchRequest(
-        `${urls.clientsViewPath}/${id}`,
-        payload
-      );
-
-      if (response.success) {
-        return {
-          client: transformClientToRow(response.data),
-          message: response.message || "Client updated successfully",
-        };
-      } else {
-        throw new Error(response.message || "Failed to update client");
-      }
-    } catch (error: any) {
-      console.error("Error updating client:", error.message);
-      throw new Error(error.message || "Failed to update client");
-    }
-  },
-
-  inactivate: async (id: string | number): Promise<{ message: string }> => {
-    try {
-      const response: ApiResponse<ClientData> = await patchRequest(
-        `${urls.clientsViewPath}/${id}`,
-        {
-          status: "inactive",
-        }
-      );
-
-      if (response.success) {
-        return {
-          message: response.message || "Client inactivated successfully",
-        };
-      } else {
-        throw new Error(response.message || "Failed to inactivate client");
-      }
-    } catch (error: any) {
-      console.error("Error inactivating client:", error.message);
-      throw new Error(error.message || "Failed to inactivate client");
-    }
-  },
-
-  search: async (
-    searchText: string,
+  // Get Track Data
+  getTrackData: async (
+    imei: string,
+    startDate: string,
+    endDate: string,
     page: number = 1,
     limit: number = 10
   ): Promise<PaginatedResponse<Row>> => {
     try {
-      // If search is empty, return all clients
-      if (!searchText.trim()) {
-        return clientServices.getAll(page, limit);
-      }
-
-      const response: ApiResponse<ClientsListResponse> = await getRequest(
-        `${urls.clientsViewPath}/search`,
-        {
-          searchText: searchText.trim(),
+      const response: ApiResponse<DataListResponse<TrackDataItem>> =
+        await getRequest(urls.trackDataViewPath, {
+          imei,
+          startDate,
+          endDate,
           page,
           limit,
-        }
-      );
-
+        });
       if (response.success) {
         return {
-          data: response.data.data.map(transformClientToRow),
+          data: response.data.data.map(transformTrackDataToRow),
           total: response.data.pagination.total,
           page: parseInt(response.data.pagination.page),
           limit: parseInt(response.data.pagination.limit),
@@ -269,11 +206,39 @@ export const clientServices = {
           hasPrev: response.data.pagination.hasPrev,
         };
       } else {
-        throw new Error(response.message || "Search failed");
+        throw new Error(response.message || "Failed to fetch track data");
       }
     } catch (error: any) {
-      console.error("Error searching clients:", error.message);
-      throw new Error(error.message || "Search failed");
+      console.error("Error fetching track data:", error.message);
+      throw new Error(error.message || "Failed to fetch track data");
+    }
+  },
+
+  // Get available IMEIs (hardcoded for now, can be replaced with API call later)
+  getAvailableIMEIs: async (): Promise<string[]> => {
+    try {
+      // Hardcoded IMEI list as requested
+      // TODO: Replace with actual API call when available
+      const hardcodedIMEIs = [
+        "350317177912155",
+        "350317177912156",
+        "350317177912157",
+        "350317177912158",
+        "350317177912159",
+        "350317177912160",
+        "350317177912161",
+        "350317177912162",
+        "350317177912163",
+        "350317177912164",
+      ];
+
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      return hardcodedIMEIs;
+    } catch (error: any) {
+      console.error("Error fetching IMEIs:", error.message);
+      throw new Error(error.message || "Failed to fetch IMEIs");
     }
   },
 };

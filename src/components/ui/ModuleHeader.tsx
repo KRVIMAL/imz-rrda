@@ -1,10 +1,17 @@
 // src/components/ui/ModuleHeader.tsx - Custom header for modules
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiArrowLeft } from 'react-icons/fi';
-import Button from './Button';
-import Breadcrumb, { BreadcrumbItem } from './Breadcrumb';
-import CustomInput from './CustomInput';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { FiPlus, FiArrowLeft } from "react-icons/fi";
+import Button from "./Button";
+import Breadcrumb, { BreadcrumbItem } from "./Breadcrumb";
+import CustomInput from "./CustomInput";
+
+interface ModuleHeaderTab {
+  id: string;
+  label: string;
+  icon?: any;
+  isActive?: boolean;
+}
 
 interface TabItem {
   key: string;
@@ -16,7 +23,7 @@ interface TabItem {
 interface ModuleHeaderProps {
   title: string;
   breadcrumbs?: BreadcrumbItem[];
-  
+
   // For list pages
   showAddButton?: boolean;
   addButtonText?: string;
@@ -27,8 +34,8 @@ interface ModuleHeaderProps {
   searchPlaceholder?: string;
   tabs?: TabItem[];
   onTabChange?: (key: string) => void;
-  
-  // For detail pages  
+
+  // For detail pages
   showBackButton?: boolean;
   showCancelButton?: boolean;
   showSaveButton?: boolean;
@@ -40,28 +47,32 @@ interface ModuleHeaderProps {
   cancelText?: string;
   saveText?: string;
   nextText?: string;
-  
+
   // Custom actions
   customActions?: React.ReactNode;
-  
+
   className?: string;
+
+  headerTabs?: ModuleHeaderTab[];
+  activeHeaderTab?: string;
+  onHeaderTabChange?: (tabId: string) => void;
 }
 
 const ModuleHeader: React.FC<ModuleHeaderProps> = ({
   title,
   breadcrumbs,
-  
+
   // List page props
   showAddButton = false,
-  addButtonText = 'Add',
+  addButtonText = "Add",
   onAddClick,
   showSearch = false,
-  searchValue = '',
+  searchValue = "",
   onSearchChange,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = "Search...",
   tabs,
   onTabChange,
-  
+
   // Detail page props
   showBackButton = false,
   showCancelButton = false,
@@ -71,12 +82,16 @@ const ModuleHeader: React.FC<ModuleHeaderProps> = ({
   onCancelClick,
   onSaveClick,
   onNextClick,
-  cancelText = 'Cancel',
-  saveText = 'Save',
-  nextText = 'Next',
-  
+  cancelText = "Cancel",
+  saveText = "Save",
+  nextText = "Next",
+
   customActions,
-  className = ''
+  className = "",
+
+  headerTabs,
+  activeHeaderTab,
+  onHeaderTabChange,
 }) => {
   const navigate = useNavigate();
 
@@ -97,14 +112,16 @@ const ModuleHeader: React.FC<ModuleHeaderProps> = ({
   };
 
   return (
-    <div className={`bg-theme-primary border-b border-border-light ${className}`}>
+    <div
+      className={`bg-theme-primary border-b border-border-light ${className}`}
+    >
       {/* Breadcrumbs */}
       {breadcrumbs && breadcrumbs.length > 0 && (
         <div className="px-6 pt-4">
           <Breadcrumb items={breadcrumbs} />
         </div>
       )}
-      
+
       {/* Main Header */}
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
@@ -120,7 +137,7 @@ const ModuleHeader: React.FC<ModuleHeaderProps> = ({
                 <FiArrowLeft className="w-4 h-4" />
               </Button>
             )}
-            
+
             {/* Title */}
             <h1 className="text-heading-1 text-text-primary">{title}</h1>
           </div>
@@ -156,28 +173,19 @@ const ModuleHeader: React.FC<ModuleHeaderProps> = ({
             {(showCancelButton || showSaveButton || showNextButton) && (
               <div className="flex items-center space-x-3">
                 {showCancelButton && (
-                  <Button
-                    variant="secondary"
-                    onClick={handleCancel}
-                  >
+                  <Button variant="secondary" onClick={handleCancel}>
                     {cancelText}
                   </Button>
                 )}
-                
+
                 {showSaveButton && (
-                  <Button
-                    variant="primary"
-                    onClick={onSaveClick}
-                  >
+                  <Button variant="primary" onClick={onSaveClick}>
                     {saveText}
                   </Button>
                 )}
-                
+
                 {showNextButton && (
-                  <Button
-                    variant="primary"
-                    onClick={onNextClick}
-                  >
+                  <Button variant="primary" onClick={onNextClick}>
                     {nextText}
                   </Button>
                 )}
@@ -199,17 +207,19 @@ const ModuleHeader: React.FC<ModuleHeaderProps> = ({
                   onClick={() => onTabChange?.(tab.key)}
                   className={`pb-2 border-b-2 transition-colors ${
                     tab.isActive
-                      ? 'border-primary-500 text-primary-600'
-                      : 'border-transparent text-text-muted hover:text-text-secondary'
+                      ? "border-primary-500 text-primary-600"
+                      : "border-transparent text-text-muted hover:text-text-secondary"
                   }`}
                 >
                   <span className="font-medium">{tab.label}</span>
                   {tab.count !== undefined && (
-                    <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
-                      tab.isActive 
-                        ? 'bg-primary-100 text-primary-800'
-                        : 'bg-theme-tertiary text-text-muted'
-                    }`}>
+                    <span
+                      className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                        tab.isActive
+                          ? "bg-primary-100 text-primary-800"
+                          : "bg-theme-tertiary text-text-muted"
+                      }`}
+                    >
                       {tab.count}
                     </span>
                   )}
@@ -219,6 +229,33 @@ const ModuleHeader: React.FC<ModuleHeaderProps> = ({
           </div>
         )}
       </div>
+      {headerTabs && headerTabs.length > 0 && (
+        <div className="px-6 pb-4">
+          <div className="flex space-x-2">
+            {headerTabs.map((tab) => {
+              const isActive = tab.id === activeHeaderTab;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => onHeaderTabChange?.(tab.id)}
+                  className={`
+                    px-4 py-2 rounded-full font-medium transition-all duration-200 cursor-pointer
+                    flex items-center space-x-2 text-sm
+                    ${
+                      isActive
+                        ? "bg-primary-600 text-white shadow-md"
+                        : "text-text-secondary hover:text-text-primary hover:bg-theme-tertiary"
+                    }
+                  `}
+                >
+                  {tab.icon && <tab.icon className="w-4 h-4" />}
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

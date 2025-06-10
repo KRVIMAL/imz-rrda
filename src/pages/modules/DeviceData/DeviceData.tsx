@@ -1,16 +1,26 @@
-// src/modules/clients/pages/Clients.tsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { FiHome, FiUsers } from "react-icons/fi";
+import {
+  FiHome,
+  FiHardDrive,
+  FiDatabase,
+  FiNavigation,
+  FiEye,
+} from "react-icons/fi";
 import ModuleHeader from "../../../components/ui/ModuleHeader";
 import DataTable from "../../../components/ui/DataTable/DataTable";
+import DateTimeRangePicker, {
+  DateTimeRange,
+} from "../../../components/ui/DateTimeRangePicker";
+import Select from "../../../components/ui/Select";
+import Tabs, { TabItem } from "../../../components/ui/Tabs";
+import Card from "../../../components/ui/Card";
+import Button from "../../../components/ui/Button";
 import { Column, Row } from "../../../components/ui/DataTable/types";
-import { clientServices } from "./services/deviceData.services";
+import { deviceDataServices } from "./services/deviceData.services";
 import strings from "../../../global/constants/StringConstants";
-import urls from "../../../global/constants/UrlConstants";
 import toast from "react-hot-toast";
-import { tabTitle } from "../../../utils/tab-title";
-import { store } from "../../../store";
+import dayjs from "dayjs";
+import JsonViewerModal from "../../../components/ui/Modal/JsonViewerModal";
 
 // Add interface for paginated response
 interface PaginatedResponse<T> {
@@ -24,11 +34,18 @@ interface PaginatedResponse<T> {
 }
 
 const DeviceData: React.FC = () => {
-  const navigate = useNavigate();
-  tabTitle(strings.CLIENTS);
-  const [clients, setClients] = useState<Row[]>([]);
+  // State management
+  const [activeTab, setActiveTab] = useState("hex-data");
+  const [data, setData] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
+  const [availableIMEIs, setAvailableIMEIs] = useState<string[]>([]);
+
+  // Filter states
+  const [selectedIMEI, setSelectedIMEI] = useState<string>("");
+  const [dateRange, setDateRange] = useState<DateTimeRange>({
+    startDate: null,
+    endDate: null,
+  });
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,141 +53,378 @@ const DeviceData: React.FC = () => {
   const [totalRows, setTotalRows] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const columns: Column[] = [
-    { field: "clientId", headerName: "Client Id", width: 120 },
-    { field: "name", headerName: "Client Name", width: 150 },
-    { field: "contactName", headerName: "Contact Name", width: 150 },
-    { field: "email", headerName: "Email ID", width: 200 },
-    { field: "contactNo", headerName: "Contact No", width: 130 },
-    { field: "panNumber", headerName: "Pan Number", width: 120 },
-    { field: "aadharNumber", headerName: "Aadhar Number", width: 130 },
-    { field: "gstNumber", headerName: "GST Number", width: 130 },
-    { field: "stateName", headerName: "State Name", width: 120 },
-    { field: "cityName", headerName: "City Name", width: 120 },
-    { field: "remark", headerName: "Remark", width: 150 },
+  const [isJsonModalOpen, setIsJsonModalOpen] = useState(false);
+  const [selectedJsonData, setSelectedJsonData] = useState<any>(null);
+
+  // Hex Data columns
+  const hexDataColumns: Column[] = [
+    { field: "topic", headerName: "Topic", width: 200 },
+    { field: "partition", headerName: "Partition", width: 100, type: "number" },
+    { field: "offset", headerName: "Offset", width: 100, type: "number" },
+    { field: "timestamp", headerName: "Timestamp", width: 180, type: "date" },
+    { field: "created_at", headerName: "Created At", width: 180, type: "date" },
+    { field: "imei", headerName: "IMEI", width: 150 },
     {
-      field: "status",
-      headerName: "Status",
+      field: "rawHexData",
+      headerName: "Raw Hex Data",
+      width: 300,
+      renderCell: (params) => (
+        <div
+          className="text-xs font-mono truncate cursor-pointer"
+          title={params.value}
+          style={{ maxWidth: "300px" }}
+        >
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: "viewJson",
+      headerName: "View JSON",
+      width: 120,
+      renderCell: (params) => (
+        <button
+          onClick={() => handleViewJson(params.row)}
+          className="p-1 text-primary-600 hover:text-primary-800 hover:bg-primary-50 rounded transition-colors"
+          title="View JSON Data"
+        >
+          <FiEye className="w-4 h-4" />
+        </button>
+      ),
+    },
+  ];
+
+  // Track Data columns
+  const trackDataColumns: Column[] = [
+    { field: "imei", headerName: "IMEI", width: 150 },
+    { field: "deviceType", headerName: "Device Type", width: 120 },
+    { field: "dateTime", headerName: "Date Time", width: 180, type: "date" },
+    { field: "latitude", headerName: "Latitude", width: 120, type: "number" },
+    { field: "longitude", headerName: "Longitude", width: 120, type: "number" },
+    { field: "speed", headerName: "Speed", width: 80, type: "number" },
+    { field: "bearing", headerName: "Bearing", width: 80, type: "number" },
+    { field: "altitude", headerName: "Altitude", width: 80, type: "number" },
+    {
+      field: "satellites",
+      headerName: "Satellites",
       width: 100,
+      type: "number",
+    },
+    {
+      field: "ignition",
+      headerName: "Ignition",
+      width: 120,
       renderCell: (params) => (
         <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            params.value === "active"
-              ? "bg-success-100 text-success-800"
-              : "bg-gray-100 text-gray-800"
+          className={`px-2 py-1 rounded text-xs font-medium ${
+            params.value === "Ignition On"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
           }`}
         >
-          {params.value === "active" ? "Active" : "Inactive"}
+          {params.value}
         </span>
       ),
     },
-    { field: "createdTime", headerName: "Created", width: 120, type: "date" },
-    { field: "updatedTime", headerName: "Updated", width: 120, type: "date" },
+    { field: "motion", headerName: "Motion", width: 120 },
     {
-      field: "inactiveTime",
-      headerName: "Inactive Time",
+      field: "gsmSignalStrength",
+      headerName: "GSM Signal",
       width: 120,
-      type: "date",
+      type: "number",
+    },
+    {
+      field: "externalVoltage",
+      headerName: "Voltage",
+      width: 100,
+      type: "number",
+    },
+    { field: "gnssStatus", headerName: "GNSS Status", width: 150 },
+    {
+      field: "viewJson",
+      headerName: "View JSON",
+      width: 120,
+      renderCell: (params) => (
+        <button
+          onClick={() => handleViewJson(params.row)}
+          className="p-1 text-primary-600 hover:text-primary-800 hover:bg-primary-50 rounded transition-colors"
+          title="View JSON Data"
+        >
+          <FiEye className="w-4 h-4" />
+        </button>
+      ),
     },
   ];
 
+  const handleViewJson = (rowData: any) => {
+    setSelectedJsonData(rowData);
+    setIsJsonModalOpen(true);
+  };
+
   const breadcrumbs = [
     { label: strings.HOME, href: "/", icon: FiHome },
-    { label: strings.CLIENTS, isActive: true, icon: FiUsers },
+    { label: strings.DEVICE_DATA, isActive: true, icon: FiHardDrive },
   ];
 
+  // Load available IMEIs on component mount
   useEffect(() => {
-    loadClients();
+    loadAvailableIMEIs();
   }, []);
 
-  const loadClients = async (
-    search: string = "",
-    page: number = currentPage,
-    limit: number = pageSize
-  ) => {
+  const loadAvailableIMEIs = async () => {
+    try {
+      const imeis = await deviceDataServices.getAvailableIMEIs();
+      setAvailableIMEIs(imeis);
+    } catch (error: any) {
+      console.error("Error loading IMEIs:", error);
+      toast.error("Failed to load available IMEIs");
+    }
+  };
+
+  const loadData = async () => {
+    if (!selectedIMEI || !dateRange.startDate || !dateRange.endDate) {
+      toast.error("Please select IMEI and date range");
+      return;
+    }
+
     setLoading(true);
     try {
-      const result: PaginatedResponse<Row> = search
-        ? await clientServices.search(search, page, limit)
-        : await clientServices.getAll(page, limit);
+      const startDate = dateRange.startDate.format("YYYY-MM-DD");
+      const endDate = dateRange.endDate.format("YYYY-MM-DD");
 
-      setClients(result.data);
+      let result: PaginatedResponse<Row>;
+
+      if (activeTab === "hex-data") {
+        result = await deviceDataServices.getHexData(
+          selectedIMEI,
+          startDate,
+          endDate,
+          currentPage,
+          pageSize
+        );
+      } else {
+        result = await deviceDataServices.getTrackData(
+          selectedIMEI,
+          startDate,
+          endDate,
+          currentPage,
+          pageSize
+        );
+      }
+
+      setData(result.data);
       setTotalRows(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(result.page);
+
+      if (result.data.length === 0) {
+        toast("No data found for the selected criteria", { icon: "ℹ️" });
+      }
     } catch (error: any) {
-      console.error("Error loading clients:", error);
-      toast.error(error.message || "Failed to fetch clients");
+      console.error("Error loading data:", error);
+      toast.error(error.message || "Failed to fetch data");
+      setData([]);
+      setTotalRows(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddClient = () => {
-    navigate(urls.addClientViewPath);
-  };
-
-  // Handle edit click from DataTable
-  const handleEditClient = (id: string | number) => {
-    const selectedClient = clients.find((client) => client.id === id);
-    navigate(`${urls.editClientViewPath}/${id}`, {
-      state: { clientData: selectedClient },
-    });
-  };
-
-  const handleDeleteClient = async (
-    id: string | number,
-    deletedRow: Row,
-    rows: Row[]
-  ) => {
-    try {
-      const result = await clientServices.inactivate(id);
-      toast.success(result.message);
-      await loadClients(searchValue, currentPage, pageSize); // Reload current page
-    } catch (error: any) {
-      console.error("Error inactivating client:", error);
-      toast.error(error.message);
-      // Revert the rows on error
-      setClients(rows);
-    }
-  };
-
-  const handleSearch = (searchText: string) => {
-    setSearchValue(searchText);
-    setCurrentPage(1); // Reset to first page on search
-    loadClients(searchText, 1, pageSize);
-  };
-
-  // Pagination handlers
+  // Handle pagination
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadClients(searchValue, page, pageSize);
+    // Auto-reload data when page changes if filters are set
+    if (selectedIMEI && dateRange.startDate && dateRange.endDate) {
+      setTimeout(() => loadData(), 0);
+    }
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page
-    loadClients(searchValue, 1, size);
+    setCurrentPage(1);
+    // Auto-reload data when page size changes if filters are set
+    if (selectedIMEI && dateRange.startDate && dateRange.endDate) {
+      setTimeout(() => loadData(), 0);
+    }
   };
+
+  // Handle tab change
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    setData([]); // Clear current data
+    setCurrentPage(1); // Reset pagination
+    setTotalRows(0);
+    setTotalPages(0);
+
+    // Auto-reload data for new tab if filters are set
+    if (selectedIMEI && dateRange.startDate && dateRange.endDate) {
+      setTimeout(() => {
+        // Need to use the new tabId since state hasn't updated yet
+        loadDataForTab(tabId);
+      }, 0);
+    }
+  };
+
+  const loadDataForTab = async (tabId: string) => {
+    if (!selectedIMEI || !dateRange.startDate || !dateRange.endDate) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const startDate = dateRange.startDate.format("YYYY-MM-DD");
+      const endDate = dateRange.endDate.format("YYYY-MM-DD");
+
+      let result: PaginatedResponse<Row>;
+
+      if (tabId === "hex-data") {
+        result = await deviceDataServices.getHexData(
+          selectedIMEI,
+          startDate,
+          endDate,
+          1, // Reset to first page
+          pageSize
+        );
+      } else {
+        result = await deviceDataServices.getTrackData(
+          selectedIMEI,
+          startDate,
+          endDate,
+          1, // Reset to first page
+          pageSize
+        );
+      }
+
+      setData(result.data);
+      setTotalRows(result.total);
+      setTotalPages(result.totalPages);
+      setCurrentPage(1);
+    } catch (error: any) {
+      console.error("Error loading data:", error);
+      toast.error(error.message || "Failed to fetch data");
+      setData([]);
+      setTotalRows(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Create IMEI options for dropdown
+  const imeiOptions = availableIMEIs.map((imei) => ({
+    value: imei,
+    label: imei,
+  }));
+
+  // Create tabs for the module header
+  const tabs: TabItem[] = [
+    {
+      id: "hex-data",
+      label: "Hex Data",
+      icon: FiDatabase,
+      content: null, // Content will be rendered separately
+    },
+    {
+      id: "track-data",
+      label: "Track Data",
+      icon: FiNavigation,
+      content: null, // Content will be rendered separately
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-theme-secondary">
       <ModuleHeader
-        title={strings.CLIENTS}
+        title={strings.DEVICE_DATA}
         breadcrumbs={breadcrumbs}
-        showAddButton
-        addButtonText={strings.ADD_CLIENT}
-        onAddClick={handleAddClient}
+        headerTabs={[
+          {
+            id: "hex-data",
+            label: "Hex Data",
+            icon: FiDatabase,
+            isActive: activeTab === "hex-data",
+          },
+          {
+            id: "track-data",
+            label: "Track Data",
+            icon: FiNavigation,
+            isActive: activeTab === "track-data",
+          },
+        ]}
+        activeHeaderTab={activeTab}
+        onHeaderTabChange={handleTabChange}
       />
-
       <div className="p-6">
+        {/* Filters Section */}
+        <Card className="mb-6">
+          <Card.Body className="p-4">
+            <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-6 gap-4 items-end">
+              {/* IMEI Selection */}
+              <div>
+                <Select
+                  label="Select IMEI"
+                  options={imeiOptions}
+                  value={selectedIMEI}
+                  onChange={(value) => setSelectedIMEI(value as string)}
+                  placeholder="Choose an IMEI"
+                  required
+                  disabled={loading || availableIMEIs.length === 0}
+                />
+              </div>
+
+              {/* Date Range Selection */}
+              <div>
+                <DateTimeRangePicker
+                  label="Date Range"
+                  value={dateRange}
+                  onChange={setDateRange}
+                  placeholder="Select start and end date"
+                  required
+                  disabled={loading}
+                  showTime={false} // Only date selection for this use case
+                  format="YYYY-MM-DD"
+                />
+              </div>
+
+              {/* Filter Button */}
+              <div>
+                <Button
+                  onClick={loadData}
+                  disabled={
+                    loading ||
+                    !selectedIMEI ||
+                    !dateRange.startDate ||
+                    !dateRange.endDate
+                  }
+                  isLoading={loading}
+                  className="w-full"
+                >
+                  {loading ? "Loading..." : "Filter Data"}
+                </Button>
+              </div>
+            </div>
+
+            {/* Filter Summary */}
+            {/* {selectedIMEI && dateRange.startDate && dateRange.endDate && (
+              <div className="mt-4 p-3 bg-theme-tertiary rounded-md">
+                <div className="text-sm text-text-secondary">
+                  <strong>Current Filters:</strong> IMEI: {selectedIMEI} | Date
+                  Range: {dateRange.startDate.format("YYYY-MM-DD")} to{" "}
+                  {dateRange.endDate.format("YYYY-MM-DD")} | Tab:{" "}
+                  {activeTab === "hex-data" ? "Hex Data" : "Track Data"}
+                </div>
+              </div>
+            )} */}
+          </Card.Body>
+        </Card>
+
+        {/* Data Table */}
         <DataTable
-          columns={columns}
-          rows={clients}
+          key={activeTab}
+          columns={activeTab === "hex-data" ? hexDataColumns : trackDataColumns}
+          rows={data}
           loading={loading}
-          onSearch={handleSearch}
-          onDeleteRow={handleDeleteClient}
-          onEditClick={handleEditClient}
           pageSize={pageSize}
           pageSizeOptions={[5, 10, 25, 50]}
           // Server-side pagination props
@@ -180,12 +434,30 @@ const DeviceData: React.FC = () => {
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           disableClientSidePagination={true}
+          // Disable features not needed for this read-only data
+          noActionColumn={true}
+          checkboxSelection={false}
+          // No search since we have custom filters
+          onSearch={undefined}
           exportConfig={{
-            modulePath: `${urls.clientsViewPath}/export`,
-            filename: "clients",
+            modulePath: activeTab === "hex-data" ? "/hex-data" : "/track-data",
+            filename: `${activeTab}-${selectedIMEI}-${dateRange.startDate?.format(
+              "YYYY-MM-DD"
+            )}-${dateRange.endDate?.format("YYYY-MM-DD")}`,
           }}
         />
       </div>
+      {selectedJsonData && (
+        <JsonViewerModal
+          isOpen={isJsonModalOpen}
+          onClose={() => {
+            setIsJsonModalOpen(false);
+            setSelectedJsonData(null);
+          }}
+          data={selectedJsonData}
+          title={`${activeTab === "hex-data" ? "Hex" : "Track"} Data JSON`}
+        />
+      )}
     </div>
   );
 };
