@@ -59,6 +59,7 @@ const DeviceData: React.FC = () => {
   // Hex Data columns
   const hexDataColumns: Column[] = [
     { field: "topic", headerName: "Topic", width: 200 },
+    { field: "response", headerName: "Response", width: 100, type: "number" },
     { field: "partition", headerName: "Partition", width: 100, type: "number" },
     { field: "offset", headerName: "Offset", width: 100, type: "number" },
     { field: "timestamp", headerName: "Timestamp", width: 180, type: "date" },

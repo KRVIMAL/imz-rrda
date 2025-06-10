@@ -20,6 +20,7 @@ interface HexDataItem {
   created_at: string;
   imei: string;
   rawHexData: string;
+  resp:string;
 }
 
 interface TrackDataItem {
@@ -84,6 +85,7 @@ interface PaginatedResponse<T> {
 const transformHexDataToRow = (hexData: HexDataItem): Row => ({
   id: hexData._id,
   topic: hexData.topic,
+  response:hexData.resp,
   partition: hexData.partition,
   offset: hexData.offset,
   timestamp: new Date(hexData.timestamp).toLocaleString(),
@@ -221,6 +223,7 @@ export const deviceDataServices = {
       // TODO: Replace with actual API call when available
       const hardcodedIMEIs = [
         "350317177912155",
+        "866477069411380",
         "350317177912156",
         "350317177912157",
         "350317177912158",
